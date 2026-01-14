@@ -3,8 +3,10 @@ import { Header } from "@/components/Header"
 import { ProgressBar } from "@/components/ProgressBar"
 import { WordGrid } from "@/components/WordGrid"
 import { TwoLetterList } from "@/components/TwoLetterList"
+import { HintsList } from "@/components/HintsList"
 import { usePuzzle } from "@/hooks/usePuzzle"
 import { useUserProgress } from "@/hooks/useUserProgress"
+import { useHints } from "@/hooks/useHints"
 import { Loader2, AlertCircle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -22,6 +24,14 @@ export function App() {
     refetch: refetchProgress,
   } = useUserProgress(puzzle?.today.pangrams ?? [], !!puzzle)
 
+  const {
+    hints,
+    isLoading: hintsLoading,
+    error: hintsError,
+    hasApiKey,
+    refetch: refetchHints,
+  } = useHints(!!puzzle)
+
   // Combined loading state - show loading while puzzle is fetching
   const isLoading = puzzleLoading
 
@@ -30,7 +40,7 @@ export function App() {
 
   // Handler for refresh
   const handleRefresh = async () => {
-    await Promise.all([refetchPuzzle(), refetchProgress()])
+    await Promise.all([refetchPuzzle(), refetchProgress(), refetchHints()])
   }
 
   // Loading state
@@ -125,6 +135,34 @@ export function App() {
             allWords={today.answers}
             foundWords={foundWords}
           />
+        </section>
+
+        {/* Hints section */}
+        <section aria-label="Hints">
+          {!hasApiKey && (
+            <div className="mb-4 rounded-lg border border-border bg-muted/50 p-4 text-sm">
+              <p className="text-muted-foreground">
+                <strong>Tip:</strong> Add your Anthropic API key in settings to see AI-generated hints.
+              </p>
+            </div>
+          )}
+
+          {hintsError && (
+            <div className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm">
+              <p className="text-destructive">{hintsError}</p>
+            </div>
+          )}
+
+          {hintsLoading && (
+            <div className="flex items-center gap-2 py-8 justify-center text-muted-foreground">
+              <Loader2 className="size-4 animate-spin" />
+              <span>Generating hints...</span>
+            </div>
+          )}
+
+          {hints && !hintsLoading && (
+            <HintsList hints={hints} foundWords={foundWords} />
+          )}
         </section>
 
         {/* Refresh button */}
