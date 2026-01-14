@@ -2,7 +2,6 @@
 
 - [ ] Create HintsList component with collapsible sections
 - [ ] Create SettingsModal component for credentials
-- [ ] Create App layout and integrate all components
 - [ ] Write Playwright tests for main flows
 - [ ] Configure PWA for offline support
 - [ ] Deploy frontend to Vercel
@@ -11,6 +10,7 @@
 
 ### Done
 
+- [x] Create App layout and integrate all components
 - [x] Create TwoLetterList component
 - [x] Create WordGrid component (letter × length grid)
 - [x] Create Header component with puzzle info and links
