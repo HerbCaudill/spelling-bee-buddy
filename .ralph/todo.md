@@ -1,12 +1,13 @@
 ### To do
 
-- [ ] Write Playwright tests for main flows
 - [ ] Configure PWA for offline support
 - [ ] Deploy frontend to Vercel
 
 ---
 
 ### Done
+
+- [x] Write Playwright tests for main flows
 
 - [x] Create SettingsModal component for credentials
 - [x] Create HintsList component with collapsible sections
