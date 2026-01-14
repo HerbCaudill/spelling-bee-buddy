@@ -1,7 +1,6 @@
 ### To do
 
 - [ ] Add CORS headers and error handling to Worker, deploy to Cloudflare
-- [ ] Create useHints hook
 - [ ] Create Header component with puzzle info and links
 - [ ] Create WordGrid component (letter × length grid)
 - [ ] Create TwoLetterList component
@@ -16,6 +15,7 @@
 
 ### Done
 
+- [x] Create useHints hook
 - [x] Implement Worker hint generation with Anthropic API and KV caching
 - [x] Create ProgressBar component with rank display
 - [x] Create useUserProgress hook
