@@ -7,7 +7,6 @@
 - [ ] Add CORS headers and error handling to Worker, deploy to Cloudflare
 - [ ] Create storage.ts with localStorage helpers for credentials
 - [ ] Create api.ts with functions to call Worker endpoints
-- [ ] Create utils.ts with point calculation and word grouping helpers
 - [ ] Create usePuzzle hook
 - [ ] Create useUserProgress hook
 - [ ] Create useHints hook
@@ -27,3 +26,4 @@
 ### Done
 
 - [x] Create TypeScript interfaces (GameData, CubbyResponse, UserStats, CachedHints, UserCredentials)
+- [x] Create utils.ts with point calculation and word grouping helpers
