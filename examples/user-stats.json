@@ -1,0 +1,45 @@
+{
+  "_meta": {
+    "endpoint": "GET https://www.nytimes.com/svc/games/state/spelling_bee/latests",
+    "headers": "Cookie: NYT-S={token}",
+    "capturedAt": "2026-01-14",
+    "notes": "Returns user's overall game stats across all NYT games. The spelling_bee section contains Spelling Bee specific stats."
+  },
+  "response": {
+    "states": [],
+    "user_id": 53695385,
+    "player": {
+      "user_id": 53695385,
+      "last_updated": 1768388061,
+      "stats": {
+        "spelling_bee": {
+          "puzzles_started": 520,
+          "total_words": 21716,
+          "total_pangrams": 756,
+          "longest_word": {
+            "word": "dillydallying",
+            "center_letter": "y",
+            "print_date": "2025-11-11"
+          },
+          "ranks": {
+            "Amazing": 22,
+            "Beginner": 1,
+            "Genius": 104,
+            "Good": 3,
+            "Good Start": 0,
+            "Great": 8,
+            "Moving Up": 1,
+            "Nice": 7,
+            "Queen Bee": 371,
+            "Solid": 3
+          }
+        },
+        "spelling_bee_2": {
+          "long_words": 380,
+          "pangram_first": 97,
+          "generation": 1
+        }
+      }
+    }
+  }
+}

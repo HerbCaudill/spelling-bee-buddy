@@ -1,0 +1,83 @@
+{
+  "_meta": {
+    "source": "AI-generated hints in Steve G style",
+    "puzzleDate": "2026-01-14",
+    "notes": "Hints are grouped by two-letter prefix. Each hint includes word length in parentheses."
+  },
+  "hints": {
+    "AL": [
+      { "hint": "Soda + liquor premix", "length": 7 },
+      { "hint": "Can be meted proportionally", "length": 9 },
+      { "hint": "Succulent plant", "length": 4 }
+    ],
+    "BA": [{ "hint": "Tree of life", "length": 6 }],
+    "BE": [{ "hint": "Type of jazz", "length": 5 }],
+    "BL": [
+      { "hint": "Small splotch", "length": 4 },
+      { "hint": "Group of nations", "length": 4 },
+      { "hint": "Sound of something falling in water", "length": 5 }
+    ],
+    "BO": [
+      { "hint": "Tapioca pearls in tea", "length": 4 },
+      { "hint": "Jiggle toy", "length": 6 },
+      { "hint": "Italian ball game", "length": 5 },
+      { "hint": "Weighted throwing weapon", "length": 4 },
+      { "hint": "Cotton pod", "length": 4 },
+      { "hint": "Gaucho's lasso", "length": 4 },
+      { "hint": "Slang for mistake", "length": 4 },
+      { "hint": "Minor injury, child's word", "length": 6 },
+      { "hint": "Betty White sound", "length": 4 }
+    ],
+    "CA": [
+      { "hint": "Chocolate tree beans", "length": 5 },
+      { "hint": "Jamaican leafy green stew", "length": 8 },
+      { "hint": "Guitar fret clamp", "length": 4 }
+    ],
+    "CE": [{ "hint": "Yo-Yo Ma's instrument", "length": 5 }],
+    "CL": [
+      { "hint": "Bird's digestive chamber", "length": 6 },
+      { "hint": "Horse hoof sound", "length": 4 }
+    ],
+    "CO": [
+      { "hint": "Black rock fuel", "length": 4 },
+      { "hint": "Street stone", "length": 6 },
+      { "hint": "Leaf used in soft drinks", "length": 4 },
+      { "hint": "Hot chocolate", "length": 5 },
+      { "hint": "Nut-flavored soda", "length": 4 },
+      { "hint": "Joint creative work", "length": 6 },
+      { "hint": "Not warm", "length": 4 },
+      { "hint": "Chicken house", "length": 4 },
+      { "hint": "Deal with", "length": 4 }
+    ],
+    "EL": [{ "hint": "Run away to marry", "length": 5 }],
+    "LO": [
+      { "hint": "Ear part", "length": 4 },
+      { "hint": "Spanish for wolf", "length": 4 },
+      { "hint": "Neighborhood", "length": 5 },
+      { "hint": "Place or setting", "length": 6 },
+      { "hint": "Crazy, in Spanish", "length": 4 },
+      { "hint": "Hang loosely", "length": 4 },
+      { "hint": "Gallop awkwardly", "length": 6 },
+      { "hint": "Circle shape", "length": 4 },
+      { "hint": "Easy run", "length": 4 }
+    ],
+    "OB": [{ "hint": "Double-reed woodwind", "length": 4 }],
+    "OL": [{ "hint": "Margarine", "length": 4 }],
+    "OP": [{ "hint": "Iridescent gemstone", "length": 4 }],
+    "PA": [{ "hint": "Caveman diet", "length": 5 }],
+    "PE": [{ "hint": "Humans", "length": 6 }],
+    "PL": [
+      { "hint": "Sugar pill", "length": 7 },
+      { "hint": "Fall with a splash", "length": 4 }
+    ],
+    "PO": [
+      { "hint": "Fishing stick", "length": 4 },
+      { "hint": "Survey or vote", "length": 4 },
+      { "hint": "Water sport, or Marco's game", "length": 4 },
+      { "hint": "Swimming spot", "length": 4 },
+      { "hint": "Baby word for feces", "length": 4 },
+      { "hint": "Catholic leader", "length": 4 },
+      { "hint": "Informal father", "length": 5 }
+    ]
+  }
+}
