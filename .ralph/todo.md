@@ -3,7 +3,6 @@
 - [ ] Implement Worker endpoint to proxy user progress API with auth
 - [ ] Implement Worker hint generation with Anthropic API and KV caching
 - [ ] Add CORS headers and error handling to Worker, deploy to Cloudflare
-- [ ] Create usePuzzle hook
 - [ ] Create useUserProgress hook
 - [ ] Create useHints hook
 - [ ] Create Header component with puzzle info and links
@@ -21,6 +20,7 @@
 
 ### Done
 
+- [x] Create usePuzzle hook
 - [x] Create api.ts with functions to call Worker endpoints
 - [x] Implement Worker endpoint to fetch and parse puzzle data from NYT page
 - [x] Set up Cloudflare Worker project with wrangler and KV namespace
