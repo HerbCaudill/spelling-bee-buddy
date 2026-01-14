@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Create Header component with puzzle info and links
 - [ ] Create WordGrid component (letter × length grid)
 - [ ] Create TwoLetterList component
 - [ ] Create HintsList component with collapsible sections
@@ -14,6 +13,7 @@
 
 ### Done
 
+- [x] Create Header component with puzzle info and links
 - [x] Add CORS headers and error handling to Worker (with tests and deployment docs)
 - [x] Create useHints hook
 - [x] Implement Worker hint generation with Anthropic API and KV caching
