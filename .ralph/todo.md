@@ -1,9 +1,124 @@
 ### To do
 
-- [ ] Example task 1
-- [ ] Example task 2
-- [ ] Example task 3
+- [ ] Create TypeScript interface for GameData (puzzle data from NYT page)
+- [ ] Create TypeScript interface for CubbyResponse (user's found words)
+- [ ] Create TypeScript interface for UserStats (overall player stats)
+- [ ] Create TypeScript interface for CachedHints (hint storage format)
+- [ ] Create TypeScript interface for UserCredentials (localStorage keys)
+- [ ] Create Cloudflare Worker project with wrangler
+- [ ] Configure wrangler.toml with KV namespace binding
+- [ ] Create KV namespace for hint caching
+- [ ] Implement Worker endpoint to fetch and parse NYT Spelling Bee page HTML
+- [ ] Extract window.gameData JSON from fetched HTML in Worker
+- [ ] Implement Worker endpoint to proxy cubby API for user's found words
+- [ ] Add NYT-S cookie header forwarding in Worker proxy
+- [ ] Implement Worker endpoint to proxy user stats API
+- [ ] Create hint generation prompt template in Worker
+- [ ] Implement Anthropic API call for hint generation in Worker
+- [ ] Parse Anthropic response into CachedHints format
+- [ ] Implement KV cache check before generating hints
+- [ ] Implement KV cache write after generating hints
+- [ ] Set 30-day TTL on cached hints
+- [ ] Add CORS headers to all Worker responses
+- [ ] Handle Worker errors with appropriate status codes
+- [ ] Deploy Worker to Cloudflare
+- [ ] Add VITE_WORKER_URL to frontend .env
+- [ ] Create storage.ts with getNytToken helper
+- [ ] Create storage.ts with setNytToken helper
+- [ ] Create storage.ts with getAnthropicKey helper
+- [ ] Create storage.ts with setAnthropicKey helper
+- [ ] Create storage.ts with clearCredentials helper
+- [ ] Create api.ts with fetchPuzzle function
+- [ ] Create api.ts with fetchUserProgress function
+- [ ] Create api.ts with fetchHints function
+- [ ] Add error handling for API network failures
+- [ ] Add error handling for invalid/expired NYT token
+- [ ] Create utils.ts with calculatePoints function (word length → points)
+- [ ] Create utils.ts with calculateQueenBeeThreshold function
+- [ ] Create utils.ts with groupWordsByFirstLetter function
+- [ ] Create utils.ts with groupWordsByTwoLetterPrefix function
+- [ ] Create utils.ts with groupWordsByLength function
+- [ ] Create utils.ts with getRemainingWords function (answers - found)
+- [ ] Create usePuzzle hook to fetch puzzle data on mount
+- [ ] Add loading state to usePuzzle hook
+- [ ] Add error state to usePuzzle hook
+- [ ] Add date parameter support to usePuzzle hook
+- [ ] Create useUserProgress hook to fetch found words
+- [ ] Add loading state to useUserProgress hook
+- [ ] Add error state to useUserProgress hook
+- [ ] Add refetch function to useUserProgress hook
+- [ ] Create useHints hook to fetch hints for current puzzle
+- [ ] Add loading state to useHints hook
+- [ ] Add error state to useHints hook
+- [ ] Create Header component with app title
+- [ ] Add puzzle date display to Header
+- [ ] Add center letter display to Header
+- [ ] Add outer letters display to Header
+- [ ] Add "Play Spelling Bee" link to Header
+- [ ] Add "Visit Forum" link to Header
+- [ ] Style Header with hexagon letter display
+- [ ] Create ProgressBar component
+- [ ] Calculate current points from found words
+- [ ] Calculate total possible points from all answers
+- [ ] Display words found count
+- [ ] Display points earned
+- [ ] Display progress percentage
+- [ ] Show rank labels (Beginner, Good Start, Moving Up, etc.)
+- [ ] Highlight Queen Bee threshold
+- [ ] Create WordGrid component
+- [ ] Generate row headers (unique first letters from answers)
+- [ ] Generate column headers (unique word lengths from answers)
+- [ ] Calculate remaining word count per cell
+- [ ] Display count in each grid cell
+- [ ] Highlight cells with zero remaining (completed)
+- [ ] Add checkmarks for completed rows
+- [ ] Add checkmarks for completed columns
+- [ ] Style grid with borders and spacing
+- [ ] Create TwoLetterList component
+- [ ] Group remaining words by two-letter prefix
+- [ ] Display prefix with count (e.g., "AL: 3")
+- [ ] Sort prefixes alphabetically
+- [ ] Dim or hide prefixes with zero remaining
+- [ ] Style as compact inline list
+- [ ] Create HintsList component
+- [ ] Display hints grouped by two-letter prefix
+- [ ] Show hint text with word length in parentheses
+- [ ] Add collapsible sections per prefix
+- [ ] Filter out hints for words already found
+- [ ] Add "show all hints" toggle
+- [ ] Style hints with monospace font for lengths
+- [ ] Create SettingsModal component
+- [ ] Add NYT-S token input field
+- [ ] Add Anthropic API key input field
+- [ ] Add save button to persist credentials
+- [ ] Add clear button to remove credentials
+- [ ] Add link to instructions for finding NYT-S token
+- [ ] Add link to Anthropic API key page
+- [ ] Mask API key input with password field
+- [ ] Validate token format before saving
+- [ ] Show success/error feedback on save
+- [ ] Create DatePicker component (placeholder for future)
+- [ ] Create main App component layout
+- [ ] Add settings gear icon to open SettingsModal
+- [ ] Add refresh button to re-fetch user progress
+- [ ] Show loading spinner during data fetch
+- [ ] Show error message if credentials missing
+- [ ] Show error message if API calls fail
+- [ ] Arrange components in responsive layout
+- [ ] Add mobile-friendly responsive breakpoints
+- [ ] Test puzzle data fetching end-to-end
+- [ ] Test user progress fetching end-to-end
+- [ ] Test hint generation end-to-end
+- [ ] Test hint caching (second request should be cached)
+- [ ] Write Playwright test for initial load with valid credentials
+- [ ] Write Playwright test for settings modal flow
+- [ ] Write Playwright test for refresh button
+- [ ] Add PWA manifest icons
+- [ ] Configure service worker for offline puzzle caching
+- [ ] Deploy frontend to Vercel
+- [ ] Update spec.md with any API discoveries during implementation
 
 ---
 
 ### Done
+
