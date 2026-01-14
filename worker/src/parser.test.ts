@@ -139,4 +139,45 @@ describe("parseGameData", () => {
     expect(result).not.toBeNull()
     expect(result?.today.centerLetter).toBe("z")
   })
+
+  it("handles page with multiple script tags after gameData", () => {
+    // This tests that we correctly extract just the gameData JSON
+    // and don't accidentally include subsequent scripts
+    const html = `
+      <html>
+      <head>
+        <script>
+          window.gameData = {
+            "today": {
+              "displayWeekday": "Wednesday",
+              "displayDate": "January 14, 2026",
+              "printDate": "2026-01-14",
+              "centerLetter": "o",
+              "outerLetters": ["a", "b", "c", "e", "l", "p"],
+              "validLetters": ["o", "a", "b", "c", "e", "l", "p"],
+              "pangrams": ["placebo"],
+              "answers": ["placebo", "pole", "pool"],
+              "id": 20035
+            }
+          }
+        </script>
+        <script>
+          window.otherConfig = {
+            "applicationId": "some-id",
+            "clientToken": "some-token"
+          }
+        </script>
+        <script>
+          window.anotherConfig = { "key": "value" }
+        </script>
+      </head>
+      </html>
+    `
+
+    const result = parseGameData(html)
+
+    expect(result).not.toBeNull()
+    expect(result?.today.centerLetter).toBe("o")
+    expect(result?.today.answers).toEqual(["placebo", "pole", "pool"])
+  })
 })
