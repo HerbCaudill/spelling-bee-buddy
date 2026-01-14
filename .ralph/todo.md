@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Create TypeScript interfaces (GameData, CubbyResponse, UserStats, CachedHints, UserCredentials)
 - [ ] Set up Cloudflare Worker project with wrangler and KV namespace
 - [ ] Implement Worker endpoint to fetch and parse puzzle data from NYT page
 - [ ] Implement Worker endpoint to proxy user progress API with auth
@@ -27,3 +26,4 @@
 
 ### Done
 
+- [x] Create TypeScript interfaces (GameData, CubbyResponse, UserStats, CachedHints, UserCredentials)
