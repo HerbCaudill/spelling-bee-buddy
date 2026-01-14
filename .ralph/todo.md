@@ -2,7 +2,6 @@
 
 - [ ] Implement Worker hint generation with Anthropic API and KV caching
 - [ ] Add CORS headers and error handling to Worker, deploy to Cloudflare
-- [ ] Create useUserProgress hook
 - [ ] Create useHints hook
 - [ ] Create Header component with puzzle info and links
 - [ ] Create ProgressBar component with rank display
@@ -19,6 +18,7 @@
 
 ### Done
 
+- [x] Create useUserProgress hook
 - [x] Implement Worker endpoint to proxy user progress API with auth
 - [x] Create usePuzzle hook
 - [x] Create api.ts with functions to call Worker endpoints
