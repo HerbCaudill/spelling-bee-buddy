@@ -1,10 +1,12 @@
 ### To do
 
-- [ ] Deploy frontend to Vercel
+(All tasks complete!)
 
 ---
 
 ### Done
+
+- [x] Deploy frontend to Vercel
 
 - [x] Configure PWA for offline support
 - [x] Write Playwright tests for main flows
