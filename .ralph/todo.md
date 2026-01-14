@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Create TwoLetterList component
 - [ ] Create HintsList component with collapsible sections
 - [ ] Create SettingsModal component for credentials
 - [ ] Create App layout and integrate all components
@@ -12,6 +11,7 @@
 
 ### Done
 
+- [x] Create TwoLetterList component
 - [x] Create WordGrid component (letter × length grid)
 - [x] Create Header component with puzzle info and links
 - [x] Add CORS headers and error handling to Worker (with tests and deployment docs)
