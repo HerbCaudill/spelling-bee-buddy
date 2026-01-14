@@ -99,15 +99,15 @@ The page contains a `window.gameData` object (accessible via `window.__NEXT_DATA
 ```typescript
 interface GameData {
   today: {
-    displayWeekday: string       // "Wednesday"
-    displayDate: string          // "January 14, 2026"
-    printDate: string            // "2026-01-14"
-    centerLetter: string         // "o"
-    outerLetters: string[]       // ["a", "b", "c", "e", "l", "p"]
-    validLetters: string[]       // ["o", "a", "b", "c", "e", "l", "p"]
-    pangrams: string[]           // ["placebo"]
-    answers: string[]            // All valid words (56 in this example)
-    id: number                   // Puzzle ID (e.g., 20035)
+    displayWeekday: string // "Wednesday"
+    displayDate: string // "January 14, 2026"
+    printDate: string // "2026-01-14"
+    centerLetter: string // "o"
+    outerLetters: string[] // ["a", "b", "c", "e", "l", "p"]
+    validLetters: string[] // ["o", "a", "b", "c", "e", "l", "p"]
+    pangrams: string[] // ["placebo"]
+    answers: string[] // All valid words (56 in this example)
+    id: number // Puzzle ID (e.g., 20035)
   }
 }
 ```
@@ -121,13 +121,14 @@ interface GameData {
 **Headers**: `Cookie: NYT-S={token}`
 
 **Response**:
+
 ```typescript
 interface CubbyResponse {
   response_id: string
-  project_version: string      // Puzzle ID as string (e.g., "20035")
+  project_version: string // Puzzle ID as string (e.g., "20035")
   correct: null
   content: {
-    words: string[]            // Words the user has found
+    words: string[] // Words the user has found
   }
 }
 ```
@@ -141,6 +142,7 @@ This is how the official SBB page gets the user's progress for the current puzzl
 **Headers**: `Cookie: NYT-S={token}`
 
 **Response**:
+
 ```typescript
 interface UserStats {
   user_id: number
@@ -157,8 +159,8 @@ interface UserStats {
         }
         ranks: {
           "Queen Bee": number
-          "Genius": number
-          "Amazing": number
+          Genius: number
+          Amazing: number
           // etc.
         }
       }
@@ -282,11 +284,13 @@ src/
 ### Environment Variables
 
 **Frontend** (in `.env`):
+
 ```
 VITE_WORKER_URL=https://spelling-bee-buddy.{account}.workers.dev
 ```
 
 **Worker** (in Cloudflare):
+
 ```
 # Set via wrangler secret
 # None needed - API keys come from user
@@ -296,8 +300,8 @@ VITE_WORKER_URL=https://spelling-bee-buddy.{account}.workers.dev
 
 ```typescript
 interface UserCredentials {
-  nytToken: string      // NYT-S cookie value
-  anthropicKey: string  // Anthropic API key
+  nytToken: string // NYT-S cookie value
+  anthropicKey: string // Anthropic API key
 }
 ```
 
