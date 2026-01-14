@@ -1,12 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import {
-  fetchPuzzle,
-  fetchProgress,
-  fetchHints,
-  checkHealth,
-  getWorkerUrl,
-  ApiError,
-} from "./api"
+import { fetchPuzzle, fetchProgress, fetchHints, checkHealth, getWorkerUrl, ApiError } from "./api"
 import type { GameData, CubbyResponse, CachedHints } from "@/types"
 
 // Mock fetch globally
@@ -52,7 +45,7 @@ describe("api", () => {
           headers: expect.objectContaining({
             "Content-Type": "application/json",
           }),
-        })
+        }),
       )
     })
 
@@ -117,7 +110,7 @@ describe("api", () => {
           headers: expect.objectContaining({
             "X-NYT-Token": "my-nyt-token",
           }),
-        })
+        }),
       )
     })
 
@@ -131,7 +124,7 @@ describe("api", () => {
         }),
       })
 
-      const error = await fetchProgress("invalid-token").catch((e) => e)
+      const error = await fetchProgress("invalid-token").catch(e => e)
       expect(error).toBeInstanceOf(ApiError)
       expect(error.status).toBe(401)
     })
@@ -163,7 +156,7 @@ describe("api", () => {
           headers: expect.objectContaining({
             "X-Anthropic-Key": "my-anthropic-key",
           }),
-        })
+        }),
       )
     })
 
@@ -177,7 +170,7 @@ describe("api", () => {
         }),
       })
 
-      const error = await fetchHints("invalid-key").catch((e) => e)
+      const error = await fetchHints("invalid-key").catch(e => e)
       expect(error).toBeInstanceOf(ApiError)
       expect(error.status).toBe(401)
     })

@@ -10,7 +10,7 @@ vi.mock("@/lib/api", () => ({
   ApiError: class ApiError extends Error {
     constructor(
       message: string,
-      public status: number
+      public status: number,
     ) {
       super(message)
       this.name = "ApiError"
@@ -43,7 +43,7 @@ describe("usePuzzle", () => {
 
   it("should start in loading state", () => {
     vi.mocked(api.fetchPuzzle).mockImplementation(
-      () => new Promise(() => {}) // Never resolves
+      () => new Promise(() => {}), // Never resolves
     )
 
     const { result } = renderHook(() => usePuzzle())

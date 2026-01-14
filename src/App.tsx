@@ -14,7 +14,13 @@ import { Button } from "@/components/ui/button"
 export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
 
-  const { puzzle, isLoading: puzzleLoading, error: puzzleError, maxPoints, refetch: refetchPuzzle } = usePuzzle()
+  const {
+    puzzle,
+    isLoading: puzzleLoading,
+    error: puzzleError,
+    maxPoints,
+    refetch: refetchPuzzle,
+  } = usePuzzle()
 
   const {
     foundWords,
@@ -49,7 +55,7 @@ export function App() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="size-8 animate-spin text-muted-foreground" />
+          <Loader2 className="text-muted-foreground size-8 animate-spin" />
           <p className="text-muted-foreground">Loading puzzle...</p>
         </div>
       </div>
@@ -60,12 +66,12 @@ export function App() {
   if (criticalError) {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="flex flex-col items-center gap-4 text-center max-w-md">
-          <AlertCircle className="size-12 text-destructive" />
+        <div className="flex max-w-md flex-col items-center gap-4 text-center">
+          <AlertCircle className="text-destructive size-12" />
           <h1 className="text-xl font-semibold">Failed to Load Puzzle</h1>
           <p className="text-muted-foreground">{criticalError}</p>
           <Button onClick={refetchPuzzle} variant="outline">
-            <RefreshCw className="size-4 mr-2" />
+            <RefreshCw className="mr-2 size-4" />
             Try Again
           </Button>
         </div>
@@ -85,7 +91,7 @@ export function App() {
   const { today } = puzzle
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       {/* Header */}
       <Header
         displayWeekday={today.displayWeekday}
@@ -95,19 +101,20 @@ export function App() {
       />
 
       {/* Main content */}
-      <main className="container mx-auto px-4 py-6 space-y-8 max-w-4xl">
+      <main className="container mx-auto max-w-4xl space-y-8 px-4 py-6">
         {/* Progress section */}
         <section aria-label="Progress">
           {!hasCredentials && (
-            <div className="mb-4 rounded-lg border border-border bg-muted/50 p-4 text-sm">
+            <div className="border-border bg-muted/50 mb-4 rounded-lg border p-4 text-sm">
               <p className="text-muted-foreground">
-                <strong>Tip:</strong> Click the settings icon to add your NYT token and track your progress.
+                <strong>Tip:</strong> Click the settings icon to add your NYT token and track your
+                progress.
               </p>
             </div>
           )}
 
           {progressError && (
-            <div className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm">
+            <div className="border-destructive/50 bg-destructive/10 mb-4 rounded-lg border p-4 text-sm">
               <p className="text-destructive">{progressError}</p>
             </div>
           )}
@@ -121,59 +128,48 @@ export function App() {
 
         {/* Word Grid section */}
         <section aria-label="Word grid">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+          <h2 className="text-muted-foreground mb-3 text-sm font-semibold tracking-wide uppercase">
             Word Grid
           </h2>
-          <WordGrid
-            allWords={today.answers}
-            foundWords={foundWords}
-          />
+          <WordGrid allWords={today.answers} foundWords={foundWords} />
         </section>
 
         {/* Two-Letter List section */}
         <section aria-label="Two-letter list">
-          <TwoLetterList
-            allWords={today.answers}
-            foundWords={foundWords}
-          />
+          <TwoLetterList allWords={today.answers} foundWords={foundWords} />
         </section>
 
         {/* Hints section */}
         <section aria-label="Hints">
           {!hasApiKey && (
-            <div className="mb-4 rounded-lg border border-border bg-muted/50 p-4 text-sm">
+            <div className="border-border bg-muted/50 mb-4 rounded-lg border p-4 text-sm">
               <p className="text-muted-foreground">
-                <strong>Tip:</strong> Add your Anthropic API key in settings to see AI-generated hints.
+                <strong>Tip:</strong> Add your Anthropic API key in settings to see AI-generated
+                hints.
               </p>
             </div>
           )}
 
           {hintsError && (
-            <div className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm">
+            <div className="border-destructive/50 bg-destructive/10 mb-4 rounded-lg border p-4 text-sm">
               <p className="text-destructive">{hintsError}</p>
             </div>
           )}
 
           {hintsLoading && (
-            <div className="flex items-center gap-2 py-8 justify-center text-muted-foreground">
+            <div className="text-muted-foreground flex items-center justify-center gap-2 py-8">
               <Loader2 className="size-4 animate-spin" />
               <span>Generating hints...</span>
             </div>
           )}
 
-          {hints && !hintsLoading && (
-            <HintsList hints={hints} foundWords={foundWords} />
-          )}
+          {hints && !hintsLoading && <HintsList hints={hints} foundWords={foundWords} />}
         </section>
 
         {/* Refresh button */}
         <div className="flex justify-center pt-4">
-          <Button
-            variant="outline"
-            onClick={handleRefresh}
-            disabled={isLoading || progressLoading}
-          >
-            <RefreshCw className={`size-4 mr-2 ${progressLoading ? "animate-spin" : ""}`} />
+          <Button variant="outline" onClick={handleRefresh} disabled={isLoading || progressLoading}>
+            <RefreshCw className={`mr-2 size-4 ${progressLoading ? "animate-spin" : ""}`} />
             Refresh Progress
           </Button>
         </div>

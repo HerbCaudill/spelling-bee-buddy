@@ -14,10 +14,7 @@ export function getCredentials(): UserCredentials | null {
     const parsed = JSON.parse(stored) as UserCredentials
 
     // Validate that both fields exist
-    if (
-      typeof parsed.nytToken === "string" &&
-      typeof parsed.anthropicKey === "string"
-    ) {
+    if (typeof parsed.nytToken === "string" && typeof parsed.anthropicKey === "string") {
       return parsed
     }
 
@@ -51,10 +48,7 @@ export function hasCredentials(): boolean {
 /**
  * Update a single credential field
  */
-export function updateCredential(
-  key: keyof UserCredentials,
-  value: string
-): void {
+export function updateCredential(key: keyof UserCredentials, value: string): void {
   const existing = getCredentials()
   const updated: UserCredentials = {
     nytToken: existing?.nytToken ?? "",

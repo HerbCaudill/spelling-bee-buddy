@@ -20,24 +20,18 @@ export interface HintsListProps {
  * - Hints with word length indicator
  * - Found/total count for each prefix
  */
-export function HintsList({
-  hints,
-  foundWords = [],
-  className,
-}: HintsListProps) {
-  const [expandedPrefixes, setExpandedPrefixes] = useState<Set<string>>(
-    new Set()
-  )
+export function HintsList({ hints, foundWords = [], className }: HintsListProps) {
+  const [expandedPrefixes, setExpandedPrefixes] = useState<Set<string>>(new Set())
 
   // Normalize found words for comparison
-  const foundSet = new Set(foundWords.map((w) => w.toLowerCase()))
+  const foundSet = new Set(foundWords.map(w => w.toLowerCase()))
 
   // Sort prefixes alphabetically
   const sortedPrefixes = Object.keys(hints).sort()
 
   // Toggle a prefix's expanded state
   const togglePrefix = (prefix: string) => {
-    setExpandedPrefixes((prev) => {
+    setExpandedPrefixes(prev => {
       const next = new Set(prev)
       if (next.has(prefix)) {
         next.delete(prefix)
@@ -61,7 +55,7 @@ export function HintsList({
   // Empty state
   if (sortedPrefixes.length === 0) {
     return (
-      <div className={cn("text-center text-muted-foreground py-8", className)}>
+      <div className={cn("text-muted-foreground py-8 text-center", className)}>
         No hints available
       </div>
     )
@@ -82,13 +76,13 @@ export function HintsList({
   return (
     <div className={cn("space-y-3", className)}>
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+        <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
           Hints
         </h2>
         <div className="flex gap-2">
           <button
             onClick={expandAll}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
             aria-label="Expand all sections"
           >
             Expand all
@@ -96,7 +90,7 @@ export function HintsList({
           <span className="text-muted-foreground">|</span>
           <button
             onClick={collapseAll}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
             aria-label="Collapse all sections"
           >
             Collapse all
@@ -105,7 +99,7 @@ export function HintsList({
       </div>
 
       <div className="space-y-1" role="list" aria-label="Hints by prefix">
-        {sortedPrefixes.map((prefix) => {
+        {sortedPrefixes.map(prefix => {
           const isExpanded = expandedPrefixes.has(prefix)
           const prefixHints = hints[prefix] || []
           const foundCount = getPrefixFoundCount(prefix)
@@ -113,43 +107,35 @@ export function HintsList({
           const isComplete = foundCount >= totalHints && totalHints > 0
 
           return (
-            <div key={prefix} className="border rounded-md overflow-hidden">
+            <div key={prefix} className="overflow-hidden rounded-md border">
               {/* Prefix header - clickable to toggle */}
               <button
                 onClick={() => togglePrefix(prefix)}
                 className={cn(
-                  "w-full flex items-center justify-between px-3 py-2 text-left transition-colors",
+                  "flex w-full items-center justify-between px-3 py-2 text-left transition-colors",
                   "hover:bg-muted/50",
-                  isComplete
-                    ? "bg-primary/10 text-primary"
-                    : "bg-background text-foreground"
+                  isComplete ? "bg-primary/10 text-primary" : "bg-background text-foreground",
                 )}
                 aria-expanded={isExpanded}
                 aria-controls={`hints-${prefix}`}
               >
                 <div className="flex items-center gap-2">
-                  {isExpanded ? (
+                  {isExpanded ?
                     <ChevronDown className="size-4" aria-hidden="true" />
-                  ) : (
-                    <ChevronRight className="size-4" aria-hidden="true" />
-                  )}
+                  : <ChevronRight className="size-4" aria-hidden="true" />}
                   <span className="font-medium">{prefix}</span>
                 </div>
                 <span
-                  className={cn(
-                    "text-xs",
-                    isComplete ? "text-primary" : "text-muted-foreground"
-                  )}
+                  className={cn("text-xs", isComplete ? "text-primary" : "text-muted-foreground")}
                 >
-                  {isComplete ? (
+                  {isComplete ?
                     <span aria-label={`${foundCount} of ${totalHints}, complete`}>
                       ✓ {totalHints}
                     </span>
-                  ) : (
-                    <span aria-label={`${foundCount} of ${totalHints} found`}>
+                  : <span aria-label={`${foundCount} of ${totalHints} found`}>
                       {foundCount}/{totalHints}
                     </span>
-                  )}
+                  }
                 </span>
               </button>
 
@@ -157,7 +143,7 @@ export function HintsList({
               {isExpanded && (
                 <ul
                   id={`hints-${prefix}`}
-                  className="border-t bg-muted/30 divide-y divide-border"
+                  className="bg-muted/30 divide-border divide-y border-t"
                   role="list"
                 >
                   {prefixHints.map((hint, index) => (
@@ -166,7 +152,7 @@ export function HintsList({
                       className="flex items-center justify-between px-3 py-2 text-sm"
                     >
                       <span className="text-foreground">{hint.hint}</span>
-                      <span className="text-xs text-muted-foreground font-mono">
+                      <span className="text-muted-foreground font-mono text-xs">
                         {hint.length} letters
                       </span>
                     </li>

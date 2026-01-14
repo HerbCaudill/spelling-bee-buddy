@@ -56,39 +56,31 @@ describe("ProgressBar", () => {
   describe("Queen Bee celebration", () => {
     it("shows celebration message at Queen Bee rank", () => {
       render(<ProgressBar currentPoints={100} maxPoints={100} />)
-      expect(
-        screen.getByText("🐝 Congratulations! You found all the words!")
-      ).toBeInTheDocument()
+      expect(screen.getByText("🐝 Congratulations! You found all the words!")).toBeInTheDocument()
     })
 
     it("does not show celebration message below Queen Bee", () => {
       render(<ProgressBar currentPoints={99} maxPoints={100} />)
-      expect(
-        screen.queryByText(/Congratulations/)
-      ).not.toBeInTheDocument()
+      expect(screen.queryByText(/Congratulations/)).not.toBeInTheDocument()
     })
   })
 
   describe("progress bar styling", () => {
     it("applies custom className to container", () => {
       const { container } = render(
-        <ProgressBar currentPoints={50} maxPoints={100} className="custom-class" />
+        <ProgressBar currentPoints={50} maxPoints={100} className="custom-class" />,
       )
       expect(container.firstChild).toHaveClass("custom-class")
     })
 
     it("renders progress bar fill with correct width", () => {
-      const { container } = render(
-        <ProgressBar currentPoints={50} maxPoints={100} />
-      )
+      const { container } = render(<ProgressBar currentPoints={50} maxPoints={100} />)
       const fillElement = container.querySelector('[style*="width"]')
       expect(fillElement).toHaveStyle({ width: "50%" })
     })
 
     it("caps progress bar at 100%", () => {
-      const { container } = render(
-        <ProgressBar currentPoints={150} maxPoints={100} />
-      )
+      const { container } = render(<ProgressBar currentPoints={150} maxPoints={100} />)
       const fillElement = container.querySelector('[style*="width"]')
       expect(fillElement).toHaveStyle({ width: "100%" })
     })
@@ -96,9 +88,7 @@ describe("ProgressBar", () => {
 
   describe("rank markers", () => {
     it("renders rank markers on the progress bar", () => {
-      const { container } = render(
-        <ProgressBar currentPoints={50} maxPoints={100} />
-      )
+      const { container } = render(<ProgressBar currentPoints={50} maxPoints={100} />)
       // Should have markers for intermediate ranks (not 0% and 100%)
       // Ranks: Getting Warm (2%), Moving Up (5%), Good (8%), Solid (15%),
       // Nice (25%), Great (40%), Amazing (50%), Genius (70%)

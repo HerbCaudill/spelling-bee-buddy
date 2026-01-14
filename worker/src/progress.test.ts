@@ -53,7 +53,7 @@ describe("handleProgress", () => {
       new Response(JSON.stringify(mockCubbyResponse), {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      })
+      }),
     )
 
     const request = new Request("http://localhost/progress", {
@@ -79,7 +79,7 @@ describe("handleProgress", () => {
         headers: expect.objectContaining({
           Cookie: "NYT-S=valid-token",
         }),
-      })
+      }),
     )
   })
 
@@ -88,7 +88,7 @@ describe("handleProgress", () => {
       new Response(JSON.stringify([]), {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      })
+      }),
     )
 
     const request = new Request("http://localhost/progress", {
@@ -113,7 +113,7 @@ describe("handleProgress", () => {
       new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { "Content-Type": "application/json" },
-      })
+      }),
     )
 
     const request = new Request("http://localhost/progress", {
@@ -136,7 +136,7 @@ describe("handleProgress", () => {
       new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
         headers: { "Content-Type": "application/json" },
-      })
+      }),
     )
 
     const request = new Request("http://localhost/progress", {
@@ -159,7 +159,7 @@ describe("handleProgress", () => {
       new Response("Internal Server Error", {
         status: 500,
         statusText: "Internal Server Error",
-      })
+      }),
     )
 
     const request = new Request("http://localhost/progress", {

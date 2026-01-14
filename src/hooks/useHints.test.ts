@@ -11,7 +11,7 @@ vi.mock("@/lib/api", () => ({
   ApiError: class ApiError extends Error {
     constructor(
       message: string,
-      public status: number
+      public status: number,
     ) {
       super(message)
       this.name = "ApiError"
@@ -98,7 +98,7 @@ describe("useHints", () => {
 
     it("should start in loading state", () => {
       vi.mocked(api.fetchHints).mockImplementation(
-        () => new Promise(() => {}) // Never resolves
+        () => new Promise(() => {}), // Never resolves
       )
 
       const { result } = renderHook(() => useHints())
@@ -140,7 +140,7 @@ describe("useHints", () => {
       expect(result.current.hints).toBeNull()
       expect(result.current.generatedAt).toBeNull()
       expect(result.current.error).toBe(
-        "Invalid Anthropic API key. Please update your credentials."
+        "Invalid Anthropic API key. Please update your credentials.",
       )
     })
 
@@ -266,7 +266,7 @@ describe("useHints", () => {
       const { result } = renderHook(() => useHints(false))
 
       // Give it time to potentially fetch
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await new Promise(resolve => setTimeout(resolve, 50))
 
       expect(result.current.isLoading).toBe(false)
       expect(result.current.hints).toBeNull()
@@ -276,13 +276,12 @@ describe("useHints", () => {
     it("should fetch when enabled changes from false to true", async () => {
       vi.mocked(api.fetchHints).mockResolvedValue(mockCachedHints)
 
-      const { result, rerender } = renderHook(
-        ({ enabled }) => useHints(enabled),
-        { initialProps: { enabled: false } }
-      )
+      const { result, rerender } = renderHook(({ enabled }) => useHints(enabled), {
+        initialProps: { enabled: false },
+      })
 
       // Initially not fetching
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await new Promise(resolve => setTimeout(resolve, 50))
       expect(api.fetchHints).not.toHaveBeenCalled()
 
       // Enable fetching

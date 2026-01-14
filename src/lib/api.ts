@@ -4,8 +4,9 @@ import type { GameData, CubbyResponse, CachedHints } from "@/types"
  * Worker API base URL
  * Uses localhost in development, production URL otherwise
  */
-const WORKER_URL = import.meta.env.DEV
-  ? "http://localhost:8787"
+const WORKER_URL =
+  import.meta.env.DEV ?
+    "http://localhost:8787"
   : import.meta.env.VITE_WORKER_URL || "https://spelling-bee-buddy.herbcaudill.workers.dev"
 
 /**
@@ -33,10 +34,7 @@ export class ApiError extends Error {
 /**
  * Make a request to the Worker API
  */
-async function fetchApi<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
+async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${WORKER_URL}${endpoint}`
 
   const response = await fetch(url, {
@@ -52,7 +50,7 @@ async function fetchApi<T>(
   if (!response.ok || !data.success) {
     throw new ApiError(
       data.error || `Request failed with status ${response.status}`,
-      response.status
+      response.status,
     )
   }
 

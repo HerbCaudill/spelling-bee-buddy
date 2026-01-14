@@ -33,15 +33,7 @@ describe("parseGameData", () => {
     expect(result?.today.printDate).toBe("2026-01-15")
     expect(result?.today.centerLetter).toBe("o")
     expect(result?.today.outerLetters).toEqual(["a", "b", "c", "e", "l", "p"])
-    expect(result?.today.validLetters).toEqual([
-      "o",
-      "a",
-      "b",
-      "c",
-      "e",
-      "l",
-      "p",
-    ])
+    expect(result?.today.validLetters).toEqual(["o", "a", "b", "c", "e", "l", "p"])
     expect(result?.today.pangrams).toEqual(["placebo"])
     expect(result?.today.answers).toEqual(["able", "bale", "ball", "placebo"])
     expect(result?.today.id).toBe(20035)

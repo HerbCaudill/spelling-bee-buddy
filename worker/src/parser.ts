@@ -10,9 +10,7 @@ import type { GameData } from "./types"
 export function parseGameData(html: string): GameData | null {
   // The game data is embedded in a script tag as: window.gameData = {...}
   // We use a greedy match for the JSON object because it contains nested braces
-  const gameDataMatch = html.match(
-    /window\.gameData\s*=\s*(\{[\s\S]*\})\s*;?\s*<\/script>/i
-  )
+  const gameDataMatch = html.match(/window\.gameData\s*=\s*(\{[\s\S]*\})\s*;?\s*<\/script>/i)
 
   if (!gameDataMatch) {
     return null

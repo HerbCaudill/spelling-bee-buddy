@@ -28,7 +28,7 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   const gridCells = buildWordGrid(allWords, foundWords)
 
   // Create a lookup map for quick access
-  const cellMap = new Map(gridCells.map((cell) => [`${cell.letter}-${cell.length}`, cell]))
+  const cellMap = new Map(gridCells.map(cell => [`${cell.letter}-${cell.length}`, cell]))
 
   // Calculate totals by letter (for row totals)
   const letterTotals = new Map<string, { found: number; total: number }>()
@@ -69,7 +69,7 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   // Empty state
   if (allWords.length === 0) {
     return (
-      <div className={cn("text-center text-muted-foreground py-8", className)}>
+      <div className={cn("text-muted-foreground py-8 text-center", className)}>
         No puzzle data available
       </div>
     )
@@ -81,36 +81,34 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
         <thead>
           <tr>
             {/* Empty corner cell */}
-            <th className="p-2 text-left font-medium text-muted-foreground" />
+            <th className="text-muted-foreground p-2 text-left font-medium" />
             {/* Length headers */}
-            {lengths.map((length) => (
+            {lengths.map(length => (
               <th
                 key={length}
-                className="p-2 text-center font-medium text-muted-foreground min-w-[3rem]"
+                className="text-muted-foreground min-w-[3rem] p-2 text-center font-medium"
               >
                 {length}
               </th>
             ))}
             {/* Total column header */}
-            <th className="p-2 text-center font-semibold min-w-[3rem]">Σ</th>
+            <th className="min-w-[3rem] p-2 text-center font-semibold">Σ</th>
           </tr>
         </thead>
         <tbody>
           {/* Data rows */}
-          {letters.map((letter) => (
-            <tr key={letter} className="border-t border-border">
+          {letters.map(letter => (
+            <tr key={letter} className="border-border border-t">
               {/* Letter header */}
-              <td className="p-2 font-medium text-muted-foreground">{letter}</td>
+              <td className="text-muted-foreground p-2 font-medium">{letter}</td>
               {/* Data cells */}
-              {lengths.map((length) => {
+              {lengths.map(length => {
                 const cell = cellMap.get(`${letter}-${length}`)
                 return (
                   <td key={length} className="p-2 text-center">
-                    {cell ? (
+                    {cell ?
                       <CellContent found={cell.found} total={cell.total} />
-                    ) : (
-                      <span className="text-muted-foreground/40">-</span>
-                    )}
+                    : <span className="text-muted-foreground/40">-</span>}
                   </td>
                 )
               })}
@@ -125,9 +123,9 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
             </tr>
           ))}
           {/* Totals row */}
-          <tr className="border-t-2 border-border">
+          <tr className="border-border border-t-2">
             <td className="p-2 font-semibold">Σ</td>
-            {lengths.map((length) => (
+            {lengths.map(length => (
               <td key={length} className="p-2 text-center font-medium">
                 <CellContent
                   found={lengthTotals.get(length)?.found ?? 0}
@@ -162,10 +160,7 @@ function CellContent({ found, total, isTotal = false }: CellContentProps) {
   if (isComplete) {
     return (
       <span
-        className={cn(
-          "text-primary",
-          isTotal ? "font-semibold" : ""
-        )}
+        className={cn("text-primary", isTotal ? "font-semibold" : "")}
         aria-label={`${found} of ${total} found, complete`}
       >
         ✓
@@ -177,7 +172,7 @@ function CellContent({ found, total, isTotal = false }: CellContentProps) {
     <span
       className={cn(
         found > 0 ? "text-foreground" : "text-muted-foreground",
-        isTotal ? "font-semibold" : ""
+        isTotal ? "font-semibold" : "",
       )}
       aria-label={`${found} of ${total} found`}
     >

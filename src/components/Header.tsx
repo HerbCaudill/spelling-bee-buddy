@@ -35,17 +35,14 @@ export function Header({
   return (
     <header
       className={cn(
-        "flex items-center justify-between border-b border-border px-4 py-3",
-        className
+        "border-border flex items-center justify-between border-b px-4 py-3",
+        className,
       )}
     >
       {/* Puzzle date */}
       <div className="flex flex-col">
-        <h1 className="text-lg font-semibold leading-tight">{displayWeekday}</h1>
-        <time
-          dateTime={printDate}
-          className="text-sm text-muted-foreground"
-        >
+        <h1 className="text-lg leading-tight font-semibold">{displayWeekday}</h1>
+        <time dateTime={printDate} className="text-muted-foreground text-sm">
           {displayDate}
         </time>
       </div>
@@ -66,12 +63,7 @@ export function Header({
         </Button>
 
         {/* Settings button */}
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onClick={onSettingsClick}
-          aria-label="Open settings"
-        >
+        <Button variant="ghost" size="icon-sm" onClick={onSettingsClick} aria-label="Open settings">
           <Settings className="size-4" />
         </Button>
       </div>

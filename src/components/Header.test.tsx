@@ -28,13 +28,7 @@ describe("Header", () => {
     })
 
     it("displays different dates correctly", () => {
-      render(
-        <Header
-          displayWeekday="Friday"
-          displayDate="March 20, 2026"
-          printDate="2026-03-20"
-        />
-      )
+      render(<Header displayWeekday="Friday" displayDate="March 20, 2026" printDate="2026-03-20" />)
       expect(screen.getByText("Friday")).toBeInTheDocument()
       expect(screen.getByText("March 20, 2026")).toBeInTheDocument()
     })
@@ -46,10 +40,7 @@ describe("Header", () => {
       const link = screen.getByRole("link", {
         name: /open nyt spelling bee puzzle/i,
       })
-      expect(link).toHaveAttribute(
-        "href",
-        "https://www.nytimes.com/puzzles/spelling-bee"
-      )
+      expect(link).toHaveAttribute("href", "https://www.nytimes.com/puzzles/spelling-bee")
     })
 
     it("opens link in new tab", () => {
@@ -89,9 +80,7 @@ describe("Header", () => {
 
   describe("styling", () => {
     it("applies custom className to container", () => {
-      const { container } = render(
-        <Header {...defaultProps} className="custom-class" />
-      )
+      const { container } = render(<Header {...defaultProps} className="custom-class" />)
       expect(container.firstChild).toHaveClass("custom-class")
     })
 

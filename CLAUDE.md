@@ -26,8 +26,9 @@ Frontend (React/Vite)  →  Cloudflare Worker  →  NYT APIs + Anthropic API
 
 ```bash
 # Development
-pnpm dev              # Start Vite dev server (localhost:5173)
-pnpm worker:dev       # Start Worker dev server (localhost:8787)
+pnpm dev:all          # Start both frontend and worker dev servers
+pnpm dev              # Start Vite dev server only (localhost:5173)
+pnpm worker:dev       # Start Worker dev server only (localhost:8787)
 
 # Testing
 pnpm test             # Run Vitest unit tests in watch mode
@@ -55,6 +56,7 @@ pnpm format           # Format with Prettier
 - E2E tests use route interception to mock API responses
 
 Run a single test file:
+
 ```bash
 pnpm test src/lib/utils.test.ts
 pnpm test:pw e2e/app.spec.ts

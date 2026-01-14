@@ -12,7 +12,18 @@ const mockPuzzle = {
       outerLetters: ["a", "b", "c", "e", "l", "p"],
       validLetters: ["o", "a", "b", "c", "e", "l", "p"],
       pangrams: ["peaceable"],
-      answers: ["cope", "coal", "boat", "peaceable", "able", "bale", "pale", "lope", "pole", "opal"],
+      answers: [
+        "cope",
+        "coal",
+        "boat",
+        "peaceable",
+        "able",
+        "bale",
+        "pale",
+        "lope",
+        "pole",
+        "opal",
+      ],
       id: 20035,
     },
   },
@@ -63,7 +74,7 @@ async function setupMocks(
     puzzleDelay?: number
     progressDelay?: number
     hintsDelay?: number
-  } = {}
+  } = {},
 ) {
   const {
     puzzleResponse = mockPuzzle,
@@ -75,8 +86,8 @@ async function setupMocks(
   } = options
 
   // Mock puzzle endpoint
-  await page.route("**/puzzle", async (route) => {
-    if (puzzleDelay) await new Promise((r) => setTimeout(r, puzzleDelay))
+  await page.route("**/puzzle", async route => {
+    if (puzzleDelay) await new Promise(r => setTimeout(r, puzzleDelay))
     if (typeof puzzleResponse === "function") {
       puzzleResponse(route)
     } else {
@@ -89,8 +100,8 @@ async function setupMocks(
   })
 
   // Mock progress endpoint
-  await page.route("**/progress", async (route) => {
-    if (progressDelay) await new Promise((r) => setTimeout(r, progressDelay))
+  await page.route("**/progress", async route => {
+    if (progressDelay) await new Promise(r => setTimeout(r, progressDelay))
     if (typeof progressResponse === "function") {
       progressResponse(route)
     } else {
@@ -103,8 +114,8 @@ async function setupMocks(
   })
 
   // Mock hints endpoint
-  await page.route("**/hints", async (route) => {
-    if (hintsDelay) await new Promise((r) => setTimeout(r, hintsDelay))
+  await page.route("**/hints", async route => {
+    if (hintsDelay) await new Promise(r => setTimeout(r, hintsDelay))
     if (typeof hintsResponse === "function") {
       hintsResponse(route)
     } else {
@@ -137,7 +148,7 @@ test.describe("Loading state", () => {
 test.describe("Error state", () => {
   test("shows error message when puzzle fails to load", async ({ page }) => {
     await setupMocks(page, {
-      puzzleResponse: (route) =>
+      puzzleResponse: route =>
         route.fulfill({
           status: 500,
           contentType: "application/json",
@@ -153,7 +164,7 @@ test.describe("Error state", () => {
 
   test("shows Try Again button on error", async ({ page }) => {
     await setupMocks(page, {
-      puzzleResponse: (route) =>
+      puzzleResponse: route =>
         route.fulfill({
           status: 500,
           contentType: "application/json",
@@ -169,7 +180,7 @@ test.describe("Error state", () => {
   test("retries loading when Try Again is clicked", async ({ page }) => {
     let callCount = 0
     await setupMocks(page, {
-      puzzleResponse: (route) => {
+      puzzleResponse: route => {
         callCount++
         if (callCount === 1) {
           route.fulfill({
@@ -214,7 +225,7 @@ test.describe("Main app render", () => {
     await expect(page.getByRole("link", { name: /Open NYT Spelling Bee puzzle/ })).toBeVisible()
     await expect(page.getByRole("link", { name: /Open NYT Spelling Bee puzzle/ })).toHaveAttribute(
       "href",
-      "https://www.nytimes.com/puzzles/spelling-bee"
+      "https://www.nytimes.com/puzzles/spelling-bee",
     )
   })
 
@@ -268,7 +279,7 @@ test.describe("Progress tracking", () => {
         JSON.stringify({
           nytToken: "test-token",
           anthropicKey: "test-key",
-        })
+        }),
       )
     })
 
@@ -288,7 +299,7 @@ test.describe("Progress tracking", () => {
         JSON.stringify({
           nytToken: "test-token",
           anthropicKey: "test-key",
-        })
+        }),
       )
     })
 
@@ -302,7 +313,7 @@ test.describe("Progress tracking", () => {
 
   test("shows progress error without breaking the app", async ({ page }) => {
     await setupMocks(page, {
-      progressResponse: (route) =>
+      progressResponse: route =>
         route.fulfill({
           status: 401,
           contentType: "application/json",
@@ -316,7 +327,7 @@ test.describe("Progress tracking", () => {
         JSON.stringify({
           nytToken: "invalid-token",
           anthropicKey: "test-key",
-        })
+        }),
       )
     })
 
@@ -423,7 +434,7 @@ test.describe("Settings modal", () => {
         JSON.stringify({
           nytToken: "existing-token",
           anthropicKey: "existing-key",
-        })
+        }),
       )
     })
 
@@ -434,7 +445,9 @@ test.describe("Settings modal", () => {
 
     // Verify existing credentials are loaded
     await expect(page.getByRole("textbox", { name: "NYT Token" })).toHaveValue("existing-token")
-    await expect(page.getByRole("textbox", { name: "Anthropic API Key" })).toHaveValue("existing-key")
+    await expect(page.getByRole("textbox", { name: "Anthropic API Key" })).toHaveValue(
+      "existing-key",
+    )
 
     await page.getByRole("button", { name: /Clear All/ }).click()
 
@@ -486,7 +499,7 @@ test.describe("Hints section", () => {
         JSON.stringify({
           nytToken: "",
           anthropicKey: "test-api-key",
-        })
+        }),
       )
     })
 
@@ -514,7 +527,7 @@ test.describe("Hints section", () => {
         JSON.stringify({
           nytToken: "",
           anthropicKey: "test-api-key",
-        })
+        }),
       )
     })
 
@@ -540,7 +553,7 @@ test.describe("Hints section", () => {
         JSON.stringify({
           nytToken: "",
           anthropicKey: "test-api-key",
-        })
+        }),
       )
     })
 
@@ -555,7 +568,7 @@ test.describe("Hints section", () => {
 
   test("shows error when hints fetch fails", async ({ page }) => {
     await setupMocks(page, {
-      hintsResponse: (route) =>
+      hintsResponse: route =>
         route.fulfill({
           status: 500,
           contentType: "application/json",
@@ -569,7 +582,7 @@ test.describe("Hints section", () => {
         JSON.stringify({
           nytToken: "",
           anthropicKey: "test-api-key",
-        })
+        }),
       )
     })
 
@@ -588,7 +601,7 @@ test.describe("Refresh functionality", () => {
     let progressCallCount = 0
 
     await setupMocks(page, {
-      progressResponse: (route) => {
+      progressResponse: route => {
         progressCallCount++
         route.fulfill({
           status: 200,
@@ -604,7 +617,7 @@ test.describe("Refresh functionality", () => {
         JSON.stringify({
           nytToken: "test-token",
           anthropicKey: "test-key",
-        })
+        }),
       )
     })
 

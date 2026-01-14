@@ -187,7 +187,7 @@ describe("buildWordGrid", () => {
 
   it("sorts by letter then length", () => {
     const grid = buildWordGrid(allWords, foundWords)
-    const keys = grid.map((c) => `${c.letter}-${c.length}`)
+    const keys = grid.map(c => `${c.letter}-${c.length}`)
     expect(keys).toEqual(["A-4", "A-5", "B-4", "B-7", "C-4"])
   })
 
@@ -263,7 +263,7 @@ describe("buildTwoLetterGroups", () => {
 
   it("sorts alphabetically by prefix", () => {
     const groups = buildTwoLetterGroups(allWords, foundWords)
-    const prefixes = groups.map((g) => g.prefix)
+    const prefixes = groups.map(g => g.prefix)
     expect(prefixes).toEqual(["AB", "AP", "BA", "CA"])
   })
 

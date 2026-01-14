@@ -37,14 +37,8 @@ export function calculateWordPoints(word: string, pangrams: string[]): number {
 /**
  * Calculate total points for a list of words
  */
-export function calculateTotalPoints(
-  words: string[],
-  pangrams: string[]
-): number {
-  return words.reduce(
-    (total, word) => total + calculateWordPoints(word, pangrams),
-    0
-  )
+export function calculateTotalPoints(words: string[], pangrams: string[]): number {
+  return words.reduce((total, word) => total + calculateWordPoints(word, pangrams), 0)
 }
 
 /**
@@ -73,7 +67,7 @@ export function getRank(currentPoints: number, maxPoints: number): Rank {
  */
 export function getPointsToNextRank(
   currentPoints: number,
-  maxPoints: number
+  maxPoints: number,
 ): { nextRank: Rank; pointsNeeded: number } | null {
   if (maxPoints === 0) return null
 
@@ -101,11 +95,8 @@ export function getTwoLetterPrefix(word: string): string {
 /**
  * Group words by their starting letter and length for the word grid
  */
-export function buildWordGrid(
-  allWords: string[],
-  foundWords: string[]
-): WordGridCell[] {
-  const foundSet = new Set(foundWords.map((w) => w.toLowerCase()))
+export function buildWordGrid(allWords: string[], foundWords: string[]): WordGridCell[] {
+  const foundSet = new Set(foundWords.map(w => w.toLowerCase()))
   const grid: Map<string, WordGridCell> = new Map()
 
   for (const word of allWords) {
@@ -140,7 +131,7 @@ export function buildWordGrid(
  * Get unique word lengths from the puzzle (for grid column headers)
  */
 export function getWordLengths(words: string[]): number[] {
-  const lengths = new Set(words.map((w) => w.length))
+  const lengths = new Set(words.map(w => w.length))
   return Array.from(lengths).sort((a, b) => a - b)
 }
 
@@ -148,18 +139,15 @@ export function getWordLengths(words: string[]): number[] {
  * Get unique starting letters from the puzzle (for grid row headers)
  */
 export function getStartingLetters(words: string[]): string[] {
-  const letters = new Set(words.map((w) => w[0].toUpperCase()))
+  const letters = new Set(words.map(w => w[0].toUpperCase()))
   return Array.from(letters).sort()
 }
 
 /**
  * Group words by their two-letter prefix
  */
-export function buildTwoLetterGroups(
-  allWords: string[],
-  foundWords: string[]
-): TwoLetterGroup[] {
-  const foundSet = new Set(foundWords.map((w) => w.toLowerCase()))
+export function buildTwoLetterGroups(allWords: string[], foundWords: string[]): TwoLetterGroup[] {
+  const foundSet = new Set(foundWords.map(w => w.toLowerCase()))
   const groups: Map<string, TwoLetterGroup> = new Map()
 
   for (const word of allWords) {
@@ -180,7 +168,5 @@ export function buildTwoLetterGroups(
   }
 
   // Sort alphabetically by prefix
-  return Array.from(groups.values()).sort((a, b) =>
-    a.prefix.localeCompare(b.prefix)
-  )
+  return Array.from(groups.values()).sort((a, b) => a.prefix.localeCompare(b.prefix))
 }

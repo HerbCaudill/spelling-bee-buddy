@@ -14,9 +14,7 @@ describe("HintsList", () => {
       { hint: "A spherical object used in games", length: 4 },
       { hint: "A large inflatable decoration", length: 7 },
     ],
-    CA: [
-      { hint: "A cloak or covering", length: 4 },
-    ],
+    CA: [{ hint: "A cloak or covering", length: 4 }],
   }
 
   describe("basic rendering", () => {
@@ -39,12 +37,10 @@ describe("HintsList", () => {
 
       const buttons = screen.getAllByRole("button", { expanded: false })
       // Filter to only prefix buttons (not expand/collapse all)
-      const prefixButtons = buttons.filter((btn) =>
-        ["AB", "BA", "CA"].some((p) => btn.textContent?.includes(p))
+      const prefixButtons = buttons.filter(btn =>
+        ["AB", "BA", "CA"].some(p => btn.textContent?.includes(p)),
       )
-      const prefixTexts = prefixButtons.map((btn) =>
-        btn.textContent?.match(/^[A-Z]{2}/)?.[0]
-      )
+      const prefixTexts = prefixButtons.map(btn => btn.textContent?.match(/^[A-Z]{2}/)?.[0])
       expect(prefixTexts).toEqual(["AB", "BA", "CA"])
     })
 
@@ -70,12 +66,8 @@ describe("HintsList", () => {
       render(<HintsList hints={sampleHints} />)
 
       // Hints should not be visible initially
-      expect(
-        screen.queryByText("Capable of doing something")
-      ).not.toBeInTheDocument()
-      expect(
-        screen.queryByText("A spherical object used in games")
-      ).not.toBeInTheDocument()
+      expect(screen.queryByText("Capable of doing something")).not.toBeInTheDocument()
+      expect(screen.queryByText("A spherical object used in games")).not.toBeInTheDocument()
     })
 
     it("expands section when prefix is clicked", async () => {
@@ -86,15 +78,11 @@ describe("HintsList", () => {
       await user.click(screen.getByRole("button", { name: /AB/ }))
 
       // AB hints should now be visible
-      expect(
-        screen.getByText("Capable of doing something")
-      ).toBeInTheDocument()
+      expect(screen.getByText("Capable of doing something")).toBeInTheDocument()
       expect(screen.getByText("Approximately")).toBeInTheDocument()
 
       // Other hints should still be hidden
-      expect(
-        screen.queryByText("A spherical object used in games")
-      ).not.toBeInTheDocument()
+      expect(screen.queryByText("A spherical object used in games")).not.toBeInTheDocument()
     })
 
     it("collapses section when expanded prefix is clicked again", async () => {
@@ -103,15 +91,11 @@ describe("HintsList", () => {
 
       // Expand AB
       await user.click(screen.getByRole("button", { name: /AB/ }))
-      expect(
-        screen.getByText("Capable of doing something")
-      ).toBeInTheDocument()
+      expect(screen.getByText("Capable of doing something")).toBeInTheDocument()
 
       // Collapse AB
       await user.click(screen.getByRole("button", { name: /AB/ }))
-      expect(
-        screen.queryByText("Capable of doing something")
-      ).not.toBeInTheDocument()
+      expect(screen.queryByText("Capable of doing something")).not.toBeInTheDocument()
     })
 
     it("expands all sections when 'Expand all' is clicked", async () => {
@@ -121,12 +105,8 @@ describe("HintsList", () => {
       await user.click(screen.getByLabelText("Expand all sections"))
 
       // All hints should be visible
-      expect(
-        screen.getByText("Capable of doing something")
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText("A spherical object used in games")
-      ).toBeInTheDocument()
+      expect(screen.getByText("Capable of doing something")).toBeInTheDocument()
+      expect(screen.getByText("A spherical object used in games")).toBeInTheDocument()
       expect(screen.getByText("A cloak or covering")).toBeInTheDocument()
     })
 
@@ -141,15 +121,9 @@ describe("HintsList", () => {
       await user.click(screen.getByLabelText("Collapse all sections"))
 
       // All hints should be hidden
-      expect(
-        screen.queryByText("Capable of doing something")
-      ).not.toBeInTheDocument()
-      expect(
-        screen.queryByText("A spherical object used in games")
-      ).not.toBeInTheDocument()
-      expect(
-        screen.queryByText("A cloak or covering")
-      ).not.toBeInTheDocument()
+      expect(screen.queryByText("Capable of doing something")).not.toBeInTheDocument()
+      expect(screen.queryByText("A spherical object used in games")).not.toBeInTheDocument()
+      expect(screen.queryByText("A cloak or covering")).not.toBeInTheDocument()
     })
 
     it("allows multiple sections to be expanded simultaneously", async () => {
@@ -161,12 +135,8 @@ describe("HintsList", () => {
       await user.click(screen.getByRole("button", { name: /BA/ }))
 
       // Both should be visible
-      expect(
-        screen.getByText("Capable of doing something")
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText("A spherical object used in games")
-      ).toBeInTheDocument()
+      expect(screen.getByText("Capable of doing something")).toBeInTheDocument()
+      expect(screen.getByText("A spherical object used in games")).toBeInTheDocument()
     })
   })
 
@@ -177,9 +147,7 @@ describe("HintsList", () => {
 
       await user.click(screen.getByRole("button", { name: /AB/ }))
 
-      expect(
-        screen.getByText("Capable of doing something")
-      ).toBeInTheDocument()
+      expect(screen.getByText("Capable of doing something")).toBeInTheDocument()
       expect(screen.getByText("4 letters")).toBeInTheDocument()
       expect(screen.getByText("5 letters")).toBeInTheDocument()
     })
@@ -202,7 +170,7 @@ describe("HintsList", () => {
         <HintsList
           hints={sampleHints}
           foundWords={["able", "about"]} // Two AB words
-        />
+        />,
       )
 
       // AB should show 2 found
@@ -214,7 +182,7 @@ describe("HintsList", () => {
         <HintsList
           hints={sampleHints}
           foundWords={["able", "about"]} // All AB words found
-        />
+        />,
       )
 
       // AB should show checkmark
@@ -226,7 +194,7 @@ describe("HintsList", () => {
         <HintsList
           hints={sampleHints}
           foundWords={["ABLE", "About"]} // Mixed case
-        />
+        />,
       )
 
       // Should still count as 2 found for AB
@@ -237,9 +205,7 @@ describe("HintsList", () => {
       render(<HintsList hints={sampleHints} foundWords={[]} />)
 
       // All should show 0 found
-      expect(screen.getAllByLabelText(/0 of \d+ found/).length).toBeGreaterThan(
-        0
-      )
+      expect(screen.getAllByLabelText(/0 of \d+ found/).length).toBeGreaterThan(0)
     })
   })
 
@@ -259,9 +225,7 @@ describe("HintsList", () => {
 
   describe("styling", () => {
     it("applies custom className", () => {
-      const { container } = render(
-        <HintsList hints={sampleHints} className="custom-class" />
-      )
+      const { container } = render(<HintsList hints={sampleHints} className="custom-class" />)
 
       expect(container.firstChild).toHaveClass("custom-class")
     })
@@ -271,7 +235,7 @@ describe("HintsList", () => {
         <HintsList
           hints={sampleHints}
           foundWords={["able", "about"]} // Complete AB
-        />
+        />,
       )
 
       // Check that the complete prefix has the checkmark
@@ -285,9 +249,7 @@ describe("HintsList", () => {
       render(<HintsList hints={sampleHints} />)
 
       const buttons = screen.getAllByRole("button", { expanded: false })
-      const prefixButtons = buttons.filter((btn) =>
-        btn.textContent?.includes("AB")
-      )
+      const prefixButtons = buttons.filter(btn => btn.textContent?.includes("AB"))
       expect(prefixButtons[0]).toHaveAttribute("aria-expanded", "false")
     })
 
@@ -310,18 +272,13 @@ describe("HintsList", () => {
       expect(abButton).toHaveAttribute("aria-controls", "hints-AB")
 
       await user.click(abButton)
-      expect(screen.getByRole("list", { name: "" })).toHaveAttribute(
-        "id",
-        "hints-AB"
-      )
+      expect(screen.getByRole("list", { name: "" })).toHaveAttribute("id", "hints-AB")
     })
 
     it("has proper list roles", () => {
       render(<HintsList hints={sampleHints} />)
 
-      expect(
-        screen.getByRole("list", { name: "Hints by prefix" })
-      ).toBeInTheDocument()
+      expect(screen.getByRole("list", { name: "Hints by prefix" })).toBeInTheDocument()
     })
   })
 })

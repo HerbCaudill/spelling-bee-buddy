@@ -78,9 +78,7 @@ export function usePuzzle(): UsePuzzleReturn {
   }, [fetchData])
 
   // Calculate max points when puzzle data is available
-  const maxPoints = puzzle
-    ? calculateTotalPoints(puzzle.today.answers, puzzle.today.pangrams)
-    : 0
+  const maxPoints = puzzle ? calculateTotalPoints(puzzle.today.answers, puzzle.today.pangrams) : 0
 
   return {
     puzzle,

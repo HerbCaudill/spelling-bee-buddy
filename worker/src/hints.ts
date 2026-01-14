@@ -18,7 +18,7 @@ export function buildCacheKey(printDate: string): string {
  */
 export async function generateHints(
   gameData: GameData,
-  anthropicKey: string
+  anthropicKey: string,
 ): Promise<CachedHints> {
   const words = gameData.today.answers
   const pangrams = new Set(gameData.today.pangrams)
@@ -55,8 +55,7 @@ export async function generateHints(
 
   // Parse the response to extract hints
   const firstContent = result.content[0]
-  const hintsText =
-    firstContent?.type === "text" && firstContent.text ? firstContent.text : ""
+  const hintsText = firstContent?.type === "text" && firstContent.text ? firstContent.text : ""
   const hints = parseHintsResponse(hintsText, words)
 
   return {
@@ -79,7 +78,7 @@ interface AnthropicResponse {
  * Build the prompt for generating hints
  */
 function buildHintPrompt(words: string[], pangrams: Set<string>): string {
-  const wordsList = words.map((w) => `${w}${pangrams.has(w) ? " (pangram)" : ""}`).join("\n")
+  const wordsList = words.map(w => `${w}${pangrams.has(w) ? " (pangram)" : ""}`).join("\n")
 
   return `You are a helpful assistant for the NYT Spelling Bee puzzle. Generate a short, clever hint for each word that helps the solver guess it without giving away the answer directly.
 
@@ -106,10 +105,7 @@ Include every word from the list above as a key in the hints object.`
 /**
  * Parse Claude's response and organize hints by two-letter prefix
  */
-function parseHintsResponse(
-  responseText: string,
-  words: string[]
-): CachedHints["hints"] {
+function parseHintsResponse(responseText: string, words: string[]): CachedHints["hints"] {
   // Try to parse the JSON response
   let parsedHints: Record<string, string> = {}
 
@@ -134,7 +130,11 @@ function parseHintsResponse(
 
   for (const word of words) {
     const prefix = word.slice(0, 2).toUpperCase()
-    const hint = parsedHints[word] || parsedHints[word.toUpperCase()] || parsedHints[word.toLowerCase()] || `${word.length}-letter word`
+    const hint =
+      parsedHints[word] ||
+      parsedHints[word.toUpperCase()] ||
+      parsedHints[word.toLowerCase()] ||
+      `${word.length}-letter word`
 
     if (!hintsByPrefix[prefix]) {
       hintsByPrefix[prefix] = []

@@ -36,10 +36,7 @@ export function withCors(response: Response): Response {
 /**
  * Create a JSON response with CORS headers
  */
-export function jsonResponse<T>(
-  data: T,
-  status: number = 200
-): Response {
+export function jsonResponse<T>(data: T, status: number = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
@@ -52,9 +49,6 @@ export function jsonResponse<T>(
 /**
  * Create an error response with CORS headers
  */
-export function errorResponse(
-  message: string,
-  status: number = 500
-): Response {
+export function errorResponse(message: string, status: number = 500): Response {
   return jsonResponse({ success: false, error: message }, status)
 }

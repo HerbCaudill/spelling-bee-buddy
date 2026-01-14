@@ -46,10 +46,7 @@ describe("storage", () => {
     })
 
     it("returns null for non-string values", () => {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({ nytToken: 123, anthropicKey: true })
-      )
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ nytToken: 123, anthropicKey: true }))
       expect(getCredentials()).toBeNull()
     })
   })

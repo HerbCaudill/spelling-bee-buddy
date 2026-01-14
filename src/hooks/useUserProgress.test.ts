@@ -11,7 +11,7 @@ vi.mock("@/lib/api", () => ({
   ApiError: class ApiError extends Error {
     constructor(
       message: string,
-      public status: number
+      public status: number,
     ) {
       super(message)
       this.name = "ApiError"
@@ -92,7 +92,7 @@ describe("useUserProgress", () => {
 
     it("should start in loading state", () => {
       vi.mocked(api.fetchProgress).mockImplementation(
-        () => new Promise(() => {}) // Never resolves
+        () => new Promise(() => {}), // Never resolves
       )
 
       const { result } = renderHook(() => useUserProgress(mockPangrams))
@@ -147,7 +147,7 @@ describe("useUserProgress", () => {
 
       expect(result.current.foundWords).toEqual([])
       expect(result.current.error).toBe(
-        "Invalid or expired NYT token. Please update your credentials."
+        "Invalid or expired NYT token. Please update your credentials.",
       )
     })
 
@@ -213,9 +213,7 @@ describe("useUserProgress", () => {
 
     it("should clear error on successful refetch", async () => {
       // First call fails
-      vi.mocked(api.fetchProgress).mockRejectedValueOnce(
-        new Error("Network error")
-      )
+      vi.mocked(api.fetchProgress).mockRejectedValueOnce(new Error("Network error"))
 
       const { result } = renderHook(() => useUserProgress(mockPangrams))
 
@@ -271,7 +269,7 @@ describe("useUserProgress", () => {
       const { result } = renderHook(() => useUserProgress(mockPangrams, false))
 
       // Give it time to potentially fetch
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await new Promise(resolve => setTimeout(resolve, 50))
 
       expect(result.current.isLoading).toBe(false)
       expect(result.current.foundWords).toEqual([])
@@ -283,11 +281,11 @@ describe("useUserProgress", () => {
 
       const { result, rerender } = renderHook(
         ({ enabled }) => useUserProgress(mockPangrams, enabled),
-        { initialProps: { enabled: false } }
+        { initialProps: { enabled: false } },
       )
 
       // Initially not fetching
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await new Promise(resolve => setTimeout(resolve, 50))
       expect(api.fetchProgress).not.toHaveBeenCalled()
 
       // Enable fetching

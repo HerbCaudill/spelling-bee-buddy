@@ -51,11 +51,7 @@ export interface ProgressBarProps {
  * - Visual progress bar with rank markers
  * - Current points and points needed for next rank
  */
-export function ProgressBar({
-  currentPoints,
-  maxPoints,
-  className,
-}: ProgressBarProps) {
+export function ProgressBar({ currentPoints, maxPoints, className }: ProgressBarProps) {
   const currentRank = getRank(currentPoints, maxPoints)
   const nextRankInfo = getPointsToNextRank(currentPoints, maxPoints)
 
@@ -67,7 +63,7 @@ export function ProgressBar({
       {/* Rank display */}
       <div className="flex items-center justify-between">
         <span className="text-lg font-semibold">{currentRank}</span>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-muted-foreground text-sm">
           {currentPoints} / {maxPoints} points
         </span>
       </div>
@@ -75,34 +71,29 @@ export function ProgressBar({
       {/* Progress bar with rank markers */}
       <div className="relative">
         {/* Background track */}
-        <div className="h-3 rounded-full bg-secondary">
+        <div className="bg-secondary h-3 rounded-full">
           {/* Filled progress */}
           <div
-            className="h-full rounded-full bg-primary transition-all duration-300"
+            className="bg-primary h-full rounded-full transition-all duration-300"
             style={{ width: `${Math.min(percentage, 100)}%` }}
           />
         </div>
 
         {/* Rank markers */}
         <div className="absolute inset-0 flex items-center">
-          {RANKS.map((rank) => {
+          {RANKS.map(rank => {
             const threshold = RANK_THRESHOLDS[rank]
             // Skip 0% and 100% markers for cleaner look
             if (threshold === 0 || threshold === 100) return null
 
-            const isAchieved =
-              maxPoints > 0 && currentPoints >= (threshold / 100) * maxPoints
+            const isAchieved = maxPoints > 0 && currentPoints >= (threshold / 100) * maxPoints
 
             return (
-              <div
-                key={rank}
-                className="absolute h-full"
-                style={{ left: `${threshold}%` }}
-              >
+              <div key={rank} className="absolute h-full" style={{ left: `${threshold}%` }}>
                 <div
                   className={cn(
                     "h-3 w-0.5 rounded-full",
-                    isAchieved ? "bg-primary-foreground/50" : "bg-muted-foreground/30"
+                    isAchieved ? "bg-primary-foreground/50" : "bg-muted-foreground/30",
                   )}
                 />
               </div>
@@ -113,15 +104,15 @@ export function ProgressBar({
 
       {/* Next rank info */}
       {nextRankInfo && (
-        <div className="text-sm text-muted-foreground">
-          <span className="font-medium">{nextRankInfo.pointsNeeded}</span> points
-          to <span className="font-medium">{nextRankInfo.nextRank}</span>
+        <div className="text-muted-foreground text-sm">
+          <span className="font-medium">{nextRankInfo.pointsNeeded}</span> points to{" "}
+          <span className="font-medium">{nextRankInfo.nextRank}</span>
         </div>
       )}
 
       {/* Queen Bee celebration */}
       {currentRank === "Queen Bee" && (
-        <div className="text-sm font-medium text-primary">
+        <div className="text-primary text-sm font-medium">
           🐝 Congratulations! You found all the words!
         </div>
       )}

@@ -70,7 +70,7 @@ describe("hints", () => {
             "x-api-key": "test-api-key",
             "anthropic-version": "2023-06-01",
           },
-        })
+        }),
       )
 
       expect(result.generatedAt).toBeDefined()
@@ -143,10 +143,7 @@ describe("hints", () => {
         json: () => Promise.resolve(mockResponse),
       })
 
-      const result = await generateHints(
-        gameDataWithMultipleSamePrefix,
-        "test-api-key"
-      )
+      const result = await generateHints(gameDataWithMultipleSamePrefix, "test-api-key")
 
       expect(result.hints["CA"]).toHaveLength(3)
       expect(result.hints["CA"][0].length).toBe(3) // cab
@@ -162,7 +159,7 @@ describe("hints", () => {
       })
 
       await expect(generateHints(mockGameData, "invalid-key")).rejects.toThrow(
-        "Anthropic API error (401): Unauthorized"
+        "Anthropic API error (401): Unauthorized",
       )
     })
 

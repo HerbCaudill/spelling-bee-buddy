@@ -79,8 +79,7 @@ export default defineConfig({
           },
           {
             // Cache API responses with network-first strategy
-            urlPattern:
-              /^https:\/\/spelling-bee-buddy\.herbcaudill\.workers\.dev\/.*/i,
+            urlPattern: /^https:\/\/spelling-bee-buddy\.herbcaudill\.workers\.dev\/.*/i,
             handler: "NetworkFirst",
             options: {
               cacheName: "api-cache",

@@ -25,17 +25,13 @@ describe("SettingsModal", () => {
 
   describe("rendering", () => {
     it("renders nothing when closed", () => {
-      const { container } = render(
-        <SettingsModal {...defaultProps} isOpen={false} />
-      )
+      const { container } = render(<SettingsModal {...defaultProps} isOpen={false} />)
       expect(container).toBeEmptyDOMElement()
     })
 
     it("renders modal when open", () => {
       render(<SettingsModal {...defaultProps} />)
-      expect(
-        screen.getByRole("dialog", { name: "Settings" })
-      ).toBeInTheDocument()
+      expect(screen.getByRole("dialog", { name: "Settings" })).toBeInTheDocument()
     })
 
     it("renders title", () => {
@@ -66,24 +62,21 @@ describe("SettingsModal", () => {
 
     it("renders Clear All button", () => {
       render(<SettingsModal {...defaultProps} />)
-      expect(
-        screen.getByRole("button", { name: /Clear All/i })
-      ).toBeInTheDocument()
+      expect(screen.getByRole("button", { name: /Clear All/i })).toBeInTheDocument()
     })
 
     it("renders help text for NYT token", () => {
       render(<SettingsModal {...defaultProps} />)
-      expect(
-        screen.getByText(/Used to track your progress/i)
-      ).toBeInTheDocument()
+      expect(screen.getByText(/Used to track your progress/i)).toBeInTheDocument()
     })
 
     it("renders help text with link for Anthropic key", () => {
       render(<SettingsModal {...defaultProps} />)
       expect(screen.getByText(/Used to generate AI hints/i)).toBeInTheDocument()
-      expect(
-        screen.getByRole("link", { name: /Get an API key/i })
-      ).toHaveAttribute("href", "https://console.anthropic.com/settings/keys")
+      expect(screen.getByRole("link", { name: /Get an API key/i })).toHaveAttribute(
+        "href",
+        "https://console.anthropic.com/settings/keys",
+      )
     })
   })
 
@@ -97,9 +90,7 @@ describe("SettingsModal", () => {
       render(<SettingsModal {...defaultProps} />)
 
       expect(screen.getByLabelText("NYT Token")).toHaveValue("existing-nyt-token")
-      expect(screen.getByLabelText("Anthropic API Key")).toHaveValue(
-        "existing-api-key"
-      )
+      expect(screen.getByLabelText("Anthropic API Key")).toHaveValue("existing-api-key")
     })
 
     it("shows empty inputs when no credentials exist", () => {
@@ -115,10 +106,7 @@ describe("SettingsModal", () => {
   describe("password visibility toggle", () => {
     it("hides NYT token by default", () => {
       render(<SettingsModal {...defaultProps} />)
-      expect(screen.getByLabelText("NYT Token")).toHaveAttribute(
-        "type",
-        "password"
-      )
+      expect(screen.getByLabelText("NYT Token")).toHaveAttribute("type", "password")
     })
 
     it("toggles NYT token visibility", async () => {
@@ -134,10 +122,7 @@ describe("SettingsModal", () => {
 
     it("hides Anthropic key by default", () => {
       render(<SettingsModal {...defaultProps} />)
-      expect(screen.getByLabelText("Anthropic API Key")).toHaveAttribute(
-        "type",
-        "password"
-      )
+      expect(screen.getByLabelText("Anthropic API Key")).toHaveAttribute("type", "password")
     })
 
     it("toggles Anthropic key visibility", async () => {
@@ -147,10 +132,7 @@ describe("SettingsModal", () => {
       const toggleButton = screen.getByLabelText("Show API key")
       await user.click(toggleButton)
 
-      expect(screen.getByLabelText("Anthropic API Key")).toHaveAttribute(
-        "type",
-        "text"
-      )
+      expect(screen.getByLabelText("Anthropic API Key")).toHaveAttribute("type", "text")
       expect(screen.getByLabelText("Hide API key")).toBeInTheDocument()
     })
   })
@@ -161,9 +143,7 @@ describe("SettingsModal", () => {
       const onSave = vi.fn()
       const onClose = vi.fn()
 
-      render(
-        <SettingsModal {...defaultProps} onSave={onSave} onClose={onClose} />
-      )
+      render(<SettingsModal {...defaultProps} onSave={onSave} onClose={onClose} />)
 
       await user.type(screen.getByLabelText("NYT Token"), "my-nyt-token")
       await user.type(screen.getByLabelText("Anthropic API Key"), "my-api-key")
@@ -183,10 +163,7 @@ describe("SettingsModal", () => {
       render(<SettingsModal {...defaultProps} />)
 
       await user.type(screen.getByLabelText("NYT Token"), "  token-with-spaces  ")
-      await user.type(
-        screen.getByLabelText("Anthropic API Key"),
-        "  key-with-spaces  "
-      )
+      await user.type(screen.getByLabelText("Anthropic API Key"), "  key-with-spaces  ")
       await user.click(screen.getByRole("button", { name: "Save" }))
 
       await waitFor(() => {
@@ -202,9 +179,7 @@ describe("SettingsModal", () => {
       const onSave = vi.fn()
       const onClose = vi.fn()
 
-      render(
-        <SettingsModal {...defaultProps} onSave={onSave} onClose={onClose} />
-      )
+      render(<SettingsModal {...defaultProps} onSave={onSave} onClose={onClose} />)
 
       await user.type(screen.getByLabelText("NYT Token"), "token")
       await user.click(screen.getByRole("button", { name: "Save" }))
@@ -268,9 +243,7 @@ describe("SettingsModal", () => {
 
       render(<SettingsModal {...defaultProps} />)
 
-      expect(
-        screen.getByRole("button", { name: /Clear All/i })
-      ).toBeDisabled()
+      expect(screen.getByRole("button", { name: /Clear All/i })).toBeDisabled()
     })
   })
 

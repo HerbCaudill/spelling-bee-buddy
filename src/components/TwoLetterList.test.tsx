@@ -27,7 +27,7 @@ describe("TwoLetterList", () => {
       render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
 
       const prefixes = screen.getAllByText(/^[A-Z]{2}$/)
-      const prefixTexts = prefixes.map((el) => el.textContent)
+      const prefixTexts = prefixes.map(el => el.textContent)
       const sortedPrefixes = [...prefixTexts].sort()
       expect(prefixTexts).toEqual(sortedPrefixes)
     })
@@ -78,11 +78,7 @@ describe("TwoLetterList", () => {
   describe("styling", () => {
     it("applies custom className", () => {
       const { container } = render(
-        <TwoLetterList
-          allWords={allWords}
-          foundWords={foundWords}
-          className="custom-class"
-        />
+        <TwoLetterList allWords={allWords} foundWords={foundWords} className="custom-class" />,
       )
 
       expect(container.firstChild).toHaveClass("custom-class")
@@ -99,9 +95,7 @@ describe("TwoLetterList", () => {
 
   describe("case insensitivity", () => {
     it("handles mixed case words correctly", () => {
-      render(
-        <TwoLetterList allWords={["ABLE", "About"]} foundWords={["able", "ABOUT"]} />
-      )
+      render(<TwoLetterList allWords={["ABLE", "About"]} foundWords={["able", "ABOUT"]} />)
 
       // Both should be found since comparison is case-insensitive
       // AB prefix should be complete
@@ -127,9 +121,7 @@ describe("TwoLetterList", () => {
 
   describe("grid layout", () => {
     it("renders items in a grid", () => {
-      const { container } = render(
-        <TwoLetterList allWords={allWords} foundWords={foundWords} />
-      )
+      const { container } = render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
 
       const grid = container.querySelector(".grid")
       expect(grid).toBeInTheDocument()

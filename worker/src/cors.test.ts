@@ -1,11 +1,5 @@
 import { describe, it, expect } from "vitest"
-import {
-  corsHeaders,
-  handleCorsPreFlight,
-  withCors,
-  jsonResponse,
-  errorResponse,
-} from "./cors"
+import { corsHeaders, handleCorsPreFlight, withCors, jsonResponse, errorResponse } from "./cors"
 
 describe("cors", () => {
   describe("corsHeaders", () => {
@@ -14,9 +8,7 @@ describe("cors", () => {
     })
 
     it("allows required HTTP methods", () => {
-      expect(corsHeaders["Access-Control-Allow-Methods"]).toBe(
-        "GET, POST, OPTIONS"
-      )
+      expect(corsHeaders["Access-Control-Allow-Methods"]).toBe("GET, POST, OPTIONS")
     })
 
     it("allows required custom headers", () => {
@@ -40,12 +32,8 @@ describe("cors", () => {
     it("includes all CORS headers", () => {
       const response = handleCorsPreFlight()
       expect(response.headers.get("Access-Control-Allow-Origin")).toBe("*")
-      expect(response.headers.get("Access-Control-Allow-Methods")).toBe(
-        "GET, POST, OPTIONS"
-      )
-      expect(response.headers.get("Access-Control-Allow-Headers")).toContain(
-        "X-NYT-Token"
-      )
+      expect(response.headers.get("Access-Control-Allow-Methods")).toBe("GET, POST, OPTIONS")
+      expect(response.headers.get("Access-Control-Allow-Headers")).toContain("X-NYT-Token")
     })
 
     it("has no body", () => {

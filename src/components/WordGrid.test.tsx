@@ -122,16 +122,14 @@ describe("WordGrid", () => {
   describe("styling", () => {
     it("applies custom className", () => {
       const { container } = render(
-        <WordGrid allWords={allWords} foundWords={foundWords} className="custom-class" />
+        <WordGrid allWords={allWords} foundWords={foundWords} className="custom-class" />,
       )
 
       expect(container.firstChild).toHaveClass("custom-class")
     })
 
     it("has overflow-x-auto for responsiveness", () => {
-      const { container } = render(
-        <WordGrid allWords={allWords} foundWords={foundWords} />
-      )
+      const { container } = render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
       expect(container.firstChild).toHaveClass("overflow-x-auto")
     })
@@ -152,9 +150,7 @@ describe("WordGrid", () => {
       render(<WordGrid allWords={allWords} foundWords={allWords} />)
 
       // Grand total should be complete
-      expect(
-        screen.getByLabelText("7 of 7 found, complete")
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText("7 of 7 found, complete")).toBeInTheDocument()
     })
   })
 })

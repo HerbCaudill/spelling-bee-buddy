@@ -2,11 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { X, Eye, EyeOff, Trash2 } from "lucide-react"
-import {
-  getCredentials,
-  saveCredentials,
-  clearCredentials,
-} from "@/lib/storage"
+import { getCredentials, saveCredentials, clearCredentials } from "@/lib/storage"
 import type { UserCredentials } from "@/types"
 
 export interface SettingsModalProps {
@@ -28,12 +24,7 @@ export interface SettingsModalProps {
  * - Enter their Anthropic API key for AI-generated hints
  * - Clear stored credentials
  */
-export function SettingsModal({
-  isOpen,
-  onClose,
-  onSave,
-  className,
-}: SettingsModalProps) {
+export function SettingsModal({ isOpen, onClose, onSave, className }: SettingsModalProps) {
   const [nytToken, setNytToken] = useState("")
   const [anthropicKey, setAnthropicKey] = useState("")
   const [showNytToken, setShowNytToken] = useState(false)
@@ -76,7 +67,7 @@ export function SettingsModal({
     if (!modal) return
 
     const focusableElements = modal.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     )
     const firstElement = focusableElements[0]
     const lastElement = focusableElements[focusableElements.length - 1]
@@ -140,7 +131,7 @@ export function SettingsModal({
     <div
       className={cn(
         "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4",
-        className
+        className,
       )}
       onClick={handleOverlayClick}
       role="dialog"
@@ -149,13 +140,13 @@ export function SettingsModal({
     >
       <div
         ref={modalRef}
-        className="relative w-full max-w-md rounded-lg bg-background p-6 shadow-lg"
-        onClick={(e) => e.stopPropagation()}
+        className="bg-background relative w-full max-w-md rounded-lg p-6 shadow-lg"
+        onClick={e => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="focus:ring-ring absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none"
           aria-label="Close settings"
         >
           <X className="size-4" />
@@ -179,36 +170,31 @@ export function SettingsModal({
                 id="nyt-token"
                 type={showNytToken ? "text" : "password"}
                 value={nytToken}
-                onChange={(e) => setNytToken(e.target.value)}
+                onChange={e => setNytToken(e.target.value)}
                 placeholder="Enter your NYT-S cookie value"
-                className="w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="border-input bg-background placeholder:text-muted-foreground focus:ring-ring w-full rounded-md border px-3 py-2 pr-10 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
                 autoComplete="off"
               />
               <button
                 type="button"
                 onClick={() => setShowNytToken(!showNytToken)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="text-muted-foreground hover:text-foreground focus:ring-ring absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 focus:ring-2 focus:outline-none"
                 aria-label={showNytToken ? "Hide NYT token" : "Show NYT token"}
               >
-                {showNytToken ? (
+                {showNytToken ?
                   <EyeOff className="size-4" />
-                ) : (
-                  <Eye className="size-4" />
-                )}
+                : <Eye className="size-4" />}
               </button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Used to track your progress. Find this in your browser&apos;s cookies
-              for nytimes.com (look for NYT-S).
+            <p className="text-muted-foreground text-xs">
+              Used to track your progress. Find this in your browser&apos;s cookies for nytimes.com
+              (look for NYT-S).
             </p>
           </div>
 
           {/* Anthropic API Key */}
           <div className="space-y-2">
-            <label
-              htmlFor="anthropic-key"
-              className="block text-sm font-medium"
-            >
+            <label htmlFor="anthropic-key" className="block text-sm font-medium">
               Anthropic API Key
             </label>
             <div className="relative">
@@ -216,33 +202,29 @@ export function SettingsModal({
                 id="anthropic-key"
                 type={showAnthropicKey ? "text" : "password"}
                 value={anthropicKey}
-                onChange={(e) => setAnthropicKey(e.target.value)}
+                onChange={e => setAnthropicKey(e.target.value)}
                 placeholder="Enter your Anthropic API key"
-                className="w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="border-input bg-background placeholder:text-muted-foreground focus:ring-ring w-full rounded-md border px-3 py-2 pr-10 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
                 autoComplete="off"
               />
               <button
                 type="button"
                 onClick={() => setShowAnthropicKey(!showAnthropicKey)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                aria-label={
-                  showAnthropicKey ? "Hide API key" : "Show API key"
-                }
+                className="text-muted-foreground hover:text-foreground focus:ring-ring absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 focus:ring-2 focus:outline-none"
+                aria-label={showAnthropicKey ? "Hide API key" : "Show API key"}
               >
-                {showAnthropicKey ? (
+                {showAnthropicKey ?
                   <EyeOff className="size-4" />
-                ) : (
-                  <Eye className="size-4" />
-                )}
+                : <Eye className="size-4" />}
               </button>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               Used to generate AI hints.{" "}
               <a
                 href="https://console.anthropic.com/settings/keys"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary underline underline-offset-2 hover:text-primary/80"
+                className="text-primary hover:text-primary/80 underline underline-offset-2"
               >
                 Get an API key
               </a>

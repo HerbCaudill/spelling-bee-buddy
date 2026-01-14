@@ -60,7 +60,7 @@ export interface UseUserProgressReturn extends UseUserProgressState {
  */
 export function useUserProgress(
   pangrams: string[],
-  enabled: boolean = true
+  enabled: boolean = true,
 ): UseUserProgressReturn {
   const [foundWords, setFoundWords] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)

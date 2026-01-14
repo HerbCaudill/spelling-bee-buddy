@@ -15,11 +15,7 @@ import { generateHints, buildCacheKey } from "./hints"
 const NYT_SPELLING_BEE_URL = "https://www.nytimes.com/puzzles/spelling-bee"
 
 export default {
-  async fetch(
-    request: Request,
-    env: Env,
-    _ctx: ExecutionContext
-  ): Promise<Response> {
+  async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url)
     const path = url.pathname
 
@@ -71,7 +67,7 @@ async function handlePuzzle(): Promise<Response> {
   if (!response.ok) {
     return errorResponse(
       `Failed to fetch puzzle page: ${response.status} ${response.statusText}`,
-      502
+      502,
     )
   }
 
@@ -116,7 +112,7 @@ async function handleProgress(request: Request): Promise<Response> {
     }
     return errorResponse(
       `Failed to fetch user progress: ${response.status} ${response.statusText}`,
-      502
+      502,
     )
   }
 
@@ -175,10 +171,7 @@ async function handleHints(request: Request, env: Env): Promise<Response> {
   })
 
   if (!puzzleResponse.ok) {
-    return errorResponse(
-      `Failed to fetch puzzle for hints: ${puzzleResponse.status}`,
-      502
-    )
+    return errorResponse(`Failed to fetch puzzle for hints: ${puzzleResponse.status}`, 502)
   }
 
   const html = await puzzleResponse.text()
