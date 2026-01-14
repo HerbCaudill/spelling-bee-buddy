@@ -152,11 +152,12 @@ describe("SettingsModal", () => {
       const subscriberIdInput = screen.getByLabelText("NYT Subscriber ID")
       const apiKeyInput = screen.getByLabelText("Anthropic API Key")
 
-      await user.click(nytTokenInput)
+      // Use clear + type pattern for more reliable input
+      await user.clear(nytTokenInput)
       await user.type(nytTokenInput, "my-nyt-token")
-      await user.click(subscriberIdInput)
+      await user.clear(subscriberIdInput)
       await user.type(subscriberIdInput, "my-subscriber-id")
-      await user.click(apiKeyInput)
+      await user.clear(apiKeyInput)
       await user.type(apiKeyInput, "my-api-key")
       await user.click(screen.getByRole("button", { name: "Save" }))
 

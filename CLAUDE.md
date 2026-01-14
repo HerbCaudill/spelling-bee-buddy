@@ -78,6 +78,16 @@ worker/src/
 └── cors.ts           # CORS utilities
 ```
 
+## Development Credentials
+
+Copy `.env.example` to `.env` and fill in:
+
+- `VITE_NYT_TOKEN` - NYT-S cookie value from nytimes.com
+- `VITE_NYT_SUBSCRIBER_ID` - Subscriber ID from Cubby API requests (found in browser dev tools network tab)
+- `VITE_ANTHROPIC_KEY` - Anthropic API key for hint generation
+
+These are automatically used in development mode so you don't need to enter them in the UI.
+
 ## Conventions
 
 - Use `cx()` from `lib/utils.ts` for combining class names (wraps clsx + tailwind-merge)
