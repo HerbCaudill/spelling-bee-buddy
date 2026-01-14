@@ -7,9 +7,10 @@
  * - GET /hints         - Get AI-generated hints (requires X-Anthropic-Key header, uses KV cache)
  */
 
-import type { Env } from "./types"
+import type { Env, GameData, CachedHints } from "./types"
 import { handleCorsPreFlight, errorResponse, jsonResponse } from "./cors"
 import { parseGameData } from "./parser"
+import { generateHints, buildCacheKey } from "./hints"
 
 const NYT_SPELLING_BEE_URL = "https://www.nytimes.com/puzzles/spelling-bee"
 
@@ -152,9 +153,6 @@ async function handleProgress(request: Request): Promise<Response> {
  * Requires X-Anthropic-Key header with user's API key
  */
 async function handleHints(request: Request, env: Env): Promise<Response> {
-  // TODO: Implement hint generation
-  // This will be implemented in a future task:
-  // "Implement Worker hint generation with Anthropic API and KV caching"
   const anthropicKey = request.headers.get("X-Anthropic-Key")
   if (!anthropicKey) {
     return errorResponse("Missing X-Anthropic-Key header", 401)
@@ -165,5 +163,58 @@ async function handleHints(request: Request, env: Env): Promise<Response> {
     return errorResponse("KV namespace not configured", 500)
   }
 
-  return errorResponse("Not implemented", 501)
+  // First, fetch today's puzzle to get the answers and date
+  const puzzleResponse = await fetch(NYT_SPELLING_BEE_URL, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+      "Accept-Language": "en-US,en;q=0.5",
+    },
+  })
+
+  if (!puzzleResponse.ok) {
+    return errorResponse(
+      `Failed to fetch puzzle for hints: ${puzzleResponse.status}`,
+      502
+    )
+  }
+
+  const html = await puzzleResponse.text()
+  const gameData = parseGameData(html)
+
+  if (!gameData) {
+    return errorResponse("Failed to parse puzzle data for hints", 502)
+  }
+
+  const cacheKey = buildCacheKey(gameData.today.printDate)
+
+  // Check KV cache first
+  const cached = await env.HINTS_CACHE.get<CachedHints>(cacheKey, "json")
+  if (cached) {
+    return jsonResponse({
+      success: true,
+      data: cached,
+    })
+  }
+
+  // Generate hints using Anthropic API
+  try {
+    const hints = await generateHints(gameData, anthropicKey)
+
+    // Cache the hints (expire after 7 days - puzzles are daily)
+    await env.HINTS_CACHE.put(cacheKey, JSON.stringify(hints), {
+      expirationTtl: 60 * 60 * 24 * 7, // 7 days in seconds
+    })
+
+    return jsonResponse({
+      success: true,
+      data: hints,
+    })
+  } catch (error) {
+    console.error("Error generating hints:", error)
+    const message = error instanceof Error ? error.message : "Unknown error"
+    return errorResponse(`Failed to generate hints: ${message}`, 500)
+  }
 }
