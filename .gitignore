@@ -31,3 +31,7 @@ playwright-report
 # Cloudflare Worker
 .wrangler
 .dev.vars
+
+# Environment variables
+.env
+.env.local
