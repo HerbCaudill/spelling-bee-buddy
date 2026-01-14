@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Create SettingsModal component for credentials
 - [ ] Write Playwright tests for main flows
 - [ ] Configure PWA for offline support
 - [ ] Deploy frontend to Vercel
@@ -9,6 +8,7 @@
 
 ### Done
 
+- [x] Create SettingsModal component for credentials
 - [x] Create HintsList component with collapsible sections
 - [x] Create App layout and integrate all components
 - [x] Create TwoLetterList component

@@ -4,6 +4,7 @@ import { ProgressBar } from "@/components/ProgressBar"
 import { WordGrid } from "@/components/WordGrid"
 import { TwoLetterList } from "@/components/TwoLetterList"
 import { HintsList } from "@/components/HintsList"
+import { SettingsModal } from "@/components/SettingsModal"
 import { usePuzzle } from "@/hooks/usePuzzle"
 import { useUserProgress } from "@/hooks/useUserProgress"
 import { useHints } from "@/hooks/useHints"
@@ -178,26 +179,12 @@ export function App() {
         </div>
       </main>
 
-      {/* Settings modal placeholder - will be implemented later */}
-      {settingsOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-          onClick={() => setSettingsOpen(false)}
-        >
-          <div
-            className="bg-background rounded-lg p-6 max-w-md w-full shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-lg font-semibold mb-4">Settings</h2>
-            <p className="text-muted-foreground mb-4">
-              Settings modal coming soon. This will allow you to configure your NYT token and Anthropic API key.
-            </p>
-            <Button onClick={() => setSettingsOpen(false)} className="w-full">
-              Close
-            </Button>
-          </div>
-        </div>
-      )}
+      {/* Settings modal */}
+      <SettingsModal
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onSave={handleRefresh}
+      />
     </div>
   )
 }

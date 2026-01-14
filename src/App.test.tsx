@@ -191,11 +191,12 @@ describe("App", () => {
 
       await user.click(screen.getByRole("button", { name: /Open settings/ }))
 
-      expect(screen.getByText("Settings")).toBeInTheDocument()
-      expect(screen.getByText(/Settings modal coming soon/)).toBeInTheDocument()
+      expect(screen.getByRole("dialog", { name: "Settings" })).toBeInTheDocument()
+      expect(screen.getByLabelText("NYT Token")).toBeInTheDocument()
+      expect(screen.getByLabelText("Anthropic API Key")).toBeInTheDocument()
     })
 
-    it("closes settings modal when Close button is clicked", async () => {
+    it("closes settings modal when Cancel button is clicked", async () => {
       const user = userEvent.setup()
       render(<App />)
 
@@ -204,13 +205,13 @@ describe("App", () => {
       })
 
       await user.click(screen.getByRole("button", { name: /Open settings/ }))
-      expect(screen.getByText("Settings")).toBeInTheDocument()
+      expect(screen.getByRole("dialog", { name: "Settings" })).toBeInTheDocument()
 
-      await user.click(screen.getByRole("button", { name: /Close/ }))
-      expect(screen.queryByText(/Settings modal coming soon/)).not.toBeInTheDocument()
+      await user.click(screen.getByRole("button", { name: "Cancel" }))
+      expect(screen.queryByRole("dialog", { name: "Settings" })).not.toBeInTheDocument()
     })
 
-    it("closes settings modal when clicking outside", async () => {
+    it("closes settings modal when Escape is pressed", async () => {
       const user = userEvent.setup()
       render(<App />)
 
@@ -219,16 +220,10 @@ describe("App", () => {
       })
 
       await user.click(screen.getByRole("button", { name: /Open settings/ }))
-      expect(screen.getByText("Settings")).toBeInTheDocument()
+      expect(screen.getByRole("dialog", { name: "Settings" })).toBeInTheDocument()
 
-      // Click the backdrop (the outer div with bg-black/50)
-      const backdrop = screen.getByText(/Settings modal coming soon/).parentElement?.parentElement
-      if (backdrop) {
-        await user.click(backdrop)
-      }
-
-      // Modal should still be visible because we clicked the inner div
-      // Need to click the actual backdrop
+      await user.keyboard("{Escape}")
+      expect(screen.queryByRole("dialog", { name: "Settings" })).not.toBeInTheDocument()
     })
   })
 
