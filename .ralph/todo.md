@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Implement Worker endpoint to proxy user progress API with auth
 - [ ] Implement Worker hint generation with Anthropic API and KV caching
 - [ ] Add CORS headers and error handling to Worker, deploy to Cloudflare
 - [ ] Create useUserProgress hook
@@ -20,6 +19,7 @@
 
 ### Done
 
+- [x] Implement Worker endpoint to proxy user progress API with auth
 - [x] Create usePuzzle hook
 - [x] Create api.ts with functions to call Worker endpoints
 - [x] Implement Worker endpoint to fetch and parse puzzle data from NYT page

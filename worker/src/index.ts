@@ -87,20 +87,63 @@ async function handlePuzzle(): Promise<Response> {
   })
 }
 
+const NYT_CUBBY_API_URL =
+  "https://www.nytimes.com/svc/int/run/cubby/public-api/v1/responses/latest/spelling-bee-buddy/reader"
+
 /**
  * Fetch user's progress from NYT Cubby API
  * Requires X-NYT-Token header with user's NYT-S cookie value
  */
 async function handleProgress(request: Request): Promise<Response> {
-  // TODO: Implement progress fetching
-  // This will be implemented in a future task:
-  // "Implement Worker endpoint to proxy user progress API with auth"
   const nytToken = request.headers.get("X-NYT-Token")
   if (!nytToken) {
     return errorResponse("Missing X-NYT-Token header", 401)
   }
 
-  return errorResponse("Not implemented", 501)
+  const response = await fetch(NYT_CUBBY_API_URL, {
+    headers: {
+      Cookie: `NYT-S=${nytToken}`,
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Accept: "application/json",
+    },
+  })
+
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) {
+      return errorResponse("Invalid or expired NYT token", 401)
+    }
+    return errorResponse(
+      `Failed to fetch user progress: ${response.status} ${response.statusText}`,
+      502
+    )
+  }
+
+  const data = await response.json()
+
+  // The Cubby API returns an array; we want the first (and typically only) item
+  // If no response exists yet for this puzzle, the array may be empty
+  if (!Array.isArray(data) || data.length === 0) {
+    // Return empty words array if user hasn't started the puzzle
+    return jsonResponse({
+      success: true,
+      data: {
+        response_id: "",
+        project_version: "",
+        correct: null,
+        content: {
+          words: [],
+        },
+      },
+    })
+  }
+
+  const cubbyResponse = data[0]
+
+  return jsonResponse({
+    success: true,
+    data: cubbyResponse,
+  })
 }
 
 /**
