@@ -7,10 +7,11 @@ const STORAGE_KEY = "spelling-bee-buddy-credentials"
  */
 function getEnvCredentials(): UserCredentials | null {
   const nytToken = import.meta.env.VITE_NYT_TOKEN
+  const nytSubscriberId = import.meta.env.VITE_NYT_SUBSCRIBER_ID
   const anthropicKey = import.meta.env.VITE_ANTHROPIC_KEY
 
-  if (nytToken && anthropicKey) {
-    return { nytToken, anthropicKey }
+  if (nytToken && nytSubscriberId && anthropicKey) {
+    return { nytToken, nytSubscriberId, anthropicKey }
   }
   return null
 }
@@ -33,8 +34,12 @@ export function getCredentials(): UserCredentials | null {
 
     const parsed = JSON.parse(stored) as UserCredentials
 
-    // Validate that both fields exist
-    if (typeof parsed.nytToken === "string" && typeof parsed.anthropicKey === "string") {
+    // Validate that all fields exist
+    if (
+      typeof parsed.nytToken === "string" &&
+      typeof parsed.nytSubscriberId === "string" &&
+      typeof parsed.anthropicKey === "string"
+    ) {
       return parsed
     }
 
@@ -72,6 +77,7 @@ export function updateCredential(key: keyof UserCredentials, value: string): voi
   const existing = getCredentials()
   const updated: UserCredentials = {
     nytToken: existing?.nytToken ?? "",
+    nytSubscriberId: existing?.nytSubscriberId ?? "",
     anthropicKey: existing?.anthropicKey ?? "",
     [key]: value,
   }

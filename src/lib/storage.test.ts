@@ -23,6 +23,7 @@ describe("storage", () => {
     it("returns credentials when stored", () => {
       const credentials: UserCredentials = {
         nytToken: "test-token",
+        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "sk-test-key",
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials))
@@ -55,6 +56,7 @@ describe("storage", () => {
     it("saves credentials to localStorage", () => {
       const credentials: UserCredentials = {
         nytToken: "test-token",
+        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "sk-test-key",
       }
       saveCredentials(credentials)
@@ -66,10 +68,12 @@ describe("storage", () => {
     it("overwrites existing credentials", () => {
       const oldCredentials: UserCredentials = {
         nytToken: "old-token",
+        nytSubscriberId: "old-subscriber-id",
         anthropicKey: "old-key",
       }
       const newCredentials: UserCredentials = {
         nytToken: "new-token",
+        nytSubscriberId: "new-subscriber-id",
         anthropicKey: "new-key",
       }
 
@@ -84,6 +88,7 @@ describe("storage", () => {
     it("removes credentials from localStorage", () => {
       const credentials: UserCredentials = {
         nytToken: "test-token",
+        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "sk-test-key",
       }
       saveCredentials(credentials)
@@ -106,6 +111,7 @@ describe("storage", () => {
     it("returns true when credentials are stored", () => {
       const credentials: UserCredentials = {
         nytToken: "test-token",
+        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "sk-test-key",
       }
       saveCredentials(credentials)
@@ -119,9 +125,10 @@ describe("storage", () => {
   })
 
   describe("updateCredential", () => {
-    it("updates nytToken while preserving anthropicKey", () => {
+    it("updates nytToken while preserving other fields", () => {
       const credentials: UserCredentials = {
         nytToken: "old-token",
+        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "sk-test-key",
       }
       saveCredentials(credentials)
@@ -130,13 +137,15 @@ describe("storage", () => {
 
       expect(getCredentials()).toEqual({
         nytToken: "new-token",
+        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "sk-test-key",
       })
     })
 
-    it("updates anthropicKey while preserving nytToken", () => {
+    it("updates anthropicKey while preserving other fields", () => {
       const credentials: UserCredentials = {
         nytToken: "test-token",
+        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "sk-old-key",
       }
       saveCredentials(credentials)
@@ -145,6 +154,7 @@ describe("storage", () => {
 
       expect(getCredentials()).toEqual({
         nytToken: "test-token",
+        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "sk-new-key",
       })
     })
@@ -154,6 +164,7 @@ describe("storage", () => {
 
       expect(getCredentials()).toEqual({
         nytToken: "new-token",
+        nytSubscriberId: "",
         anthropicKey: "",
       })
     })

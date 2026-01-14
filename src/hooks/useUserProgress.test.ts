@@ -26,6 +26,7 @@ vi.mock("@/lib/storage", () => ({
 
 const mockCredentials: UserCredentials = {
   nytToken: "test-nyt-token",
+  nytSubscriberId: "test-subscriber-id",
   anthropicKey: "test-anthropic-key",
 }
 
@@ -71,6 +72,7 @@ describe("useUserProgress", () => {
     it("should return hasCredentials false when nytToken is empty string", async () => {
       vi.mocked(storage.getCredentials).mockReturnValue({
         nytToken: "",
+        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "test-key",
       })
 
@@ -116,7 +118,7 @@ describe("useUserProgress", () => {
       expect(result.current.error).toBeNull()
       expect(result.current.hasCredentials).toBe(true)
       expect(api.fetchProgress).toHaveBeenCalledTimes(1)
-      expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token")
+      expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token", "test-subscriber-id")
     })
 
     it("should calculate current points correctly", async () => {

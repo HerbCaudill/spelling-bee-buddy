@@ -69,12 +69,16 @@ export async function fetchPuzzle(): Promise<GameData> {
 }
 
 /**
- * Fetch user's found words from the Worker (requires NYT token)
+ * Fetch user's found words from the Worker (requires NYT token and subscriber ID)
  */
-export async function fetchProgress(nytToken: string): Promise<CubbyResponse> {
+export async function fetchProgress(
+  nytToken: string,
+  nytSubscriberId: string,
+): Promise<CubbyResponse> {
   return fetchApi<CubbyResponse>("/progress", {
     headers: {
       "X-NYT-Token": nytToken,
+      "X-NYT-Subscriber-ID": nytSubscriberId,
     },
   })
 }

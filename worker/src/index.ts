@@ -84,12 +84,17 @@ async function handlePuzzle(): Promise<Response> {
   })
 }
 
-const NYT_CUBBY_API_URL =
-  "https://www.nytimes.com/svc/int/run/cubby/public-api/v1/responses/latest/spelling-bee-buddy/reader"
+/**
+ * Build the NYT Cubby API URL for a given subscriber ID
+ */
+function buildCubbyApiUrl(subscriberId: string): string {
+  return `https://www.nytimes.com/svc/int/run/cubby/public-api/v1/responses/latest/${subscriberId}/reader`
+}
 
 /**
  * Fetch user's progress from NYT Cubby API
  * Requires X-NYT-Token header with user's NYT-S cookie value
+ * Requires X-NYT-Subscriber-ID header with user's subscriber ID
  */
 async function handleProgress(request: Request): Promise<Response> {
   const nytToken = request.headers.get("X-NYT-Token")
@@ -97,7 +102,12 @@ async function handleProgress(request: Request): Promise<Response> {
     return errorResponse("Missing X-NYT-Token header", 401)
   }
 
-  const response = await fetch(NYT_CUBBY_API_URL, {
+  const subscriberId = request.headers.get("X-NYT-Subscriber-ID")
+  if (!subscriberId) {
+    return errorResponse("Missing X-NYT-Subscriber-ID header", 401)
+  }
+
+  const response = await fetch(buildCubbyApiUrl(subscriberId), {
     headers: {
       Cookie: `NYT-S=${nytToken}`,
       "User-Agent":

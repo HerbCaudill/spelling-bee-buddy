@@ -60,6 +60,7 @@ describe("handleProgress", () => {
       method: "GET",
       headers: {
         "X-NYT-Token": "valid-token",
+        "X-NYT-Subscriber-ID": "test-subscriber-id",
       },
     })
 
@@ -74,7 +75,7 @@ describe("handleProgress", () => {
 
     // Verify fetch was called with correct parameters
     expect(fetch).toHaveBeenCalledWith(
-      "https://www.nytimes.com/svc/int/run/cubby/public-api/v1/responses/latest/spelling-bee-buddy/reader",
+      "https://www.nytimes.com/svc/int/run/cubby/public-api/v1/responses/latest/test-subscriber-id/reader",
       expect.objectContaining({
         headers: expect.objectContaining({
           Cookie: "NYT-S=valid-token",
@@ -95,6 +96,7 @@ describe("handleProgress", () => {
       method: "GET",
       headers: {
         "X-NYT-Token": "valid-token",
+        "X-NYT-Subscriber-ID": "test-subscriber-id",
       },
     })
 
@@ -120,6 +122,7 @@ describe("handleProgress", () => {
       method: "GET",
       headers: {
         "X-NYT-Token": "invalid-token",
+        "X-NYT-Subscriber-ID": "test-subscriber-id",
       },
     })
 
@@ -143,6 +146,7 @@ describe("handleProgress", () => {
       method: "GET",
       headers: {
         "X-NYT-Token": "expired-token",
+        "X-NYT-Subscriber-ID": "test-subscriber-id",
       },
     })
 
@@ -166,6 +170,7 @@ describe("handleProgress", () => {
       method: "GET",
       headers: {
         "X-NYT-Token": "valid-token",
+        "X-NYT-Subscriber-ID": "test-subscriber-id",
       },
     })
 
