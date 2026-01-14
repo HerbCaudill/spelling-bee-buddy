@@ -150,8 +150,10 @@ describe("App", () => {
 
       render(<App />)
 
+      // Wait for progress to load (indicated by points being displayed)
+      // This ensures hasCredentials state has been updated
       await waitFor(() => {
-        expect(screen.getByText("Wednesday")).toBeInTheDocument()
+        expect(screen.getByText(/18/)).toBeInTheDocument()
       })
 
       expect(screen.queryByText(/Click the settings icon/)).not.toBeInTheDocument()
