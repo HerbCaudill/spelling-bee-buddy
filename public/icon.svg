@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background hexagon (bee honeycomb shape) -->
+  <polygon
+    points="256,20 452,130 452,350 256,460 60,350 60,130"
+    fill="#F7B32B"
+    stroke="#1a1a1a"
+    stroke-width="8"
+  />
+  <!-- Inner hexagon -->
+  <polygon
+    points="256,80 392,160 392,320 256,400 120,320 120,160"
+    fill="#FFF8E7"
+    stroke="#1a1a1a"
+    stroke-width="4"
+  />
+  <!-- Letter B (for Bee Buddy) -->
+  <text
+    x="256"
+    y="300"
+    font-family="Georgia, serif"
+    font-size="200"
+    font-weight="bold"
+    text-anchor="middle"
+    fill="#1a1a1a"
+  >B</text>
+</svg>

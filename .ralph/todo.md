@@ -1,12 +1,12 @@
 ### To do
 
-- [ ] Configure PWA for offline support
 - [ ] Deploy frontend to Vercel
 
 ---
 
 ### Done
 
+- [x] Configure PWA for offline support
 - [x] Write Playwright tests for main flows
 
 - [x] Create SettingsModal component for credentials

@@ -67,14 +67,6 @@ export function HintsList({
     )
   }
 
-  // Count remaining hints for a prefix (hints for words not yet found)
-  const getRemainingCount = (prefix: string): { remaining: number; total: number } => {
-    const prefixHints = hints[prefix] || []
-    // We can't directly match hints to found words without the actual words,
-    // so we show total hints per prefix
-    return { remaining: prefixHints.length, total: prefixHints.length }
-  }
-
   // Check if all hints in a prefix might be "found" (we can't know for sure without words)
   // For now, we just check if user found words with this prefix
   const getPrefixFoundCount = (prefix: string): number => {
