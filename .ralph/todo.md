@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Create WordGrid component (letter × length grid)
 - [ ] Create TwoLetterList component
 - [ ] Create HintsList component with collapsible sections
 - [ ] Create SettingsModal component for credentials
@@ -13,6 +12,7 @@
 
 ### Done
 
+- [x] Create WordGrid component (letter × length grid)
 - [x] Create Header component with puzzle info and links
 - [x] Add CORS headers and error handling to Worker (with tests and deployment docs)
 - [x] Create useHints hook
