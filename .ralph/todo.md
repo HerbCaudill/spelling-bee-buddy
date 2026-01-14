@@ -5,7 +5,6 @@
 - [ ] Implement Worker endpoint to proxy user progress API with auth
 - [ ] Implement Worker hint generation with Anthropic API and KV caching
 - [ ] Add CORS headers and error handling to Worker, deploy to Cloudflare
-- [ ] Create storage.ts with localStorage helpers for credentials
 - [ ] Create api.ts with functions to call Worker endpoints
 - [ ] Create usePuzzle hook
 - [ ] Create useUserProgress hook
@@ -27,3 +26,4 @@
 
 - [x] Create TypeScript interfaces (GameData, CubbyResponse, UserStats, CachedHints, UserCredentials)
 - [x] Create utils.ts with point calculation and word grouping helpers
+- [x] Create storage.ts with localStorage helpers for credentials
