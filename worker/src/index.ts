@@ -9,6 +9,9 @@
 
 import type { Env } from "./types"
 import { handleCorsPreFlight, errorResponse, jsonResponse } from "./cors"
+import { parseGameData } from "./parser"
+
+const NYT_SPELLING_BEE_URL = "https://www.nytimes.com/puzzles/spelling-bee"
 
 export default {
   async fetch(
@@ -54,10 +57,34 @@ export default {
  * This endpoint parses the page HTML to extract window.gameData
  */
 async function handlePuzzle(): Promise<Response> {
-  // TODO: Implement puzzle fetching
-  // This will be implemented in a future task:
-  // "Implement Worker endpoint to fetch and parse puzzle data from NYT page"
-  return errorResponse("Not implemented", 501)
+  const response = await fetch(NYT_SPELLING_BEE_URL, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+      "Accept-Language": "en-US,en;q=0.5",
+    },
+  })
+
+  if (!response.ok) {
+    return errorResponse(
+      `Failed to fetch puzzle page: ${response.status} ${response.statusText}`,
+      502
+    )
+  }
+
+  const html = await response.text()
+  const gameData = parseGameData(html)
+
+  if (!gameData) {
+    return errorResponse("Failed to parse puzzle data from NYT page", 502)
+  }
+
+  return jsonResponse({
+    success: true,
+    data: gameData,
+  })
 }
 
 /**

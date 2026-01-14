@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Implement Worker endpoint to fetch and parse puzzle data from NYT page
 - [ ] Implement Worker endpoint to proxy user progress API with auth
 - [ ] Implement Worker hint generation with Anthropic API and KV caching
 - [ ] Add CORS headers and error handling to Worker, deploy to Cloudflare
@@ -23,6 +22,7 @@
 
 ### Done
 
+- [x] Implement Worker endpoint to fetch and parse puzzle data from NYT page
 - [x] Set up Cloudflare Worker project with wrangler and KV namespace
 - [x] Create TypeScript interfaces (GameData, CubbyResponse, UserStats, CachedHints, UserCredentials)
 - [x] Create utils.ts with point calculation and word grouping helpers
