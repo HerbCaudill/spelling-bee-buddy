@@ -3,9 +3,12 @@ main = "src/index.ts"
 compatibility_date = "2024-01-01"
 
 # KV namespace for caching hints
+# To create: wrangler kv:namespace create HINTS_CACHE
+# Then replace the id below with the output namespace ID
 [[kv_namespaces]]
 binding = "HINTS_CACHE"
-id = "placeholder_id" # Replace with actual KV namespace ID after creation
+id = "placeholder_id"
+preview_id = "placeholder_preview_id"
 
 # Environment variables (secrets should be set via `wrangler secret put`)
 # ANTHROPIC_API_KEY - not needed, passed from client
@@ -13,3 +16,10 @@ id = "placeholder_id" # Replace with actual KV namespace ID after creation
 
 [dev]
 port = 8787
+
+# Deployment steps:
+# 1. wrangler login
+# 2. wrangler kv:namespace create HINTS_CACHE
+# 3. wrangler kv:namespace create HINTS_CACHE --preview
+# 4. Update id and preview_id above with the namespace IDs from step 2 & 3
+# 5. wrangler deploy
