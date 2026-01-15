@@ -26,15 +26,6 @@ describe("WordGrid", () => {
       ).toBeInTheDocument()
     })
 
-    it("renders summary row with total count", () => {
-      render(<WordGrid allWords={allWords} foundWords={foundWords} />)
-
-      // Should show sigma for totals row
-      expect(screen.getByRole("rowheader", { name: "Σ" })).toBeInTheDocument()
-
-      // Grand total: 3 found out of 7 words
-      expect(screen.getByLabelText("3 of 7 words found")).toBeInTheDocument()
-    })
   })
 
   describe("dot display", () => {
@@ -100,22 +91,6 @@ describe("WordGrid", () => {
     })
   })
 
-  describe("totals", () => {
-    it("shows grand total count", () => {
-      render(<WordGrid allWords={allWords} foundWords={foundWords} />)
-
-      // Grand total: 3/7 (3 found out of 7 total words)
-      expect(screen.getByLabelText("3 of 7 words found")).toBeInTheDocument()
-    })
-
-    it("shows checkmark when all words found", () => {
-      render(<WordGrid allWords={allWords} foundWords={allWords} />)
-
-      // Grand total should show checkmark
-      expect(screen.getByLabelText("7 of 7 words found, complete")).toBeInTheDocument()
-    })
-  })
-
   describe("empty states", () => {
     it("shows message when no words provided", () => {
       render(<WordGrid allWords={[]} foundWords={[]} />)
@@ -132,9 +107,6 @@ describe("WordGrid", () => {
 
       // No filled dots
       expect(screen.queryAllByText("●").length).toBe(0)
-
-      // Grand total should be 0/7
-      expect(screen.getByLabelText("0 of 7 words found")).toBeInTheDocument()
     })
   })
 
@@ -168,9 +140,6 @@ describe("WordGrid", () => {
       const filledDots = screen.getAllByText("●")
       expect(filledDots.length).toBe(7)
       expect(screen.queryAllByText("○").length).toBe(0)
-
-      // Grand total should be complete
-      expect(screen.getByLabelText("7 of 7 words found, complete")).toBeInTheDocument()
     })
   })
 
@@ -184,9 +153,9 @@ describe("WordGrid", () => {
     it("has proper row structure", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // Should have rows for A, B, C plus summary row
+      // Should have rows for A, B, C
       const rows = screen.getAllByRole("row")
-      expect(rows.length).toBe(4) // A, B, C, Summary
+      expect(rows.length).toBe(3) // A, B, C
     })
 
     it("provides accessible labels for length groups", () => {

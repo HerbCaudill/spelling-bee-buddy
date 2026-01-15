@@ -43,12 +43,6 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
   // Get sorted first letters
   const firstLetters = Array.from(groupsByFirstLetter.keys()).sort()
 
-  // Calculate totals
-  const grandTotal = {
-    found: groups.reduce((sum, g) => sum + g.found, 0),
-    total: groups.reduce((sum, g) => sum + g.total, 0),
-  }
-
   return (
     <div className={cn("space-y-3", className)}>
       <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
@@ -82,25 +76,6 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
             </div>
           )
         })}
-
-        {/* Summary row */}
-        <div className="border-border mt-4 flex items-center gap-3 border-t pt-3" role="row">
-          <span className="w-4 font-semibold" role="rowheader">
-            Σ
-          </span>
-          <span className="text-muted-foreground/40">|</span>
-          <span
-            className={cn(
-              "text-sm font-medium",
-              grandTotal.found === grandTotal.total ? "text-accent" : "text-foreground",
-            )}
-            aria-label={`${grandTotal.found} of ${grandTotal.total} words found${grandTotal.found === grandTotal.total ? ", complete" : ""}`}
-          >
-            {grandTotal.found === grandTotal.total ?
-              `✓ ${grandTotal.total}`
-            : `${grandTotal.found}/${grandTotal.total}`}
-          </span>
-        </div>
       </div>
     </div>
   )

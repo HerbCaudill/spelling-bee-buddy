@@ -1,8 +1,8 @@
 ### To do
 
-- [ ] We don't need the totals
-
 ### Done
+
+- [x] We don't need the totals - Removed the summary rows (Σ totals) from both WordGrid and TwoLetterList components. These showed the grand total count of found/total words at the bottom of each grid.
 
 - [x] Log API requests and responses to the console so we can debug why I'm not seeing my own results. If you run chrome (using the claude extension, not playwright) - Added `logApiCall` function in api.ts that logs all API requests and responses to the console in development mode. Shows request headers (with sensitive tokens redacted), response status, and response data. Uses console.group for organized output with 🐝 emoji.
 

@@ -30,12 +30,6 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   // Create a lookup map for quick access
   const cellMap = new Map(gridCells.map(cell => [`${cell.letter}-${cell.length}`, cell]))
 
-  // Calculate totals
-  const grandTotal = {
-    found: foundWords.length,
-    total: allWords.length,
-  }
-
   // Empty state
   if (allWords.length === 0) {
     return (
@@ -77,25 +71,6 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
           </div>
         )
       })}
-
-      {/* Summary row */}
-      <div className="border-border mt-4 flex items-center gap-3 border-t pt-3" role="row">
-        <span className="w-4 font-semibold" role="rowheader">
-          Σ
-        </span>
-        <span className="text-muted-foreground/40">|</span>
-        <span
-          className={cn(
-            "text-sm font-medium",
-            grandTotal.found === grandTotal.total ? "text-accent" : "text-foreground",
-          )}
-          aria-label={`${grandTotal.found} of ${grandTotal.total} words found${grandTotal.found === grandTotal.total ? ", complete" : ""}`}
-        >
-          {grandTotal.found === grandTotal.total ?
-            `✓ ${grandTotal.total}`
-          : `${grandTotal.found}/${grandTotal.total}`}
-        </span>
-      </div>
     </div>
   )
 }

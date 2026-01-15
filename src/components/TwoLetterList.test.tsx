@@ -36,18 +36,8 @@ describe("TwoLetterList", () => {
       render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
 
       const rows = screen.getAllByRole("row")
-      // Should have 4 rows: A, B, C, and Summary
-      expect(rows.length).toBe(4)
-    })
-
-    it("renders summary row with total count", () => {
-      render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
-
-      // Should show sigma for totals row
-      expect(screen.getByRole("rowheader", { name: "Σ" })).toBeInTheDocument()
-
-      // Grand total: 3 found out of 7 words
-      expect(screen.getByLabelText("3 of 7 words found")).toBeInTheDocument()
+      // Should have 3 rows: A, B, C
+      expect(rows.length).toBe(3)
     })
   })
 
@@ -102,22 +92,6 @@ describe("TwoLetterList", () => {
     })
   })
 
-  describe("totals", () => {
-    it("shows grand total count", () => {
-      render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
-
-      // Grand total: 3/7 (3 found out of 7 total words)
-      expect(screen.getByLabelText("3 of 7 words found")).toBeInTheDocument()
-    })
-
-    it("shows checkmark when all words found", () => {
-      render(<TwoLetterList allWords={allWords} foundWords={allWords} />)
-
-      // Grand total should show checkmark
-      expect(screen.getByLabelText("7 of 7 words found, complete")).toBeInTheDocument()
-    })
-  })
-
   describe("empty states", () => {
     it("shows message when no words provided", () => {
       render(<TwoLetterList allWords={[]} foundWords={[]} />)
@@ -134,9 +108,6 @@ describe("TwoLetterList", () => {
 
       // No filled dots
       expect(screen.queryAllByText("●").length).toBe(0)
-
-      // Grand total should be 0/7
-      expect(screen.getByLabelText("0 of 7 words found")).toBeInTheDocument()
     })
   })
 
@@ -174,9 +145,6 @@ describe("TwoLetterList", () => {
       const filledDots = screen.getAllByText("●")
       expect(filledDots.length).toBe(7)
       expect(screen.queryAllByText("○").length).toBe(0)
-
-      // Grand total should be complete
-      expect(screen.getByLabelText("7 of 7 words found, complete")).toBeInTheDocument()
     })
   })
 
@@ -190,9 +158,9 @@ describe("TwoLetterList", () => {
     it("has proper row structure", () => {
       render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
 
-      // Should have rows for A, B, C plus summary row
+      // Should have rows for A, B, C
       const rows = screen.getAllByRole("row")
-      expect(rows.length).toBe(4) // A, B, C, Summary
+      expect(rows.length).toBe(3) // A, B, C
     })
 
     it("provides accessible labels for prefix groups", () => {
