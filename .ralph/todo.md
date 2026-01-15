@@ -1,11 +1,10 @@
 ### To do
 
-- [ ] Create SettingsModal stories (open, with credentials, saving state)
-
 ---
 
 ### Done
 
+- [x] Create SettingsModal stories (open, with credentials, saving state)
 - [x] Create HintsList stories (empty, collapsed, expanded, complete section)
 - [x] Create Header stories (with/without date picker, different dates)
 - [x] Create StatsDisplay stories (no stats, loading, with data, user found vs unfound)
