@@ -93,7 +93,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
   const percentageText = `${Math.round(percentage)}%`
 
   return (
-    <div className="border-border flex h-6 items-center gap-2 border-b text-sm last:border-b-0">
+    <div className="border-border flex h-7 items-center gap-2 border-b text-sm last:border-b-0">
       {/* Word display - fixed width for alignment */}
       <span
         className={cn(
