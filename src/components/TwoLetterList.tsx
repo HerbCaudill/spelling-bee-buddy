@@ -11,12 +11,13 @@ export interface TwoLetterListProps {
 }
 
 /**
- * List showing word counts by two-letter prefix
+ * List showing word counts by two-letter prefix, grouped by first letter
  *
- * Displays:
- * - Two-letter prefixes (AB, AC, etc.) with found/total counts
- * - Completed prefixes shown with checkmark
- * - Organized in a responsive grid layout
+ * Displays rows like:
+ *   A | AB ●●○ AC ●●●○ AD ○○
+ *   B | BA ○○○ BE ●○
+ *
+ * Where ● = found word, ○ = unfound word
  */
 export function TwoLetterList({ allWords, foundWords, className }: TwoLetterListProps) {
   const groups = buildTwoLetterGroups(allWords, foundWords)
@@ -30,37 +31,120 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
     )
   }
 
+  // Group by first letter
+  const groupsByFirstLetter = new Map<string, typeof groups>()
+  for (const group of groups) {
+    const firstLetter = group.prefix[0]
+    const existing = groupsByFirstLetter.get(firstLetter) || []
+    existing.push(group)
+    groupsByFirstLetter.set(firstLetter, existing)
+  }
+
+  // Get sorted first letters
+  const firstLetters = Array.from(groupsByFirstLetter.keys()).sort()
+
+  // Calculate totals
+  const grandTotal = {
+    found: groups.reduce((sum, g) => sum + g.found, 0),
+    total: groups.reduce((sum, g) => sum + g.total, 0),
+  }
+
   return (
     <div className={cn("space-y-3", className)}>
       <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
         Two-letter list
       </h2>
-      <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
-        {groups.map(group => {
-          const isComplete = group.found === group.total
+      <div className="space-y-2" role="grid" aria-label="Two-letter list">
+        {firstLetters.map(letter => {
+          const prefixGroups = groupsByFirstLetter.get(letter) || []
           return (
-            <div
-              key={group.prefix}
-              className={cn(
-                "flex items-center justify-between rounded-md px-2 py-1.5 text-sm",
-                isComplete ? "bg-primary/10 text-primary" : "bg-secondary text-foreground",
-              )}
-            >
-              <span className="font-medium">{group.prefix}</span>
+            <div key={letter} className="flex items-center gap-3" role="row">
+              {/* Letter header */}
               <span
-                className={cn("text-xs", isComplete ? "text-primary" : "text-muted-foreground")}
+                className="text-muted-foreground w-4 font-medium"
+                role="rowheader"
+                aria-label={`Letter ${letter}`}
               >
-                {isComplete ?
-                  <span aria-label={`${group.found} of ${group.total}, complete`}>✓</span>
-                : <span aria-label={`${group.found} of ${group.total} found`}>
-                    {group.found}/{group.total}
-                  </span>
-                }
+                {letter}
               </span>
+              <span className="text-muted-foreground/40">|</span>
+              {/* Prefix groups with dots */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                {prefixGroups.map(group => (
+                  <PrefixGroup
+                    key={group.prefix}
+                    prefix={group.prefix}
+                    found={group.found}
+                    total={group.total}
+                  />
+                ))}
+              </div>
             </div>
           )
         })}
+
+        {/* Summary row */}
+        <div className="border-border mt-4 flex items-center gap-3 border-t pt-3" role="row">
+          <span className="w-4 font-semibold" role="rowheader">
+            Σ
+          </span>
+          <span className="text-muted-foreground/40">|</span>
+          <span
+            className={cn(
+              "text-sm font-medium",
+              grandTotal.found === grandTotal.total ? "text-primary" : "text-foreground",
+            )}
+            aria-label={`${grandTotal.found} of ${grandTotal.total} words found${grandTotal.found === grandTotal.total ? ", complete" : ""}`}
+          >
+            {grandTotal.found === grandTotal.total ?
+              `✓ ${grandTotal.total}`
+            : `${grandTotal.found}/${grandTotal.total}`}
+          </span>
+        </div>
       </div>
     </div>
+  )
+}
+
+interface PrefixGroupProps {
+  prefix: string
+  found: number
+  total: number
+}
+
+/**
+ * A group showing the prefix followed by dots for each word
+ * e.g., "AB ●●○" means 2 found and 1 unfound words starting with AB
+ */
+function PrefixGroup({ prefix, found, total }: PrefixGroupProps) {
+  const dots = []
+  for (let i = 0; i < total; i++) {
+    const isFound = i < found
+    dots.push(
+      <span
+        key={i}
+        className={cn("text-xs", isFound ? "text-primary" : "text-muted-foreground/40")}
+        aria-hidden="true"
+      >
+        {isFound ? "●" : "○"}
+      </span>,
+    )
+  }
+
+  const isComplete = found === total
+
+  return (
+    <span
+      className="inline-flex items-center gap-1"
+      role="cell"
+      aria-label={`${prefix}: ${found} of ${total} found${isComplete ? ", complete" : ""}`}
+    >
+      <span
+        className={cn("text-muted-foreground text-xs font-medium", isComplete && "text-primary")}
+      >
+        {prefix}
+      </span>
+      <span className="inline-flex gap-px">{dots}</span>
+    </span>
   )
 }
