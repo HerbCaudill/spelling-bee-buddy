@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Create TwoLetterList stories (empty, partial progress, complete)
 - [ ] Create Header stories (with/without date picker, different dates)
 - [ ] Create HintsList stories (empty, collapsed, expanded, complete section)
 - [ ] Create SettingsModal stories (open, with credentials, saving state)
@@ -10,6 +9,7 @@
 
 ### Done
 
+- [x] Create TwoLetterList stories (empty, partial progress, complete)
 - [x] Create WordGrid stories (empty, partial progress, complete, single letter)
 - [x] Create ProgressBar stories (beginner, mid-progress, genius, queen bee, with pangrams)
 - [x] Set up Storybook with Vite and Tailwind CSS configuration
