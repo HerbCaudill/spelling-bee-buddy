@@ -208,6 +208,108 @@ describe("HintsList", () => {
       // All should show 0 found
       expect(screen.getAllByLabelText(/0 of \d+ found/).length).toBeGreaterThan(0)
     })
+
+    it("filters out hints for found words of matching length", async () => {
+      const user = userEvent.setup()
+      // AB has hints: length 4 ("Capable of doing something") and length 5 ("Approximately")
+      // If user found a 4-letter word starting with AB, the 4-letter hint should be hidden
+      render(
+        <HintsList
+          hints={sampleHints}
+          foundWords={["able"]} // 4-letter word starting with AB
+        />,
+      )
+
+      await user.click(screen.getByRole("button", { name: /AB/ }))
+
+      // The 4-letter hint should be filtered out
+      expect(screen.queryByText("Capable of doing something")).not.toBeInTheDocument()
+      // The 5-letter hint should still be visible
+      expect(screen.getByText("Approximately")).toBeInTheDocument()
+    })
+
+    it("shows no hints when all words of prefix are found", async () => {
+      const user = userEvent.setup()
+      // AB has hints: length 4 and length 5
+      // If user found both, no hints should be shown
+      render(
+        <HintsList
+          hints={sampleHints}
+          foundWords={["able", "about"]} // 4-letter and 5-letter words starting with AB
+        />,
+      )
+
+      await user.click(screen.getByRole("button", { name: /AB/ }))
+
+      // Both hints should be filtered out
+      expect(screen.queryByText("Capable of doing something")).not.toBeInTheDocument()
+      expect(screen.queryByText("Approximately")).not.toBeInTheDocument()
+    })
+
+    it("only filters hints of matching length, not all hints", async () => {
+      const user = userEvent.setup()
+      // BA has hints: length 4 ("A spherical object used in games") and length 7 ("A large inflatable decoration")
+      render(
+        <HintsList
+          hints={sampleHints}
+          foundWords={["ball"]} // 4-letter word starting with BA
+        />,
+      )
+
+      await user.click(screen.getByRole("button", { name: /BA/ }))
+
+      // The 4-letter hint should be filtered out
+      expect(screen.queryByText("A spherical object used in games")).not.toBeInTheDocument()
+      // The 7-letter hint should still be visible
+      expect(screen.getByText("A large inflatable decoration")).toBeInTheDocument()
+    })
+
+    it("handles multiple hints of same length correctly", async () => {
+      const user = userEvent.setup()
+      const hintsWithSameLength: HintsByPrefix = {
+        AB: [
+          { hint: "Hint for first 4-letter word", length: 4 },
+          { hint: "Hint for second 4-letter word", length: 4 },
+          { hint: "Hint for 5-letter word", length: 5 },
+        ],
+      }
+
+      render(
+        <HintsList
+          hints={hintsWithSameLength}
+          foundWords={["able"]} // Only one 4-letter word found
+        />,
+      )
+
+      await user.click(screen.getByRole("button", { name: /AB/ }))
+
+      // One 4-letter hint should remain (we found 1, there are 2)
+      // Since we slice from index 1, the second hint should be shown
+      expect(screen.queryByText("Hint for first 4-letter word")).not.toBeInTheDocument()
+      expect(screen.getByText("Hint for second 4-letter word")).toBeInTheDocument()
+      // The 5-letter hint should still be visible
+      expect(screen.getByText("Hint for 5-letter word")).toBeInTheDocument()
+    })
+
+    it("does not filter hints for other prefixes when word is found", async () => {
+      const user = userEvent.setup()
+      // Find a word starting with AB, should not affect BA or CA hints
+      render(
+        <HintsList
+          hints={sampleHints}
+          foundWords={["able"]} // Only affects AB prefix
+        />,
+      )
+
+      // Check BA hints are unaffected
+      await user.click(screen.getByRole("button", { name: /BA/ }))
+      expect(screen.getByText("A spherical object used in games")).toBeInTheDocument()
+      expect(screen.getByText("A large inflatable decoration")).toBeInTheDocument()
+
+      // Check CA hints are unaffected
+      await user.click(screen.getByRole("button", { name: /CA/ }))
+      expect(screen.getByText("A cloak or covering")).toBeInTheDocument()
+    })
   })
 
   describe("empty states", () => {

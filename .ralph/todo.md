@@ -1,10 +1,11 @@
 ### To do
 
-- [ ] only show hints for words I haven't gotten yet
 - [ ] On the global stats, put the percentage for each word on the left side of the bar
 - [ ] Put the word grid and the two-letter words in a table with borders, rather than actually displaying a | character
 
 ### Done
+
+- [x] only show hints for words I haven't gotten yet - Modified HintsList to filter hints by matching prefix and word length. Added `getFoundWordsByLength` and `getUnfoundHints` helper functions to track which word lengths have been found for each prefix. When a user finds a word, hints of matching prefix and length are hidden. Added 5 new tests to verify filtering behavior.
 
 - [x] Any time we're showing a single letter, make it bold (e.g. in the row headings of the word grid) - Changed row header letters in WordGrid and TwoLetterList from `font-medium` to `font-bold`. Updated StatsDisplay to render the first letter of unfound words in bold (e.g., "**A** (5)"). Added tests to verify the bold styling.
 

@@ -29,6 +29,45 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
   // Sort prefixes alphabetically
   const sortedPrefixes = Object.keys(hints).sort()
 
+  // Get found words for a given prefix, grouped by length
+  const getFoundWordsByLength = (prefix: string): Map<number, number> => {
+    const countByLength = new Map<number, number>()
+    for (const word of foundSet) {
+      if (word.slice(0, 2).toUpperCase() === prefix) {
+        const len = word.length
+        countByLength.set(len, (countByLength.get(len) || 0) + 1)
+      }
+    }
+    return countByLength
+  }
+
+  // Filter hints to only show unfound ones
+  // Strategy: For each prefix/length combination, show hints only if there are more hints
+  // of that length than found words of that length for that prefix
+  const getUnfoundHints = (prefix: string, prefixHints: typeof hints[string]) => {
+    const foundByLength = getFoundWordsByLength(prefix)
+
+    // Group hints by length
+    const hintsByLength = new Map<number, typeof prefixHints>()
+    for (const hint of prefixHints) {
+      const existing = hintsByLength.get(hint.length) || []
+      existing.push(hint)
+      hintsByLength.set(hint.length, existing)
+    }
+
+    // For each length, only keep hints if there are more hints than found words
+    const unfoundHints: typeof prefixHints = []
+    for (const [length, hintsOfLength] of hintsByLength) {
+      const foundCount = foundByLength.get(length) || 0
+      // Skip found hints (take hints starting from foundCount index)
+      const remaining = hintsOfLength.slice(foundCount)
+      unfoundHints.push(...remaining)
+    }
+
+    // Sort by length to maintain consistent order
+    return unfoundHints.sort((a, b) => a.length - b.length)
+  }
+
   // Toggle a prefix's expanded state
   const togglePrefix = (prefix: string) => {
     setExpandedPrefixes(prev => {
@@ -139,14 +178,14 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
                 </span>
               </button>
 
-              {/* Hints list - collapsible */}
+              {/* Hints list - collapsible, showing only unfound hints */}
               {isExpanded && (
                 <ul
                   id={`hints-${prefix}`}
                   className="bg-muted/30 divide-border divide-y border-t"
                   role="list"
                 >
-                  {prefixHints.map((hint, index) => (
+                  {getUnfoundHints(prefix, prefixHints).map((hint, index) => (
                     <li
                       key={`${prefix}-${index}`}
                       className="flex items-center gap-2 px-3 py-2 text-sm"
