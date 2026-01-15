@@ -50,7 +50,7 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
         Two-letter list
       </h2>
       <table
-        className="border-border border-collapse border"
+        className="border-border w-full border-collapse border"
         role="grid"
         aria-label="Two-letter list"
       >
@@ -62,7 +62,7 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
               <tr key={letter} role="row" className={cn(!isLastRow && "border-border border-b")}>
                 {/* Letter header */}
                 <th
-                  className="text-muted-foreground border-border w-6 border-r pr-3 text-left font-bold"
+                  className="text-muted-foreground border-border w-6 border-r px-3 text-center font-bold"
                   role="rowheader"
                   aria-label={`Letter ${letter}`}
                 >
@@ -123,11 +123,7 @@ function PrefixGroup({ prefix, found, total }: PrefixGroupProps) {
       role="cell"
       aria-label={`${prefix}: ${found} of ${total} found${isComplete ? ", complete" : ""}`}
     >
-      <span
-        className={cn("text-muted-foreground text-xs font-medium", isComplete && "text-accent")}
-      >
-        {prefix}
-      </span>
+      <span className="text-muted-foreground text-xs font-medium">{prefix}</span>
       <span className="inline-flex gap-px">{dots}</span>
     </span>
   )
