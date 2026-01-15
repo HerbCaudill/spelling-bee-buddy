@@ -14,10 +14,11 @@ export interface WordGridProps {
  * Grid showing word counts by starting letter and word length
  *
  * Displays rows like:
- *   A | 4 ●●○ 5 ●●●○ 6 ○○
- *   B | 4 ○○○ 5 ●○
+ *   A │ 4 ●●○ 5 ●●●○ 6 ○○
+ *   B │ 4 ○○○ 5 ●○
  *
  * Where ● = found word, ○ = unfound word
+ * Uses a table with borders for proper alignment
  */
 export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   // Get unique lengths and letters for headers
@@ -40,38 +41,41 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   }
 
   return (
-    <div className={cn("space-y-2", className)} role="grid" aria-label="Word grid">
-      {/* Data rows */}
-      {letters.map(letter => {
-        // Get all length groups for this letter that have words
-        const lengthGroups = lengths
-          .map(length => {
-            const cell = cellMap.get(`${letter}-${length}`)
-            return cell ? { length, found: cell.found, total: cell.total } : null
-          })
-          .filter((group): group is { length: number; found: number; total: number } => group !== null)
+    <table className={cn("border-collapse", className)} role="grid" aria-label="Word grid">
+      <tbody>
+        {/* Data rows */}
+        {letters.map(letter => {
+          // Get all length groups for this letter that have words
+          const lengthGroups = lengths
+            .map(length => {
+              const cell = cellMap.get(`${letter}-${length}`)
+              return cell ? { length, found: cell.found, total: cell.total } : null
+            })
+            .filter((group): group is { length: number; found: number; total: number } => group !== null)
 
-        return (
-          <div key={letter} className="flex items-center gap-3" role="row">
-            {/* Letter header */}
-            <span
-              className="text-muted-foreground w-4 font-bold"
-              role="rowheader"
-              aria-label={`Letter ${letter}`}
-            >
-              {letter}
-            </span>
-            <span className="text-muted-foreground/40">|</span>
-            {/* Length groups with dots */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-              {lengthGroups.map(({ length, found, total }) => (
-                <LengthGroup key={length} length={length} found={found} total={total} />
-              ))}
-            </div>
-          </div>
-        )
-      })}
-    </div>
+          return (
+            <tr key={letter} role="row">
+              {/* Letter header */}
+              <th
+                className="text-muted-foreground w-6 border-r border-border pr-3 text-left font-bold"
+                role="rowheader"
+                aria-label={`Letter ${letter}`}
+              >
+                {letter}
+              </th>
+              {/* Length groups with dots */}
+              <td className="py-1 pl-3">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                  {lengthGroups.map(({ length, found, total }) => (
+                    <LengthGroup key={length} length={length} found={found} total={total} />
+                  ))}
+                </div>
+              </td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
   )
 }
 

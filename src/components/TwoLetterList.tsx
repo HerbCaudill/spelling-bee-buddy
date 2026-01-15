@@ -14,10 +14,11 @@ export interface TwoLetterListProps {
  * List showing word counts by two-letter prefix, grouped by first letter
  *
  * Displays rows like:
- *   A | AB ●●○ AC ●●●○ AD ○○
- *   B | BA ○○○ BE ●○
+ *   A │ AB ●●○ AC ●●●○ AD ○○
+ *   B │ BA ○○○ BE ●○
  *
  * Where ● = found word, ○ = unfound word
+ * Uses a table with borders for proper alignment
  */
 export function TwoLetterList({ allWords, foundWords, className }: TwoLetterListProps) {
   const groups = buildTwoLetterGroups(allWords, foundWords)
@@ -48,35 +49,38 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
       <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
         Two-letter list
       </h2>
-      <div className="space-y-2" role="grid" aria-label="Two-letter list">
-        {firstLetters.map(letter => {
-          const prefixGroups = groupsByFirstLetter.get(letter) || []
-          return (
-            <div key={letter} className="flex items-center gap-3" role="row">
-              {/* Letter header */}
-              <span
-                className="text-muted-foreground w-4 font-bold"
-                role="rowheader"
-                aria-label={`Letter ${letter}`}
-              >
-                {letter}
-              </span>
-              <span className="text-muted-foreground/40">|</span>
-              {/* Prefix groups with dots */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                {prefixGroups.map(group => (
-                  <PrefixGroup
-                    key={group.prefix}
-                    prefix={group.prefix}
-                    found={group.found}
-                    total={group.total}
-                  />
-                ))}
-              </div>
-            </div>
-          )
-        })}
-      </div>
+      <table className="border-collapse" role="grid" aria-label="Two-letter list">
+        <tbody>
+          {firstLetters.map(letter => {
+            const prefixGroups = groupsByFirstLetter.get(letter) || []
+            return (
+              <tr key={letter} role="row">
+                {/* Letter header */}
+                <th
+                  className="text-muted-foreground w-6 border-r border-border pr-3 text-left font-bold"
+                  role="rowheader"
+                  aria-label={`Letter ${letter}`}
+                >
+                  {letter}
+                </th>
+                {/* Prefix groups with dots */}
+                <td className="py-1 pl-3" role="presentation">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                    {prefixGroups.map(group => (
+                      <PrefixGroup
+                        key={group.prefix}
+                        prefix={group.prefix}
+                        found={group.found}
+                        total={group.total}
+                      />
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     </div>
   )
 }

@@ -178,4 +178,29 @@ describe("TwoLetterList", () => {
       expect(screen.getByRole("cell", { name: "BA: 1 of 2 found" })).toBeInTheDocument()
     })
   })
+
+  describe("table structure", () => {
+    it("renders as a table with proper elements", () => {
+      const { container } = render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
+
+      // Should use table element
+      const table = container.querySelector("table")
+      expect(table).toBeInTheDocument()
+
+      // Should have th elements for row headers
+      const rowHeaders = container.querySelectorAll("th")
+      expect(rowHeaders.length).toBe(3) // A, B, C
+
+      // Should have td elements for content
+      const cells = container.querySelectorAll("td")
+      expect(cells.length).toBe(3) // One per row
+    })
+
+    it("renders row headers with border styling", () => {
+      render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
+
+      const letterA = screen.getByRole("rowheader", { name: "Letter A" })
+      expect(letterA).toHaveClass("border-r", "border-border")
+    })
+  })
 })

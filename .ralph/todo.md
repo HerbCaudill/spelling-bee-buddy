@@ -1,8 +1,8 @@
 ### To do
 
-- [ ] Put the word grid and the two-letter words in a table with borders, rather than actually displaying a | character
-
 ### Done
+
+- [x] Put the word grid and the two-letter words in a table with borders, rather than actually displaying a | character - Refactored WordGrid and TwoLetterList to use proper HTML table elements (`<table>`, `<tr>`, `<th>`, `<td>`) with CSS border styling instead of displaying a literal `|` character. The row headers now have a right border (`border-r border-border`) to visually separate the letter from the content. Added tests to verify the table structure and border styling.
 
 - [x] On the global stats, put the percentage for each word on the left side of the bar - Moved the percentage label from inside the bar (on the right) to a fixed-width column on the left side of each word bar. This improves readability and alignment. Updated tests to use data-testid for reliable element selection.
 
