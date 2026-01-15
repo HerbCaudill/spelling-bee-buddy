@@ -9,13 +9,21 @@
  * - GET /hints         - Get AI-generated hints (requires X-Anthropic-Key header, uses KV cache)
  */
 
-import type { Env, GameData, CachedHints, ActivePuzzlesResponse, PuzzleStats } from "./types"
+import type {
+  Env,
+  GameData,
+  CachedHints,
+  ActivePuzzlesResponse,
+  PuzzleStats,
+  GameStateResponse,
+} from "./types"
 import { handleCorsPreFlight, errorResponse, jsonResponse } from "./cors"
 import { parseGameData } from "./parser"
 import { generateHints, buildCacheKey } from "./hints"
 
 const NYT_SPELLING_BEE_URL = "https://www.nytimes.com/puzzles/spelling-bee"
 const NYT_ACTIVE_PUZZLES_URL = "https://www.nytimes.com/svc/spelling-bee/v1/active.json"
+const NYT_GAME_STATE_URL = "https://www.nytimes.com/svc/games/state/spelling_bee/latest"
 const NYT_STATS_BASE_URL =
   "https://static01.nyt.com/newsgraphics/2023-01-18-spelling-bee-buddy/stats"
 
@@ -99,16 +107,8 @@ async function handlePuzzle(): Promise<Response> {
 }
 
 /**
- * Build the NYT Cubby API URL for a given subscriber ID
- */
-function buildCubbyApiUrl(subscriberId: string): string {
-  return `https://www.nytimes.com/svc/int/run/cubby/public-api/v1/responses/latest/${subscriberId}/reader`
-}
-
-/**
- * Fetch user's progress from NYT Cubby API
+ * Fetch user's progress from NYT games state API
  * Requires X-NYT-Token header with user's NYT-S cookie value
- * Requires X-NYT-Subscriber-ID header with user's subscriber ID
  */
 async function handleProgress(request: Request): Promise<Response> {
   const nytToken = request.headers.get("X-NYT-Token")
@@ -116,12 +116,7 @@ async function handleProgress(request: Request): Promise<Response> {
     return errorResponse("Missing X-NYT-Token header", 401)
   }
 
-  const subscriberId = request.headers.get("X-NYT-Subscriber-ID")
-  if (!subscriberId) {
-    return errorResponse("Missing X-NYT-Subscriber-ID header", 401)
-  }
-
-  const response = await fetch(buildCubbyApiUrl(subscriberId), {
+  const response = await fetch(NYT_GAME_STATE_URL, {
     headers: {
       Cookie: `NYT-S=${nytToken}`,
       "User-Agent":
@@ -140,30 +135,19 @@ async function handleProgress(request: Request): Promise<Response> {
     )
   }
 
-  const data = await response.json()
+  const gameState: GameStateResponse = await response.json()
 
-  // The Cubby API returns an array; we want the first (and typically only) item
-  // If no response exists yet for this puzzle, the array may be empty
-  if (!Array.isArray(data) || data.length === 0) {
-    // Return empty words array if user hasn't started the puzzle
-    return jsonResponse({
-      success: true,
-      data: {
-        response_id: "",
-        project_version: "",
-        correct: null,
-        content: {
-          words: [],
-        },
-      },
-    })
-  }
-
-  const cubbyResponse = data[0]
-
+  // Transform to CubbyResponse format for backwards compatibility with frontend
   return jsonResponse({
     success: true,
-    data: cubbyResponse,
+    data: {
+      response_id: gameState.puzzle_id,
+      project_version: gameState.puzzle_id,
+      correct: null,
+      content: {
+        words: gameState.game_data.answers,
+      },
+    },
   })
 }
 

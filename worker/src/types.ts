@@ -24,6 +24,7 @@ export interface GameData {
 
 /**
  * Response from the NYT Cubby API for user's found words
+ * @deprecated Use GameStateResponse instead
  */
 export interface CubbyResponse {
   response_id: string
@@ -32,6 +33,25 @@ export interface CubbyResponse {
   content: {
     words: string[] // Words the user has found
   }
+}
+
+/**
+ * Response from the NYT games state API (/svc/games/state/spelling_bee/latest)
+ */
+export interface GameStateResponse {
+  game_data: {
+    answers: string[] // Words the user has found
+    isPlayingArchive: boolean
+    isRevealed: boolean
+    rank: string // e.g., "Queen Bee", "Genius"
+  }
+  puzzle_id: string
+  game: string // "spelling_bee"
+  user_id: number
+  version: string
+  timestamp: number
+  print_date: string // "2026-01-15"
+  schema_version: string
 }
 
 /**

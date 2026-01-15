@@ -1,6 +1,8 @@
 ### To do
 
-(All tasks complete!)
+- [ ] For the hints, omit the word "letters" and move the number to the left of the hint
+- [ ] in settings, don't obscure the keys - show them in plain text
+- [ ] I've found all the words and it shows "-1 remaining"
 
 ---
 

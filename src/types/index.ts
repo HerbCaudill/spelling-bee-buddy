@@ -81,7 +81,6 @@ export interface CachedHints {
  */
 export interface UserCredentials {
   nytToken: string // NYT-S cookie value
-  nytSubscriberId: string // NYT subscriber ID for Cubby API
   anthropicKey: string // Anthropic API key
 }
 

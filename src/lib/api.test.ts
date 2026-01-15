@@ -95,13 +95,13 @@ describe("api", () => {
       },
     }
 
-    it("should fetch progress with NYT token and subscriber ID", async () => {
+    it("should fetch progress with NYT token", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({ success: true, data: mockCubbyResponse }),
       })
 
-      const result = await fetchProgress("my-nyt-token", "my-subscriber-id")
+      const result = await fetchProgress("my-nyt-token")
 
       expect(result).toEqual(mockCubbyResponse)
       expect(mockFetch).toHaveBeenCalledWith(
@@ -109,7 +109,6 @@ describe("api", () => {
         expect.objectContaining({
           headers: expect.objectContaining({
             "X-NYT-Token": "my-nyt-token",
-            "X-NYT-Subscriber-ID": "my-subscriber-id",
           }),
         }),
       )
@@ -125,7 +124,7 @@ describe("api", () => {
         }),
       })
 
-      const error = await fetchProgress("invalid-token", "my-subscriber-id").catch(e => e)
+      const error = await fetchProgress("invalid-token").catch(e => e)
       expect(error).toBeInstanceOf(ApiError)
       expect(error.status).toBe(401)
     })

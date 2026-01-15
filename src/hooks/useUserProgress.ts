@@ -69,11 +69,9 @@ export function useUserProgress(
 
   const fetchData = useCallback(async () => {
     const credentials = getCredentials()
-    setHasCredentials(
-      credentials !== null && credentials.nytToken !== "" && credentials.nytSubscriberId !== "",
-    )
+    setHasCredentials(credentials !== null && credentials.nytToken !== "")
 
-    if (!credentials || !credentials.nytToken || !credentials.nytSubscriberId) {
+    if (!credentials || !credentials.nytToken) {
       setFoundWords([])
       setIsLoading(false)
       return
@@ -83,10 +81,7 @@ export function useUserProgress(
     setError(null)
 
     try {
-      const data: CubbyResponse = await fetchProgress(
-        credentials.nytToken,
-        credentials.nytSubscriberId,
-      )
+      const data: CubbyResponse = await fetchProgress(credentials.nytToken)
       setFoundWords(data.content.words)
     } catch (err) {
       if (err instanceof ApiError) {

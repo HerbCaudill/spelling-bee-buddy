@@ -165,7 +165,6 @@ describe("App", () => {
     it("hides tip when credentials are configured", async () => {
       mockedStorage.getCredentials.mockReturnValue({
         nytToken: "test-token",
-        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "test-key",
       })
       mockedApi.fetchProgress.mockResolvedValue(mockProgress)
@@ -184,7 +183,6 @@ describe("App", () => {
     it("updates progress when credentials are configured", async () => {
       mockedStorage.getCredentials.mockReturnValue({
         nytToken: "test-token",
-        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "test-key",
       })
       mockedApi.fetchProgress.mockResolvedValue(mockProgress)
@@ -259,7 +257,6 @@ describe("App", () => {
       const user = userEvent.setup()
       mockedStorage.getCredentials.mockReturnValue({
         nytToken: "test-token",
-        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "test-key",
       })
       mockedApi.fetchProgress.mockResolvedValue(mockProgress)
@@ -291,7 +288,6 @@ describe("App", () => {
     it("shows progress error message when fetching progress fails", async () => {
       mockedStorage.getCredentials.mockReturnValue({
         nytToken: "test-token",
-        nytSubscriberId: "test-subscriber-id",
         anthropicKey: "test-key",
       })
       mockedApi.fetchProgress.mockRejectedValue(new Error("Progress fetch failed"))

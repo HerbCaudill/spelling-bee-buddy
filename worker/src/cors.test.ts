@@ -15,7 +15,6 @@ describe("cors", () => {
       const allowedHeaders = corsHeaders["Access-Control-Allow-Headers"]
       expect(allowedHeaders).toContain("Content-Type")
       expect(allowedHeaders).toContain("X-NYT-Token")
-      expect(allowedHeaders).toContain("X-NYT-Subscriber-ID")
       expect(allowedHeaders).toContain("X-Anthropic-Key")
     })
 

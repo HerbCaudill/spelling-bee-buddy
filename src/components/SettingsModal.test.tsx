@@ -84,14 +84,12 @@ describe("SettingsModal", () => {
     it("loads existing credentials when modal opens", () => {
       vi.mocked(storage.getCredentials).mockReturnValue({
         nytToken: "existing-nyt-token",
-        nytSubscriberId: "existing-subscriber-id",
         anthropicKey: "existing-api-key",
       })
 
       render(<SettingsModal {...defaultProps} />)
 
       expect(screen.getByLabelText("NYT Token")).toHaveValue("existing-nyt-token")
-      expect(screen.getByLabelText("NYT Subscriber ID")).toHaveValue("existing-subscriber-id")
       expect(screen.getByLabelText("Anthropic API Key")).toHaveValue("existing-api-key")
     })
 
@@ -101,7 +99,6 @@ describe("SettingsModal", () => {
       render(<SettingsModal {...defaultProps} />)
 
       expect(screen.getByLabelText("NYT Token")).toHaveValue("")
-      expect(screen.getByLabelText("NYT Subscriber ID")).toHaveValue("")
       expect(screen.getByLabelText("Anthropic API Key")).toHaveValue("")
     })
   })
@@ -149,14 +146,11 @@ describe("SettingsModal", () => {
       render(<SettingsModal {...defaultProps} onSave={onSave} onClose={onClose} />)
 
       const nytTokenInput = screen.getByLabelText("NYT Token")
-      const subscriberIdInput = screen.getByLabelText("NYT Subscriber ID")
       const apiKeyInput = screen.getByLabelText("Anthropic API Key")
 
       // Use clear + type pattern for more reliable input
       await user.clear(nytTokenInput)
       await user.type(nytTokenInput, "my-nyt-token")
-      await user.clear(subscriberIdInput)
-      await user.type(subscriberIdInput, "my-subscriber-id")
       await user.clear(apiKeyInput)
       await user.type(apiKeyInput, "my-api-key")
       await user.click(screen.getByRole("button", { name: "Save" }))
@@ -164,7 +158,6 @@ describe("SettingsModal", () => {
       await waitFor(() => {
         expect(storage.saveCredentials).toHaveBeenCalledWith({
           nytToken: "my-nyt-token",
-          nytSubscriberId: "my-subscriber-id",
           anthropicKey: "my-api-key",
         })
       })
@@ -176,14 +169,11 @@ describe("SettingsModal", () => {
       render(<SettingsModal {...defaultProps} />)
 
       const nytTokenInput = screen.getByLabelText("NYT Token")
-      const subscriberIdInput = screen.getByLabelText("NYT Subscriber ID")
       const apiKeyInput = screen.getByLabelText("Anthropic API Key")
 
       // Use clear + type pattern for more reliable input
       await user.clear(nytTokenInput)
       await user.type(nytTokenInput, "  token  ")
-      await user.clear(subscriberIdInput)
-      await user.type(subscriberIdInput, "  subid  ")
       await user.clear(apiKeyInput)
       await user.type(apiKeyInput, "  key  ")
       await user.click(screen.getByRole("button", { name: "Save" }))
@@ -191,7 +181,6 @@ describe("SettingsModal", () => {
       await waitFor(() => {
         expect(storage.saveCredentials).toHaveBeenCalledWith({
           nytToken: "token",
-          nytSubscriberId: "subid",
           anthropicKey: "key",
         })
       })
@@ -232,7 +221,6 @@ describe("SettingsModal", () => {
 
       vi.mocked(storage.getCredentials).mockReturnValue({
         nytToken: "existing-token",
-        nytSubscriberId: "existing-subscriber-id",
         anthropicKey: "existing-key",
       })
 
@@ -249,7 +237,6 @@ describe("SettingsModal", () => {
 
       vi.mocked(storage.getCredentials).mockReturnValue({
         nytToken: "existing-token",
-        nytSubscriberId: "existing-subscriber-id",
         anthropicKey: "existing-key",
       })
 
@@ -260,7 +247,6 @@ describe("SettingsModal", () => {
       await user.click(screen.getByRole("button", { name: /Clear All/i }))
 
       expect(screen.getByLabelText("NYT Token")).toHaveValue("")
-      expect(screen.getByLabelText("NYT Subscriber ID")).toHaveValue("")
       expect(screen.getByLabelText("Anthropic API Key")).toHaveValue("")
     })
 
