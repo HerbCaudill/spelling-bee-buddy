@@ -280,6 +280,7 @@ test.describe("Main app render", () => {
 
   test("renders NYT Spelling Bee link", async ({ page }) => {
     await page.goto("/")
+    await waitForAppToLoad(page)
 
     await expect(page.getByRole("link", { name: /Open NYT Spelling Bee puzzle/ })).toBeVisible()
     await expect(page.getByRole("link", { name: /Open NYT Spelling Bee puzzle/ })).toHaveAttribute(
@@ -290,18 +291,21 @@ test.describe("Main app render", () => {
 
   test("renders settings button", async ({ page }) => {
     await page.goto("/")
+    await waitForAppToLoad(page)
 
     await expect(page.getByRole("button", { name: /Open settings/ })).toBeVisible()
   })
 
   test("renders progress bar section", async ({ page }) => {
     await page.goto("/")
+    await waitForAppToLoad(page)
 
     await expect(page.getByRole("region", { name: "Progress" })).toBeVisible()
   })
 
   test("renders word grid section", async ({ page }) => {
     await page.goto("/")
+    await waitForAppToLoad(page)
 
     await expect(page.getByText("Word grid")).toBeVisible()
     await expect(page.getByRole("region", { name: "Word grid" })).toBeVisible()
@@ -309,6 +313,7 @@ test.describe("Main app render", () => {
 
   test("renders two-letter list section", async ({ page }) => {
     await page.goto("/")
+    await waitForAppToLoad(page)
 
     await expect(page.getByText("Two-letter list")).toBeVisible()
     await expect(page.getByRole("region", { name: "Two-letter list" })).toBeVisible()
@@ -316,6 +321,7 @@ test.describe("Main app render", () => {
 
   test("renders refresh progress button", async ({ page }) => {
     await page.goto("/")
+    await waitForAppToLoad(page)
 
     await expect(page.getByRole("button", { name: /Refresh progress/ })).toBeVisible()
   })
@@ -334,6 +340,7 @@ test.describe("Main app render", () => {
     })
 
     await page.goto("/")
+    await waitForAppToLoad(page)
 
     await expect(page.getByText(/Click the settings icon to add your NYT token/)).toBeVisible()
   })

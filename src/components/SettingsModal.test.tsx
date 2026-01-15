@@ -126,6 +126,11 @@ describe("SettingsModal", () => {
       const nytTokenInput = screen.getByLabelText("NYT Token")
       const apiKeyInput = screen.getByLabelText("Anthropic API Key")
 
+      // Wait for auto-focus effect to complete (100ms setTimeout in component)
+      await waitFor(() => {
+        expect(nytTokenInput).toHaveFocus()
+      })
+
       // Use clear + type pattern for more reliable input
       await user.clear(nytTokenInput)
       await user.type(nytTokenInput, "my-nyt-token")
@@ -148,6 +153,11 @@ describe("SettingsModal", () => {
 
       const nytTokenInput = screen.getByLabelText("NYT Token")
       const apiKeyInput = screen.getByLabelText("Anthropic API Key")
+
+      // Wait for auto-focus effect to complete (100ms setTimeout in component)
+      await waitFor(() => {
+        expect(nytTokenInput).toHaveFocus()
+      })
 
       // Use clear + type pattern for more reliable input
       await user.clear(nytTokenInput)
