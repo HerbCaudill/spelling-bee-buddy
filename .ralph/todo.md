@@ -1,9 +1,10 @@
 ### To do
 
 - [ ] We don't need the totals
-- [ ] Log API requests and responses to the console so we can debug why I'm not seeing my own results. If you run chrome (using the claude extension, not playwright)
 
 ### Done
+
+- [x] Log API requests and responses to the console so we can debug why I'm not seeing my own results. If you run chrome (using the claude extension, not playwright) - Added `logApiCall` function in api.ts that logs all API requests and responses to the console in development mode. Shows request headers (with sensitive tokens redacted), response status, and response data. Uses console.group for organized output with 🐝 emoji.
 
 - [x] For the pangrams, show little yellow hexagons that are filled or blank - Replaced text "1 / 2 pangrams" with SVG hexagon icons. Filled yellow hexagons show found pangrams, outline hexagons show unfound pangrams. Updated tests to verify the visual representation and aria-labels for accessibility.
 

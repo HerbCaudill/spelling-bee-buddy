@@ -38,20 +38,54 @@ export class ApiError extends Error {
 }
 
 /**
+ * Log API request/response for debugging
+ * Only logs in development mode
+ */
+function logApiCall(
+  method: string,
+  url: string,
+  requestHeaders: Record<string, string>,
+  response: Response,
+  data: ApiResponse<unknown>,
+) {
+  if (!import.meta.env.DEV) return
+
+  // Redact sensitive headers for logging
+  const safeHeaders = { ...requestHeaders }
+  if (safeHeaders["X-NYT-Token"]) {
+    safeHeaders["X-NYT-Token"] = `${safeHeaders["X-NYT-Token"].slice(0, 8)}...`
+  }
+  if (safeHeaders["X-Anthropic-Key"]) {
+    safeHeaders["X-Anthropic-Key"] = `${safeHeaders["X-Anthropic-Key"].slice(0, 8)}...`
+  }
+
+  console.group(`🐝 API ${method} ${url}`)
+  console.log("Request headers:", safeHeaders)
+  console.log("Response status:", response.status, response.statusText)
+  console.log("Response data:", data)
+  console.groupEnd()
+}
+
+/**
  * Make a request to the Worker API
  */
 async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${WORKER_URL}${endpoint}`
 
+  const requestHeaders: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options.headers as Record<string, string>),
+  }
+
   const response = await fetch(url, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
+    headers: requestHeaders,
   })
 
   const data: ApiResponse<T> = await response.json()
+
+  // Log the request/response for debugging
+  logApiCall(options.method || "GET", url, requestHeaders, response, data as ApiResponse<unknown>)
 
   if (!response.ok || !data.success) {
     throw new ApiError(
