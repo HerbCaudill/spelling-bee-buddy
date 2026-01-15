@@ -62,7 +62,7 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
               <tr key={letter} role="row" className={cn(!isLastRow && "border-border border-b")}>
                 {/* Letter header */}
                 <th
-                  className="text-muted-foreground border-border w-6 border-r px-3 text-center font-bold"
+                  className="text-muted-foreground border-border w-6 border-r px-3 text-center text-sm font-bold"
                   role="rowheader"
                   aria-label={`Letter ${letter}`}
                 >
