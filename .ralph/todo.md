@@ -3,7 +3,6 @@
 - [ ] Use storybook to show the various components in different states
 - [ ] Move "you vs other players below everything else. Replace the current display with a chart showing each word with the bar showing the percentage of people who have found it. For words that I've found, show the word. For other words, show just the first letter and number of letters, e.g. A (6)
 - [ ] Progress tracking is available for past puzzles - just pass the correct puzzle ID
-- [ ] Change the icon to a stylized bee. Change the app's color scheme to yellow #F8CC10 and black.
 - [ ] Put the date picker behind an icon in the header.
 - [ ] Let's try a different display for the word grid.
       A | 4 ●●●○◯ 5 ●●●◯ 6 ◯◯◯ 7 ◯
@@ -18,6 +17,7 @@
 
 ### Done
 
+- [x] Change the icon to a stylized bee. Change the app's color scheme to yellow #F8CC10 and black.
 - [x] Show how many pangrams there are and how many I've gotten.
 - [x] Deploy frontend to Vercel
 

@@ -19,7 +19,7 @@ export default defineConfig({
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
-        theme_color: "#F7B32B",
+        theme_color: "#F8CC10",
         orientation: "portrait-primary",
         categories: ["games", "utilities"],
         icons: [
