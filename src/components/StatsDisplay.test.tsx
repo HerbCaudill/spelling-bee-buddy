@@ -53,8 +53,13 @@ describe("StatsDisplay", () => {
 
       render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
-      // Unfound word "about" (5 letters) should show "A (5)"
-      expect(screen.getByText("A (5)")).toBeInTheDocument()
+      // Unfound word "about" (5 letters) should show "A (5)" with the letter in bold
+      // The text is split across elements so we use a function matcher
+      expect(
+        screen.getByText((content, element) => {
+          return element?.textContent === "A (5)" && element?.tagName.toLowerCase() === "span"
+        }),
+      ).toBeInTheDocument()
     })
 
     it("handles case-insensitive word matching", () => {
@@ -135,18 +140,30 @@ describe("StatsDisplay", () => {
       const allWords = ["able", "about"]
       const foundWords = ["able"]
 
-      const { container } = render(
-        <StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />,
-      )
+      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
       const foundWord = screen.getByText("able")
-      const unfoundWord = screen.getByText("A (5)")
+      // The unfound word display has text split across elements, find the parent span
+      const unfoundWord = screen.getByText((content, element) => {
+        return element?.textContent === "A (5)" && element?.tagName.toLowerCase() === "span"
+      })
 
       // Found word should have foreground text color (not muted)
       expect(foundWord).toHaveClass("text-foreground")
 
       // Unfound word should have muted text color
       expect(unfoundWord).toHaveClass("text-muted-foreground")
+    })
+
+    it("makes single letter bold for unfound words", () => {
+      const allWords = ["about"]
+      const foundWords: string[] = []
+
+      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
+
+      // The single letter "A" should be bold
+      const letterSpan = screen.getByText("A")
+      expect(letterSpan).toHaveClass("font-bold")
     })
   })
 

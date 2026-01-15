@@ -5,10 +5,15 @@ import type { PuzzleStats } from "@/types"
 /**
  * Format a word display - show the word if found, otherwise first letter + length
  * e.g. "A (6)" for an unfound 6-letter word starting with A
+ * Returns a React node with the first letter bolded for unfound words
  */
-function formatWordDisplay(word: string, isFound: boolean): string {
+function formatWordDisplay(word: string, isFound: boolean): React.ReactNode {
   if (isFound) return word
-  return `${word[0].toUpperCase()} (${word.length})`
+  return (
+    <>
+      <span className="font-bold">{word[0].toUpperCase()}</span> ({word.length})
+    </>
+  )
 }
 
 /**

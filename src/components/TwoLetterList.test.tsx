@@ -119,6 +119,14 @@ describe("TwoLetterList", () => {
 
       expect(container.firstChild).toHaveClass("custom-class")
     })
+
+    it("renders row header letters in bold", () => {
+      render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
+
+      // Row headers should be bold
+      const letterA = screen.getByRole("rowheader", { name: "Letter A" })
+      expect(letterA).toHaveClass("font-bold")
+    })
   })
 
   describe("case insensitivity", () => {

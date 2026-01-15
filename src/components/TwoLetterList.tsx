@@ -55,7 +55,7 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
             <div key={letter} className="flex items-center gap-3" role="row">
               {/* Letter header */}
               <span
-                className="text-muted-foreground w-4 font-medium"
+                className="text-muted-foreground w-4 font-bold"
                 role="rowheader"
                 aria-label={`Letter ${letter}`}
               >
