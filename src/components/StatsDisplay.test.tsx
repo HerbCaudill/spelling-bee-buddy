@@ -4,7 +4,9 @@ import { StatsDisplay, StatsNotAvailable } from "./StatsDisplay"
 import type { PuzzleStats } from "@/types"
 
 const mockStats: PuzzleStats = {
-  numberOfUsers: 1000,
+  id: 12345,
+  n: 1000, // Sample size - percentages are based on this
+  numberOfUsers: 5000, // Total players - different from n to verify we use n
   answers: {
     able: 900,
     about: 800,
@@ -22,9 +24,10 @@ describe("StatsDisplay", () => {
       expect(container.firstChild).toBeNull()
     })
 
-    it("shows player count", () => {
+    it("shows player count (using numberOfUsers, not n)", () => {
       render(<StatsDisplay stats={mockStats} allWords={["able"]} foundWords={[]} />)
-      expect(screen.getByText("1,000 players")).toBeInTheDocument()
+      // Should display numberOfUsers (5000), not n (1000)
+      expect(screen.getByText("5,000 players")).toBeInTheDocument()
     })
 
     it("shows the section header", () => {
@@ -86,18 +89,22 @@ describe("StatsDisplay", () => {
   })
 
   describe("percentage display", () => {
-    it("shows percentage for each word", () => {
+    it("calculates percentage using n (sample size), not numberOfUsers", () => {
       const allWords = ["able"]
       const foundWords: string[] = []
 
       render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
-      // able is found by 900/1000 = 90%
+      // "able" has 900 finds, n=1000, numberOfUsers=5000
+      // Percentage should be 900/1000 = 90% (using n)
+      // NOT 900/5000 = 18% (which would be wrong)
       expect(screen.getByText("90%")).toBeInTheDocument()
     })
 
     it("shows one decimal place for low percentages", () => {
       const statsWithLowPct: PuzzleStats = {
+        id: 12345,
+        n: 1000,
         numberOfUsers: 1000,
         answers: {
           rare: 50, // 5%
@@ -109,13 +116,15 @@ describe("StatsDisplay", () => {
       expect(screen.getByText("5.0%")).toBeInTheDocument()
     })
 
-    it("handles zero users gracefully", () => {
-      const statsWithZeroUsers: PuzzleStats = {
+    it("handles zero sample size gracefully", () => {
+      const statsWithZeroN: PuzzleStats = {
+        id: 12345,
+        n: 0,
         numberOfUsers: 0,
         answers: { able: 0 },
       }
 
-      render(<StatsDisplay stats={statsWithZeroUsers} allWords={["able"]} foundWords={[]} />)
+      render(<StatsDisplay stats={statsWithZeroN} allWords={["able"]} foundWords={[]} />)
 
       expect(screen.getByText("0.0%")).toBeInTheDocument()
     })

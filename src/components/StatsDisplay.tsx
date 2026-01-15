@@ -36,16 +36,17 @@ export function StatsNotAvailable({ className }: { className?: string }) {
 export function StatsDisplay({ stats, allWords, foundWords, className }: Props) {
   if (!stats) return null
 
-  const { numberOfUsers } = stats
+  const { n, numberOfUsers } = stats
 
   // Create a set of found words for quick lookup (case-insensitive)
   const foundWordsSet = new Set(foundWords.map(w => w.toLowerCase()))
 
   // Calculate word stats and sort by popularity (most found first)
+  // Use `n` (sample size) as denominator since answer counts are based on that sample
   const wordStats = allWords
     .map(word => {
       const count = stats.answers[word] ?? 0
-      const pct = numberOfUsers > 0 ? (count / numberOfUsers) * 100 : 0
+      const pct = n > 0 ? (count / n) * 100 : 0
       const isFound = foundWordsSet.has(word.toLowerCase())
       return { word, count, pct, isFound }
     })
