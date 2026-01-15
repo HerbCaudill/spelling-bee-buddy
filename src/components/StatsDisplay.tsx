@@ -31,10 +31,14 @@ export function StatsDisplay({ stats, allWords, foundWords, className }: Props) 
 
   // Calculate aggregate stats
   const totalWords = allWords.length
-  const foundCount = foundWords.length
+  // Only count found words that are actually in the puzzle's answer list
+  // (user's found words might include words not in allWords if there's a mismatch)
+  const allWordsSet = new Set(allWords.map(w => w.toLowerCase()))
+  const validFoundWords = foundWords.filter(w => allWordsSet.has(w.toLowerCase()))
+  const foundCount = validFoundWords.length
 
   // Find the rarest words the user has found
-  const foundWordStats = foundWords
+  const foundWordStats = validFoundWords
     .map(word => ({
       word,
       count: stats.answers[word] ?? 0,
@@ -111,11 +115,11 @@ export function StatsDisplay({ stats, allWords, foundWords, className }: Props) 
 
 function HardestUnfoundWords({ stats, allWords, foundWords }: HardestUnfoundWordsProps) {
   const { numberOfUsers } = stats
-  const foundSet = new Set(foundWords)
+  const foundSet = new Set(foundWords.map(w => w.toLowerCase()))
 
   // Find unfound words sorted by rarity (most common first, since those are "easiest")
   const unfoundStats = allWords
-    .filter(word => !foundSet.has(word))
+    .filter(word => !foundSet.has(word.toLowerCase()))
     .map(word => ({
       word,
       count: stats.answers[word] ?? 0,

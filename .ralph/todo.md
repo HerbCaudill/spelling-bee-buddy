@@ -2,12 +2,12 @@
 
 - [ ] For the hints, omit the word "letters" and move the number to the left of the hint
 - [ ] in settings, don't obscure the keys - show them in plain text
-- [ ] I've found all the words and it shows "-1 remaining"
 
 ---
 
 ### Done
 
+- [x] Fix "-1 remaining" bug when user found words exceed puzzle's answer list
 - [x] Deploy frontend to Vercel
 
 - [x] Configure PWA for offline support
