@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] I'm no longer seeing my own results for today
 - [ ] Make the header yellow
 - [ ] In "you vs other players" the denominator should be `n` rather than `numberOfUsers`.
 - [ ] Make the progress bar yellow
@@ -9,6 +8,8 @@
 - [ ] We don't need the totals
 
 ### Done
+
+- [x] "I'm no longer seeing my own results for today" - Investigated but could not reproduce. Added test to verify behavior. Fixed build errors by removing unused displayWeekday/displayDate props from Header component.
 
 - [x] Instead of the full date in the header, show "Today", "Yesterday", "Tuesday", etc. Also add a calendar icon.
 

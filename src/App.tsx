@@ -106,8 +106,6 @@ export function App() {
     <div className="bg-background min-h-screen">
       {/* Header */}
       <Header
-        displayWeekday={today.displayWeekday}
-        displayDate={today.displayDate}
         printDate={today.printDate}
         onSettingsClick={() => setSettingsOpen(true)}
         activePuzzles={activePuzzles}

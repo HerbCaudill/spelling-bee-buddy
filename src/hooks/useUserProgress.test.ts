@@ -337,6 +337,63 @@ describe("useUserProgress", () => {
 
       expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token", 20036)
     })
+
+    it("should refetch when puzzleId changes from undefined to a number", async () => {
+      vi.mocked(api.fetchProgress).mockResolvedValue(mockCubbyResponse)
+
+      const { result, rerender } = renderHook(
+        ({ puzzleId }) => useUserProgress(mockPangrams, true, puzzleId),
+        { initialProps: { puzzleId: undefined as number | undefined } },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      // First call with undefined
+      expect(api.fetchProgress).toHaveBeenCalledTimes(1)
+      expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token", undefined)
+
+      // Change to a specific puzzle ID
+      rerender({ puzzleId: 20035 })
+
+      await waitFor(() => {
+        expect(api.fetchProgress).toHaveBeenCalledTimes(2)
+      })
+
+      // Second call should be with the puzzle ID
+      expect(api.fetchProgress).toHaveBeenLastCalledWith("test-nyt-token", 20035)
+    })
+
+    it("should fetch with puzzleId when enabled becomes true with puzzleId already set", async () => {
+      // This test simulates the actual app flow:
+      // 1. enabled starts false (puzzle loading)
+      // 2. puzzleId is undefined
+      // 3. enabled becomes true AND puzzleId becomes defined simultaneously
+      vi.mocked(api.fetchProgress).mockResolvedValue(mockCubbyResponse)
+
+      // Start with enabled=false and no puzzleId (simulating initial load)
+      const { result, rerender } = renderHook(
+        ({ enabled, puzzleId }) => useUserProgress(mockPangrams, enabled, puzzleId),
+        { initialProps: { enabled: false, puzzleId: undefined as number | undefined } },
+      )
+
+      // No fetch should have happened yet
+      await new Promise(resolve => setTimeout(resolve, 50))
+      expect(api.fetchProgress).not.toHaveBeenCalled()
+
+      // Now puzzle loads - both enabled becomes true AND puzzleId becomes available
+      rerender({ enabled: true, puzzleId: 20035 })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      // Should have fetched exactly once with the puzzle ID
+      expect(api.fetchProgress).toHaveBeenCalledTimes(1)
+      expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token", 20035)
+      expect(result.current.foundWords).toEqual(["able", "bale", "placebo"])
+    })
   })
 
   describe("empty progress", () => {

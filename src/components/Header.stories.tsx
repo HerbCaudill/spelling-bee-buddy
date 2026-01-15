@@ -87,17 +87,9 @@ const meta: Meta<typeof Header> = {
   },
   tags: ["autodocs"],
   argTypes: {
-    displayWeekday: {
-      control: "text",
-      description: "Day of the week (e.g., 'Wednesday')",
-    },
-    displayDate: {
-      control: "text",
-      description: "Full date display (e.g., 'January 14, 2026')",
-    },
     printDate: {
       control: "text",
-      description: "ISO date for URL construction (e.g., '2026-01-14')",
+      description: "ISO date string (e.g., '2026-01-14')",
     },
     onSettingsClick: {
       action: "settings clicked",
@@ -131,8 +123,6 @@ type Story = StoryObj<typeof Header>
  */
 export const TodayWithoutPicker: Story = {
   args: {
-    displayWeekday: "Wednesday",
-    displayDate: "January 14, 2026",
     printDate: getTodayString(),
   },
 }
@@ -142,8 +132,6 @@ export const TodayWithoutPicker: Story = {
  */
 export const Yesterday: Story = {
   args: {
-    displayWeekday: "Tuesday",
-    displayDate: "January 13, 2026",
     printDate: getDaysAgoString(1),
   },
 }
@@ -153,8 +141,6 @@ export const Yesterday: Story = {
  */
 export const DayOfWeek: Story = {
   args: {
-    displayWeekday: "Sunday",
-    displayDate: "January 11, 2026",
     printDate: getDaysAgoString(3),
   },
 }
@@ -164,8 +150,6 @@ export const DayOfWeek: Story = {
  */
 export const OlderDate: Story = {
   args: {
-    displayWeekday: "Wednesday",
-    displayDate: "January 1, 2026",
     printDate: getDaysAgoString(10),
   },
 }
@@ -176,8 +160,6 @@ export const OlderDate: Story = {
  */
 export const WithDatePicker: Story = {
   args: {
-    displayWeekday: "Wednesday",
-    displayDate: "January 14, 2026",
     printDate: getTodayString(),
     ...createMockActivePuzzles(getTodayString()),
   },
@@ -189,8 +171,6 @@ export const WithDatePicker: Story = {
  */
 export const WithLastWeekPuzzles: Story = {
   args: {
-    displayWeekday: "Wednesday",
-    displayDate: "January 14, 2026",
     printDate: getTodayString(),
     ...createMockActivePuzzles(getTodayString(), { includeLastWeek: true }),
   },
@@ -202,9 +182,6 @@ export const WithLastWeekPuzzles: Story = {
  */
 export const YesterdayWithPicker: Story = {
   args: {
-    displayWeekday: "Tuesday",
-    displayDate: "January 13, 2026",
-    printDate: getDaysAgoString(1),
     ...(() => {
       const data = createMockActivePuzzles(getTodayString())
       // Select yesterday's puzzle (second to last in the list)
@@ -224,9 +201,6 @@ export const YesterdayWithPicker: Story = {
  */
 export const OlderPuzzleWithPicker: Story = {
   args: {
-    displayWeekday: "Monday",
-    displayDate: "January 11, 2026",
-    printDate: getDaysAgoString(3),
     ...(() => {
       const data = createMockActivePuzzles(getTodayString(), { includeLastWeek: true })
       // Select a puzzle from 3 days ago
@@ -251,8 +225,6 @@ export const OlderPuzzleWithPicker: Story = {
  */
 export const FirstPuzzleSelected: Story = {
   args: {
-    displayWeekday: "Wednesday",
-    displayDate: "January 14, 2026",
     ...(() => {
       const data = createMockActivePuzzles(getTodayString(), { includeLastWeek: true })
       // Select the first puzzle
@@ -272,8 +244,6 @@ export const FirstPuzzleSelected: Story = {
  */
 export const LastPuzzleSelected: Story = {
   args: {
-    displayWeekday: "Wednesday",
-    displayDate: "January 14, 2026",
     printDate: getTodayString(),
     ...(() => {
       const data = createMockActivePuzzles(getTodayString())
@@ -292,8 +262,6 @@ export const LastPuzzleSelected: Story = {
  */
 export const WithCustomClassName: Story = {
   args: {
-    displayWeekday: "Wednesday",
-    displayDate: "January 14, 2026",
     printDate: getTodayString(),
     className: "bg-amber-50",
   },

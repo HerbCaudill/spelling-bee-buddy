@@ -5,11 +5,7 @@ import { Settings, ExternalLink, ChevronLeft, ChevronRight, Calendar } from "luc
 import type { ActivePuzzlesResponse, ActivePuzzle } from "@/types"
 
 export interface HeaderProps {
-  /** Day of the week (e.g., "Wednesday") */
-  displayWeekday: string
-  /** Full date (e.g., "January 14, 2026") */
-  displayDate: string
-  /** Print date for URL construction (e.g., "2026-01-14") */
+  /** Print date in ISO format (e.g., "2026-01-14") */
   printDate: string
   /** Callback when settings button is clicked */
   onSettingsClick?: () => void
@@ -48,8 +44,6 @@ function getDayAbbrev(dateStr: string): string {
  * - Settings button for credentials
  */
 export function Header({
-  displayWeekday,
-  displayDate,
   printDate,
   onSettingsClick,
   className,

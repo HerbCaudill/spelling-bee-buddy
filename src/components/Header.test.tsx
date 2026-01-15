@@ -17,8 +17,6 @@ function getDaysAgoString(days: number): string {
 }
 
 const defaultProps = {
-  displayWeekday: "Wednesday",
-  displayDate: "January 14, 2026",
   printDate: getTodayString(), // Use today's date so relative formatting works predictably
 }
 

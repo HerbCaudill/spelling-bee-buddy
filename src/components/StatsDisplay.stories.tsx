@@ -268,16 +268,7 @@ export const ManyWords: Story = {
   },
 }
 
-// StatsNotAvailable component story
-const metaNotAvailable: Meta<typeof StatsNotAvailable> = {
-  title: "Components/StatsNotAvailable",
-  component: StatsNotAvailable,
-  parameters: {
-    layout: "padded",
-  },
-  tags: ["autodocs"],
-}
-
+// StatsNotAvailable component stories
 export const NotAvailableYet: StoryObj<typeof StatsNotAvailable> = {
   render: () => <StatsNotAvailable />,
 }
