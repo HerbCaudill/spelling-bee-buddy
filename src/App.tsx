@@ -1,9 +1,10 @@
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { AppContent } from "@/AppContent"
 import { useSelectedPuzzle } from "@/hooks/useSelectedPuzzle"
 import { useUserProgress } from "@/hooks/useUserProgress"
 import { useHints } from "@/hooks/useHints"
 import { usePuzzleStats } from "@/hooks/usePuzzleStats"
+import { usePageVisibility } from "@/hooks/usePageVisibility"
 import { Loader2, AlertCircle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -53,6 +54,14 @@ export function App() {
   const handleRefresh = async () => {
     await Promise.all([refetchPuzzle(), refetchProgress(), refetchHints(), refetchStats()])
   }
+
+  // Auto-refresh progress and stats when page becomes visible
+  const handleVisibilityChange = useCallback(() => {
+    refetchProgress()
+    refetchStats()
+  }, [refetchProgress, refetchStats])
+
+  usePageVisibility(handleVisibilityChange)
 
   // Initial loading state - only show full-page loader when we have no data yet
   // During refreshes, we keep the existing UI to avoid unmounting the settings modal
