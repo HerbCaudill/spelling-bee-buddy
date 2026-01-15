@@ -213,6 +213,15 @@ async function handleHints(request: Request, env: Env): Promise<Response> {
     }
 
     // Convert ActivePuzzle to GameData format
+    // The active.json API doesn't include pangrams in the answers array,
+    // so we need to merge them in
+    const allAnswers = [...puzzle.answers]
+    for (const pangram of puzzle.pangrams) {
+      if (!allAnswers.includes(pangram)) {
+        allAnswers.push(pangram)
+      }
+    }
+
     gameData = {
       today: {
         displayWeekday: "", // Not needed for hints
@@ -222,7 +231,7 @@ async function handleHints(request: Request, env: Env): Promise<Response> {
         outerLetters: puzzle.outer_letters.split(""),
         validLetters: [puzzle.center_letter, ...puzzle.outer_letters.split("")],
         pangrams: puzzle.pangrams,
-        answers: puzzle.answers,
+        answers: allAnswers,
         id: puzzle.id,
       },
     }
