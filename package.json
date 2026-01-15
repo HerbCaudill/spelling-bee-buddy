@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --open",
-    "dev:all": "run-p dev worker:dev",
+    "dev:app": "vite --open",
+    "dev": "node scripts/dev-all.mjs",
     "build": "tsc -b && vite build",
     "generate-icons": "node scripts/generate-icons.mjs",
     "preview": "vite preview",
@@ -17,8 +17,8 @@
     "test:worker": "pnpm --filter spelling-bee-buddy-worker test",
     "typecheck": "tsc --noEmit",
     "typecheck:worker": "pnpm --filter spelling-bee-buddy-worker typecheck",
-    "worker:dev": "pnpm --filter spelling-bee-buddy-worker dev",
-    "worker:deploy": "pnpm --filter spelling-bee-buddy-worker deploy",
+    "dev:worker": "pnpm --filter spelling-bee-buddy-worker dev",
+    "deploy:worker": "pnpm --filter spelling-bee-buddy-worker deploy",
     "format": "prettier --write .",
     "ralph": "npx @herbcaudill/ralph"
   },

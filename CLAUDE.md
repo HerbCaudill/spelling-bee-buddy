@@ -26,9 +26,9 @@ Frontend (React/Vite)  →  Cloudflare Worker  →  NYT APIs + Anthropic API
 
 ```bash
 # Development
-pnpm dev:all          # Start both frontend and worker dev servers
-pnpm dev              # Start Vite dev server only (localhost:5173)
-pnpm worker:dev       # Start Worker dev server only (localhost:8787)
+pnpm dev              # Start worker, wait until ready, then start frontend
+pnpm dev:app          # Start Vite dev server only (localhost:5173)
+pnpm dev:worker       # Start Worker dev server only (localhost:8787)
 
 # Testing
 pnpm test             # Run Vitest unit tests in watch mode
