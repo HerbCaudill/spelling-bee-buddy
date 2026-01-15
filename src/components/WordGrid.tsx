@@ -13,11 +13,11 @@ export interface WordGridProps {
 /**
  * Grid showing word counts by starting letter and word length
  *
- * Displays:
- * - Column headers: word lengths (4, 5, 6, etc.) plus total
- * - Row headers: starting letters (A, B, C, etc.)
- * - Cells: found/total count for each letter × length combination
- * - Bottom row: totals for each column
+ * Displays rows like:
+ *   A | 4 ●●○ 5 ●●●○ 6 ○○
+ *   B | 4 ○○○ 5 ●○
+ *
+ * Where ● = found word, ○ = unfound word
  */
 export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   // Get unique lengths and letters for headers
@@ -30,37 +30,7 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   // Create a lookup map for quick access
   const cellMap = new Map(gridCells.map(cell => [`${cell.letter}-${cell.length}`, cell]))
 
-  // Calculate totals by letter (for row totals)
-  const letterTotals = new Map<string, { found: number; total: number }>()
-  for (const letter of letters) {
-    let found = 0
-    let total = 0
-    for (const length of lengths) {
-      const cell = cellMap.get(`${letter}-${length}`)
-      if (cell) {
-        found += cell.found
-        total += cell.total
-      }
-    }
-    letterTotals.set(letter, { found, total })
-  }
-
-  // Calculate totals by length (for column totals)
-  const lengthTotals = new Map<number, { found: number; total: number }>()
-  for (const length of lengths) {
-    let found = 0
-    let total = 0
-    for (const letter of letters) {
-      const cell = cellMap.get(`${letter}-${length}`)
-      if (cell) {
-        found += cell.found
-        total += cell.total
-      }
-    }
-    lengthTotals.set(length, { found, total })
-  }
-
-  // Grand totals
+  // Calculate totals
   const grandTotal = {
     found: foundWords.length,
     total: allWords.length,
@@ -76,107 +46,105 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   }
 
   return (
-    <div className={cn("overflow-x-auto", className)}>
-      <table className="w-full border-collapse text-sm">
-        <thead>
-          <tr>
-            {/* Empty corner cell */}
-            <th className="text-muted-foreground p-2 text-left font-medium" />
-            {/* Length headers */}
-            {lengths.map(length => (
-              <th
-                key={length}
-                className="text-muted-foreground min-w-[3rem] p-2 text-center font-medium"
-              >
-                {length}
-              </th>
-            ))}
-            {/* Total column header */}
-            <th className="min-w-[3rem] p-2 text-center font-semibold">Σ</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* Data rows */}
-          {letters.map(letter => (
-            <tr key={letter} className="border-border border-t">
-              {/* Letter header */}
-              <td className="text-muted-foreground p-2 font-medium">{letter}</td>
-              {/* Data cells */}
-              {lengths.map(length => {
-                const cell = cellMap.get(`${letter}-${length}`)
-                return (
-                  <td key={length} className="p-2 text-center">
-                    {cell ?
-                      <CellContent found={cell.found} total={cell.total} />
-                    : <span className="text-muted-foreground/40">-</span>}
-                  </td>
-                )
-              })}
-              {/* Row total */}
-              <td className="p-2 text-center font-medium">
-                <CellContent
-                  found={letterTotals.get(letter)?.found ?? 0}
-                  total={letterTotals.get(letter)?.total ?? 0}
-                  isTotal
-                />
-              </td>
-            </tr>
-          ))}
-          {/* Totals row */}
-          <tr className="border-border border-t-2">
-            <td className="p-2 font-semibold">Σ</td>
-            {lengths.map(length => (
-              <td key={length} className="p-2 text-center font-medium">
-                <CellContent
-                  found={lengthTotals.get(length)?.found ?? 0}
-                  total={lengthTotals.get(length)?.total ?? 0}
-                  isTotal
-                />
-              </td>
-            ))}
-            {/* Grand total */}
-            <td className="p-2 text-center font-semibold">
-              <CellContent found={grandTotal.found} total={grandTotal.total} isTotal />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className={cn("space-y-2", className)} role="grid" aria-label="Word grid">
+      {/* Data rows */}
+      {letters.map(letter => {
+        // Get all length groups for this letter that have words
+        const lengthGroups = lengths
+          .map(length => {
+            const cell = cellMap.get(`${letter}-${length}`)
+            return cell ? { length, found: cell.found, total: cell.total } : null
+          })
+          .filter((group): group is { length: number; found: number; total: number } => group !== null)
+
+        return (
+          <div key={letter} className="flex items-center gap-3" role="row">
+            {/* Letter header */}
+            <span
+              className="text-muted-foreground w-4 font-medium"
+              role="rowheader"
+              aria-label={`Letter ${letter}`}
+            >
+              {letter}
+            </span>
+            <span className="text-muted-foreground/40">|</span>
+            {/* Length groups with dots */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              {lengthGroups.map(({ length, found, total }) => (
+                <LengthGroup key={length} length={length} found={found} total={total} />
+              ))}
+            </div>
+          </div>
+        )
+      })}
+
+      {/* Summary row */}
+      <div className="border-border mt-4 flex items-center gap-3 border-t pt-3" role="row">
+        <span className="w-4 font-semibold" role="rowheader">
+          Σ
+        </span>
+        <span className="text-muted-foreground/40">|</span>
+        <span
+          className={cn(
+            "text-sm font-medium",
+            grandTotal.found === grandTotal.total ? "text-primary" : "text-foreground",
+          )}
+          aria-label={`${grandTotal.found} of ${grandTotal.total} words found${grandTotal.found === grandTotal.total ? ", complete" : ""}`}
+        >
+          {grandTotal.found === grandTotal.total ?
+            `✓ ${grandTotal.total}`
+          : `${grandTotal.found}/${grandTotal.total}`}
+        </span>
+      </div>
     </div>
   )
 }
 
-interface CellContentProps {
+interface LengthGroupProps {
+  length: number
   found: number
   total: number
-  isTotal?: boolean
 }
 
 /**
- * Cell content showing found/total or checkmark if complete
+ * A group showing the length number followed by dots for each word
+ * e.g., "4 ●●○" means 2 found and 1 unfound 4-letter words
  */
-function CellContent({ found, total, isTotal = false }: CellContentProps) {
-  const isComplete = found === total && total > 0
-
-  if (isComplete) {
-    return (
+function LengthGroup({ length, found, total }: LengthGroupProps) {
+  const dots = []
+  for (let i = 0; i < total; i++) {
+    const isFound = i < found
+    dots.push(
       <span
-        className={cn("text-primary", isTotal ? "font-semibold" : "")}
-        aria-label={`${found} of ${total} found, complete`}
+        key={i}
+        className={cn(
+          "text-xs",
+          isFound ? "text-primary" : "text-muted-foreground/40",
+        )}
+        aria-hidden="true"
       >
-        ✓
-      </span>
+        {isFound ? "●" : "○"}
+      </span>,
     )
   }
 
+  const isComplete = found === total
+
   return (
     <span
-      className={cn(
-        found > 0 ? "text-foreground" : "text-muted-foreground",
-        isTotal ? "font-semibold" : "",
-      )}
-      aria-label={`${found} of ${total} found`}
+      className="inline-flex items-center gap-1"
+      role="cell"
+      aria-label={`${length}-letter words: ${found} of ${total} found${isComplete ? ", complete" : ""}`}
     >
-      {found}/{total}
+      <span
+        className={cn(
+          "text-muted-foreground text-xs font-medium",
+          isComplete && "text-primary",
+        )}
+      >
+        {length}
+      </span>
+      <span className="inline-flex gap-px">{dots}</span>
     </span>
   )
 }
