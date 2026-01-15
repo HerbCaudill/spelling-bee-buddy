@@ -1,5 +1,6 @@
 ### To do
 
+- [ ] I'm no longer seeing my own results for today
 ---
 
 ### Done
