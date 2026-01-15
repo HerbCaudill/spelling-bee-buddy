@@ -5,7 +5,6 @@ import { WordGrid } from "@/components/WordGrid"
 import { TwoLetterList } from "@/components/TwoLetterList"
 import { HintsList } from "@/components/HintsList"
 import { SettingsModal } from "@/components/SettingsModal"
-import { PuzzlePicker } from "@/components/PuzzlePicker"
 import { StatsDisplay } from "@/components/StatsDisplay"
 import { useSelectedPuzzle } from "@/hooks/useSelectedPuzzle"
 import { useUserProgress } from "@/hooks/useUserProgress"
@@ -112,19 +111,13 @@ export function App() {
         displayDate={today.displayDate}
         printDate={today.printDate}
         onSettingsClick={() => setSettingsOpen(true)}
+        activePuzzles={activePuzzles}
+        selectedPuzzleId={selectedPuzzle?.id ?? null}
+        onSelectPuzzle={selectPuzzle}
       />
 
       {/* Main content */}
       <main className="container mx-auto max-w-4xl space-y-8 px-4 py-6">
-        {/* Puzzle picker */}
-        <section aria-label="Puzzle selection">
-          <PuzzlePicker
-            activePuzzles={activePuzzles}
-            selectedPuzzleId={selectedPuzzle?.id ?? null}
-            onSelectPuzzle={selectPuzzle}
-          />
-        </section>
-
         {/* Notice for past puzzles */}
         {!isToday && (
           <div className="border-border bg-muted/50 rounded-lg border p-4 text-sm">

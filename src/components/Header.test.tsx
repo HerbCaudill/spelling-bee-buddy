@@ -1,11 +1,24 @@
 import { describe, it, expect, vi } from "vitest"
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { Header } from "./Header"
+import type { ActivePuzzlesResponse } from "@/types"
 
 const defaultProps = {
   displayWeekday: "Wednesday",
   displayDate: "January 14, 2026",
   printDate: "2026-01-14",
+}
+
+const mockActivePuzzles: ActivePuzzlesResponse = {
+  puzzles: [
+    { id: 101, print_date: "2026-01-12" },
+    { id: 102, print_date: "2026-01-13" },
+    { id: 103, print_date: "2026-01-14" },
+  ],
+  today: 2,
+  thisWeek: [0, 1, 2],
+  lastWeek: [],
 }
 
 describe("Header", () => {
@@ -87,6 +100,135 @@ describe("Header", () => {
     it("renders as a header element", () => {
       render(<Header {...defaultProps} />)
       expect(screen.getByRole("banner")).toBeInTheDocument()
+    })
+  })
+
+  describe("date picker", () => {
+    it("does not show calendar button when no activePuzzles provided", () => {
+      render(<Header {...defaultProps} />)
+      expect(screen.queryByRole("button", { name: /choose a different puzzle date/i })).not.toBeInTheDocument()
+    })
+
+    it("shows calendar button when activePuzzles is provided", () => {
+      render(
+        <Header
+          {...defaultProps}
+          activePuzzles={mockActivePuzzles}
+          selectedPuzzleId={103}
+          onSelectPuzzle={vi.fn()}
+        />
+      )
+      expect(screen.getByRole("button", { name: /choose a different puzzle date/i })).toBeInTheDocument()
+    })
+
+    it("opens date picker popover when calendar button is clicked", async () => {
+      const user = userEvent.setup()
+      render(
+        <Header
+          {...defaultProps}
+          activePuzzles={mockActivePuzzles}
+          selectedPuzzleId={103}
+          onSelectPuzzle={vi.fn()}
+        />
+      )
+
+      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      await user.click(calendarButton)
+
+      // Should show day buttons in the popover
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /previous puzzle/i })).toBeInTheDocument()
+        expect(screen.getByRole("button", { name: /next puzzle/i })).toBeInTheDocument()
+      })
+    })
+
+    it("calls onSelectPuzzle when a day is clicked", async () => {
+      const user = userEvent.setup()
+      const onSelectPuzzle = vi.fn()
+      render(
+        <Header
+          {...defaultProps}
+          activePuzzles={mockActivePuzzles}
+          selectedPuzzleId={103}
+          onSelectPuzzle={onSelectPuzzle}
+        />
+      )
+
+      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      await user.click(calendarButton)
+
+      // Click on a different day (Mon Jan 12)
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /mon, jan 12/i })).toBeInTheDocument()
+      })
+      const dayButton = screen.getByRole("button", { name: /mon, jan 12/i })
+      await user.click(dayButton)
+
+      expect(onSelectPuzzle).toHaveBeenCalledWith(101)
+    })
+
+    it("calls onSelectPuzzle when previous button is clicked", async () => {
+      const user = userEvent.setup()
+      const onSelectPuzzle = vi.fn()
+      render(
+        <Header
+          {...defaultProps}
+          activePuzzles={mockActivePuzzles}
+          selectedPuzzleId={103}
+          onSelectPuzzle={onSelectPuzzle}
+        />
+      )
+
+      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      await user.click(calendarButton)
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /previous puzzle/i })).toBeInTheDocument()
+      })
+      const prevButton = screen.getByRole("button", { name: /previous puzzle/i })
+      await user.click(prevButton)
+
+      expect(onSelectPuzzle).toHaveBeenCalledWith(102)
+    })
+
+    it("disables next button when on last puzzle", async () => {
+      const user = userEvent.setup()
+      render(
+        <Header
+          {...defaultProps}
+          activePuzzles={mockActivePuzzles}
+          selectedPuzzleId={103}
+          onSelectPuzzle={vi.fn()}
+        />
+      )
+
+      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      await user.click(calendarButton)
+
+      await waitFor(() => {
+        const nextButton = screen.getByRole("button", { name: /next puzzle/i })
+        expect(nextButton).toBeDisabled()
+      })
+    })
+
+    it("disables previous button when on first puzzle", async () => {
+      const user = userEvent.setup()
+      render(
+        <Header
+          {...defaultProps}
+          activePuzzles={mockActivePuzzles}
+          selectedPuzzleId={101}
+          onSelectPuzzle={vi.fn()}
+        />
+      )
+
+      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      await user.click(calendarButton)
+
+      await waitFor(() => {
+        const prevButton = screen.getByRole("button", { name: /previous puzzle/i })
+        expect(prevButton).toBeDisabled()
+      })
     })
   })
 })
