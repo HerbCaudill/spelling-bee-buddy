@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { X, Eye, EyeOff, Trash2 } from "lucide-react"
+import { X, Trash2 } from "lucide-react"
 import { getCredentials, saveCredentials, clearCredentials } from "@/lib/storage"
 import type { UserCredentials } from "@/types"
 
@@ -27,8 +27,6 @@ export interface SettingsModalProps {
 export function SettingsModal({ isOpen, onClose, onSave, className }: SettingsModalProps) {
   const [nytToken, setNytToken] = useState("")
   const [anthropicKey, setAnthropicKey] = useState("")
-  const [showNytToken, setShowNytToken] = useState(false)
-  const [showAnthropicKey, setShowAnthropicKey] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
   const firstInputRef = useRef<HTMLInputElement>(null)
@@ -164,28 +162,16 @@ export function SettingsModal({ isOpen, onClose, onSave, className }: SettingsMo
             <label htmlFor="nyt-token" className="block text-sm font-medium">
               NYT Token
             </label>
-            <div className="relative">
-              <input
-                ref={firstInputRef}
-                id="nyt-token"
-                type={showNytToken ? "text" : "password"}
-                value={nytToken}
-                onChange={e => setNytToken(e.target.value)}
-                placeholder="Enter your NYT-S cookie value"
-                className="border-input bg-background placeholder:text-muted-foreground focus:ring-ring w-full rounded-md border px-3 py-2 pr-10 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                autoComplete="off"
-              />
-              <button
-                type="button"
-                onClick={() => setShowNytToken(!showNytToken)}
-                className="text-muted-foreground hover:text-foreground focus:ring-ring absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 focus:ring-2 focus:outline-none"
-                aria-label={showNytToken ? "Hide NYT token" : "Show NYT token"}
-              >
-                {showNytToken ?
-                  <EyeOff className="size-4" />
-                : <Eye className="size-4" />}
-              </button>
-            </div>
+            <input
+              ref={firstInputRef}
+              id="nyt-token"
+              type="text"
+              value={nytToken}
+              onChange={e => setNytToken(e.target.value)}
+              placeholder="Enter your NYT-S cookie value"
+              className="border-input bg-background placeholder:text-muted-foreground focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
+              autoComplete="off"
+            />
             <p className="text-muted-foreground text-xs">
               Used to track your progress. Find this in your browser&apos;s cookies for nytimes.com
               (look for NYT-S).
@@ -197,27 +183,15 @@ export function SettingsModal({ isOpen, onClose, onSave, className }: SettingsMo
             <label htmlFor="anthropic-key" className="block text-sm font-medium">
               Anthropic API Key
             </label>
-            <div className="relative">
-              <input
-                id="anthropic-key"
-                type={showAnthropicKey ? "text" : "password"}
-                value={anthropicKey}
-                onChange={e => setAnthropicKey(e.target.value)}
-                placeholder="Enter your Anthropic API key"
-                className="border-input bg-background placeholder:text-muted-foreground focus:ring-ring w-full rounded-md border px-3 py-2 pr-10 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                autoComplete="off"
-              />
-              <button
-                type="button"
-                onClick={() => setShowAnthropicKey(!showAnthropicKey)}
-                className="text-muted-foreground hover:text-foreground focus:ring-ring absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 focus:ring-2 focus:outline-none"
-                aria-label={showAnthropicKey ? "Hide API key" : "Show API key"}
-              >
-                {showAnthropicKey ?
-                  <EyeOff className="size-4" />
-                : <Eye className="size-4" />}
-              </button>
-            </div>
+            <input
+              id="anthropic-key"
+              type="text"
+              value={anthropicKey}
+              onChange={e => setAnthropicKey(e.target.value)}
+              placeholder="Enter your Anthropic API key"
+              className="border-input bg-background placeholder:text-muted-foreground focus:ring-ring w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none"
+              autoComplete="off"
+            />
             <p className="text-muted-foreground text-xs">
               Used to generate AI hints.{" "}
               <a

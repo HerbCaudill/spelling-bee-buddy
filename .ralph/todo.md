@@ -1,10 +1,10 @@
 ### To do
 
-- [ ] in settings, don't obscure the keys - show them in plain text
-
 ---
 
 ### Done
+
+- [x] in settings, don't obscure the keys - show them in plain text
 
 - [x] For the hints, omit the word "letters" and move the number to the left of the hint
 - [x] Fix "-1 remaining" bug when user found words exceed puzzle's answer list

@@ -103,37 +103,15 @@ describe("SettingsModal", () => {
     })
   })
 
-  describe("password visibility toggle", () => {
-    it("hides NYT token by default", () => {
+  describe("input field types", () => {
+    it("shows NYT token in plain text", () => {
       render(<SettingsModal {...defaultProps} />)
-      expect(screen.getByLabelText("NYT Token")).toHaveAttribute("type", "password")
-    })
-
-    it("toggles NYT token visibility", async () => {
-      const user = userEvent.setup()
-      render(<SettingsModal {...defaultProps} />)
-
-      const toggleButton = screen.getByLabelText("Show NYT token")
-      await user.click(toggleButton)
-
       expect(screen.getByLabelText("NYT Token")).toHaveAttribute("type", "text")
-      expect(screen.getByLabelText("Hide NYT token")).toBeInTheDocument()
     })
 
-    it("hides Anthropic key by default", () => {
+    it("shows Anthropic key in plain text", () => {
       render(<SettingsModal {...defaultProps} />)
-      expect(screen.getByLabelText("Anthropic API Key")).toHaveAttribute("type", "password")
-    })
-
-    it("toggles Anthropic key visibility", async () => {
-      const user = userEvent.setup()
-      render(<SettingsModal {...defaultProps} />)
-
-      const toggleButton = screen.getByLabelText("Show API key")
-      await user.click(toggleButton)
-
       expect(screen.getByLabelText("Anthropic API Key")).toHaveAttribute("type", "text")
-      expect(screen.getByLabelText("Hide API key")).toBeInTheDocument()
     })
   })
 

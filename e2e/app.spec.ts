@@ -499,29 +499,18 @@ test.describe("Settings modal", () => {
     await expect(page.getByRole("textbox", { name: "Anthropic API Key" })).toHaveValue("")
   })
 
-  test("shows/hides password fields", async ({ page }) => {
+  test("shows credentials in plain text", async ({ page }) => {
     await page.goto("/")
     await expect(page.getByText("Wednesday")).toBeVisible()
 
     await page.getByRole("button", { name: /Open settings/ }).click()
 
     const nytTokenInput = page.getByRole("textbox", { name: "NYT Token" })
-    await nytTokenInput.fill("secret-token")
+    const anthropicKeyInput = page.getByRole("textbox", { name: "Anthropic API Key" })
 
-    // Field should be password type by default
-    await expect(nytTokenInput).toHaveAttribute("type", "password")
-
-    // Click show button
-    await page.getByRole("button", { name: /Show NYT token/ }).click()
-
-    // Field should now be text type
+    // Fields should be plain text type
     await expect(nytTokenInput).toHaveAttribute("type", "text")
-
-    // Click hide button
-    await page.getByRole("button", { name: /Hide NYT token/ }).click()
-
-    // Field should be password type again
-    await expect(nytTokenInput).toHaveAttribute("type", "password")
+    await expect(anthropicKeyInput).toHaveAttribute("type", "text")
   })
 })
 
