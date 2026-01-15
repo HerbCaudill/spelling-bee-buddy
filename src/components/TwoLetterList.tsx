@@ -92,7 +92,7 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
           <span
             className={cn(
               "text-sm font-medium",
-              grandTotal.found === grandTotal.total ? "text-primary" : "text-foreground",
+              grandTotal.found === grandTotal.total ? "text-accent" : "text-foreground",
             )}
             aria-label={`${grandTotal.found} of ${grandTotal.total} words found${grandTotal.found === grandTotal.total ? ", complete" : ""}`}
           >
@@ -123,7 +123,7 @@ function PrefixGroup({ prefix, found, total }: PrefixGroupProps) {
     dots.push(
       <span
         key={i}
-        className={cn("text-xs", isFound ? "text-primary" : "text-muted-foreground/40")}
+        className={cn("text-xs", isFound ? "text-accent" : "text-muted-foreground/40")}
         aria-hidden="true"
       >
         {isFound ? "●" : "○"}
@@ -140,7 +140,7 @@ function PrefixGroup({ prefix, found, total }: PrefixGroupProps) {
       aria-label={`${prefix}: ${found} of ${total} found${isComplete ? ", complete" : ""}`}
     >
       <span
-        className={cn("text-muted-foreground text-xs font-medium", isComplete && "text-primary")}
+        className={cn("text-muted-foreground text-xs font-medium", isComplete && "text-accent")}
       >
         {prefix}
       </span>

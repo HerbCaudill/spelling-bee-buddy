@@ -87,7 +87,7 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
         <span
           className={cn(
             "text-sm font-medium",
-            grandTotal.found === grandTotal.total ? "text-primary" : "text-foreground",
+            grandTotal.found === grandTotal.total ? "text-accent" : "text-foreground",
           )}
           aria-label={`${grandTotal.found} of ${grandTotal.total} words found${grandTotal.found === grandTotal.total ? ", complete" : ""}`}
         >
@@ -119,7 +119,7 @@ function LengthGroup({ length, found, total }: LengthGroupProps) {
         key={i}
         className={cn(
           "text-xs",
-          isFound ? "text-primary" : "text-muted-foreground/40",
+          isFound ? "text-accent" : "text-muted-foreground/40",
         )}
         aria-hidden="true"
       >
@@ -139,7 +139,7 @@ function LengthGroup({ length, found, total }: LengthGroupProps) {
       <span
         className={cn(
           "text-muted-foreground text-xs font-medium",
-          isComplete && "text-primary",
+          isComplete && "text-accent",
         )}
       >
         {length}

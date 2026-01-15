@@ -4,10 +4,12 @@
 - [ ] In "you vs other players" the denominator should be `n` rather than `numberOfUsers`.
 - [ ] Make the progress bar yellow
 - [ ] For the pangrams, show little yellow hexagons that are filled or blank
-- [ ] Make the filled-in dots yellow
 - [ ] We don't need the totals
+- [ ] Log API requests and responses to the console so we can debug why I'm not seeing my own results. If you run chrome (using the claude extension, not playwright)
 
 ### Done
+
+- [x] Make the filled-in dots yellow - Changed dots in WordGrid and TwoLetterList from text-primary (black) to text-accent (yellow #F8CC10). Also updated the complete state indicators to use yellow.
 
 - [x] "I'm no longer seeing my own results for today" - Investigated but could not reproduce. Added test to verify behavior. Fixed build errors by removing unused displayWeekday/displayDate props from Header component.
 
