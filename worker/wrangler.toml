@@ -7,8 +7,8 @@ compatibility_date = "2024-01-01"
 # Then replace the id below with the output namespace ID
 [[kv_namespaces]]
 binding = "HINTS_CACHE"
-id = "placeholder_id"
-preview_id = "placeholder_preview_id"
+id = "235a1099a68b4a53a85335923d01ea26"
+preview_id = "b065ef4ebfc54afba40db14835472a22"
 
 # Environment variables (secrets should be set via `wrangler secret put`)
 # ANTHROPIC_API_KEY - not needed, passed from client
