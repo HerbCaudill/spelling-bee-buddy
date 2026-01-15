@@ -148,8 +148,9 @@ describe("HintsList", () => {
       await user.click(screen.getByRole("button", { name: /AB/ }))
 
       expect(screen.getByText("Capable of doing something")).toBeInTheDocument()
-      expect(screen.getByText("4 letters")).toBeInTheDocument()
-      expect(screen.getByText("5 letters")).toBeInTheDocument()
+      // Word length is shown as just the number with aria-label for accessibility
+      expect(screen.getByLabelText("4 letters")).toBeInTheDocument()
+      expect(screen.getByLabelText("5 letters")).toBeInTheDocument()
     })
 
     it("renders hints in a list", async () => {

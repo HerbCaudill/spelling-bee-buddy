@@ -149,12 +149,15 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
                   {prefixHints.map((hint, index) => (
                     <li
                       key={`${prefix}-${index}`}
-                      className="flex items-center justify-between px-3 py-2 text-sm"
+                      className="flex items-center gap-2 px-3 py-2 text-sm"
                     >
-                      <span className="text-foreground">{hint.hint}</span>
-                      <span className="text-muted-foreground font-mono text-xs">
-                        {hint.length} letters
+                      <span
+                        className="text-muted-foreground font-mono text-xs"
+                        aria-label={`${hint.length} letters`}
+                      >
+                        {hint.length}
                       </span>
+                      <span className="text-foreground">{hint.hint}</span>
                     </li>
                   ))}
                 </ul>
