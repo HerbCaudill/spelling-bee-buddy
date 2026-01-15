@@ -81,7 +81,7 @@ export function Header({
   return (
     <header
       className={cn(
-        "border-border flex items-center justify-between border-b px-4 py-3",
+        "bg-accent text-accent-foreground flex items-center justify-between px-4 py-3",
         className,
       )}
     >
@@ -101,7 +101,7 @@ export function Header({
                 variant="ghost"
                 size="sm"
                 aria-label="Choose a different puzzle date"
-                className="text-muted-foreground"
+                className="text-accent-foreground hover:bg-accent-foreground/10"
               >
                 <Calendar className="size-4" />
                 <time dateTime={printDate} className="text-sm">
@@ -175,7 +175,7 @@ export function Header({
 
         {/* Static date display when no picker available */}
         {!hasPuzzlePicker && (
-          <div className="text-muted-foreground flex items-center gap-1 text-sm">
+          <div className="text-accent-foreground flex items-center gap-1 text-sm">
             <Calendar className="size-4" />
             <time dateTime={printDate}>
               {formatRelativeDate(printDate)}
@@ -184,7 +184,12 @@ export function Header({
         )}
 
         {/* Link to NYT Spelling Bee */}
-        <Button variant="outline" size="sm" asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          asChild
+          className="border-accent-foreground/30 bg-transparent text-accent-foreground hover:bg-accent-foreground/10"
+        >
           <a
             href={nytPuzzleUrl}
             target="_blank"
@@ -197,7 +202,13 @@ export function Header({
         </Button>
 
         {/* Settings button */}
-        <Button variant="ghost" size="icon-sm" onClick={onSettingsClick} aria-label="Open settings">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={onSettingsClick}
+          aria-label="Open settings"
+          className="text-accent-foreground hover:bg-accent-foreground/10"
+        >
           <Settings className="size-4" />
         </Button>
       </div>

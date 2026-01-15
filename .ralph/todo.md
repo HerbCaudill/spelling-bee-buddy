@@ -1,12 +1,13 @@
 ### To do
 
-- [ ] Make the header yellow
 - [ ] Make the progress bar yellow
 - [ ] For the pangrams, show little yellow hexagons that are filled or blank
 - [ ] We don't need the totals
 - [ ] Log API requests and responses to the console so we can debug why I'm not seeing my own results. If you run chrome (using the claude extension, not playwright)
 
 ### Done
+
+- [x] Make the header yellow - Added yellow background (`bg-accent`) to the header and updated all buttons and text to use `text-accent-foreground` with appropriate hover states for proper contrast on the yellow background.
 
 - [x] In "you vs other players" the denominator should be `n` rather than `numberOfUsers` - Fixed StatsDisplay to use `n` (sample size) instead of `numberOfUsers` for percentage calculations. The answer counts from the API are based on a sample of `n` players, so the percentages are now correct.
 
