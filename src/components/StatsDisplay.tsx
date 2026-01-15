@@ -109,9 +109,12 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
 
       {/* Bar container with percentage on top */}
       <div className="relative flex-1 self-stretch overflow-hidden">
-        {/* Fill bar - yellow */}
+        {/* Fill bar - yellow for found, gray for unfound */}
         <div
-          className="bg-accent absolute inset-y-0 left-0 transition-all"
+          className={cn(
+            "absolute inset-y-0 left-0 transition-all",
+            isFound ? "bg-accent" : "bg-muted",
+          )}
           style={{ width: `${Math.max(percentage, 0.5)}%` }}
         />
         {/* Percentage label positioned on top of bar */}
