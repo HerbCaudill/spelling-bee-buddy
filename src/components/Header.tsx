@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Settings, ExternalLink, Calendar, ChevronLeft, ChevronRight } from "lucide-react"
+import { Settings, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react"
 import type { ActivePuzzlesResponse, ActivePuzzle } from "@/types"
 
 export interface HeaderProps {
@@ -91,27 +91,30 @@ export function Header({
         className,
       )}
     >
-      {/* Puzzle date with optional picker */}
-      <div className="flex items-center gap-2">
-        <div className="flex flex-col">
-          <h1 className="text-lg leading-tight font-semibold">{displayWeekday}</h1>
-          <time dateTime={printDate} className="text-muted-foreground text-sm">
-            {displayDate}
-          </time>
-        </div>
+      {/* Logo and title */}
+      <div className="flex items-center gap-3">
+        <img src="/icon.svg" alt="" className="size-8" aria-hidden="true" />
+        <h1 className="text-lg font-semibold">Spelling Bee Buddy</h1>
+      </div>
 
+      {/* Actions */}
+      <div className="flex items-center gap-2">
+        {/* Date picker */}
         {hasPuzzlePicker && (
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="sm"
                 aria-label="Choose a different puzzle date"
+                className="text-muted-foreground"
               >
-                <Calendar className="size-4" />
+                <time dateTime={printDate} className="text-sm">
+                  {displayWeekday}, {displayDate}
+                </time>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-auto">
+            <PopoverContent align="end" className="w-auto">
               <div className="flex flex-col gap-3">
                 {/* Navigation arrows */}
                 <div className="flex items-center justify-between gap-2">
@@ -174,10 +177,14 @@ export function Header({
             </PopoverContent>
           </Popover>
         )}
-      </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-2">
+        {/* Static date display when no picker available */}
+        {!hasPuzzlePicker && (
+          <time dateTime={printDate} className="text-muted-foreground text-sm">
+            {displayWeekday}, {displayDate}
+          </time>
+        )}
+
         {/* Link to NYT Spelling Bee */}
         <Button variant="outline" size="sm" asChild>
           <a

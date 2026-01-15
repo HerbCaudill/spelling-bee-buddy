@@ -22,28 +22,35 @@ const mockActivePuzzles: ActivePuzzlesResponse = {
 }
 
 describe("Header", () => {
-  describe("puzzle date display", () => {
-    it("displays the weekday", () => {
+  describe("app branding", () => {
+    it("displays the app title", () => {
       render(<Header {...defaultProps} />)
-      expect(screen.getByText("Wednesday")).toBeInTheDocument()
+      expect(screen.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeInTheDocument()
     })
 
-    it("displays the full date", () => {
+    it("displays the bee icon", () => {
+      const { container } = render(<Header {...defaultProps} />)
+      const icon = container.querySelector('img[src="/icon.svg"]')
+      expect(icon).toBeInTheDocument()
+    })
+  })
+
+  describe("puzzle date display", () => {
+    it("displays the weekday and date", () => {
       render(<Header {...defaultProps} />)
-      expect(screen.getByText("January 14, 2026")).toBeInTheDocument()
+      expect(screen.getByText(/Wednesday, January 14, 2026/)).toBeInTheDocument()
     })
 
     it("renders time element with correct datetime attribute", () => {
       render(<Header {...defaultProps} />)
-      const timeElement = screen.getByText("January 14, 2026")
+      const timeElement = screen.getByText(/Wednesday, January 14, 2026/)
       expect(timeElement.tagName).toBe("TIME")
       expect(timeElement).toHaveAttribute("datetime", "2026-01-14")
     })
 
     it("displays different dates correctly", () => {
       render(<Header displayWeekday="Friday" displayDate="March 20, 2026" printDate="2026-03-20" />)
-      expect(screen.getByText("Friday")).toBeInTheDocument()
-      expect(screen.getByText("March 20, 2026")).toBeInTheDocument()
+      expect(screen.getByText(/Friday, March 20, 2026/)).toBeInTheDocument()
     })
   })
 

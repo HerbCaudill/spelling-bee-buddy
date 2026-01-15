@@ -103,7 +103,7 @@ describe("App", () => {
       await user.click(screen.getByRole("button", { name: /Try again/ }))
 
       await waitFor(() => {
-        expect(screen.getByText("Wednesday")).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeInTheDocument()
       })
     })
   })
@@ -117,9 +117,9 @@ describe("App", () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText("Wednesday")).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeInTheDocument()
       })
-      expect(screen.getByText("January 15, 2025")).toBeInTheDocument()
+      expect(screen.getByText(/Wednesday, January 15, 2025/)).toBeInTheDocument()
     })
 
     it("renders progress bar", async () => {
@@ -207,7 +207,7 @@ describe("App", () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText("Wednesday")).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeInTheDocument()
       })
 
       await user.click(screen.getByRole("button", { name: /Open settings/ }))
@@ -222,7 +222,7 @@ describe("App", () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText("Wednesday")).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeInTheDocument()
       })
 
       await user.click(screen.getByRole("button", { name: /Open settings/ }))
@@ -237,7 +237,7 @@ describe("App", () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText("Wednesday")).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeInTheDocument()
       })
 
       await user.click(screen.getByRole("button", { name: /Open settings/ }))
@@ -264,7 +264,7 @@ describe("App", () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText("Wednesday")).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeInTheDocument()
       })
 
       // Clear the mock calls
@@ -299,7 +299,7 @@ describe("App", () => {
       })
 
       // The puzzle should still render even with progress error
-      expect(screen.getByText("Wednesday")).toBeInTheDocument()
+      expect(screen.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeInTheDocument()
     })
   })
 })

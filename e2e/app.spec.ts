@@ -726,16 +726,16 @@ test.describe("Accessibility", () => {
 
   test("has proper heading structure", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeVisible()
 
-    // Main heading is the weekday
+    // Main heading is the app title
     const h1 = page.getByRole("heading", { level: 1 })
-    await expect(h1).toHaveText("Wednesday")
+    await expect(h1).toHaveText("Spelling Bee Buddy")
   })
 
   test("has proper landmark regions", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeVisible()
 
     // Header
     await expect(page.getByRole("banner")).toBeVisible()
@@ -746,7 +746,7 @@ test.describe("Accessibility", () => {
 
   test("modal has proper ARIA attributes", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeVisible()
 
     await page.getByRole("button", { name: /Open settings/ }).click()
 
@@ -756,7 +756,7 @@ test.describe("Accessibility", () => {
 
   test("form inputs have proper labels", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeVisible()
 
     await page.getByRole("button", { name: /Open settings/ }).click()
 
