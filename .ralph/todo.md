@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Create Header stories (with/without date picker, different dates)
 - [ ] Create HintsList stories (empty, collapsed, expanded, complete section)
 - [ ] Create SettingsModal stories (open, with credentials, saving state)
 
@@ -8,6 +7,7 @@
 
 ### Done
 
+- [x] Create Header stories (with/without date picker, different dates)
 - [x] Create StatsDisplay stories (no stats, loading, with data, user found vs unfound)
 - [x] Create TwoLetterList stories (empty, partial progress, complete)
 - [x] Create WordGrid stories (empty, partial progress, complete, single letter)
