@@ -23,7 +23,7 @@ import { generateHints, buildCacheKey } from "./hints"
 
 const NYT_SPELLING_BEE_URL = "https://www.nytimes.com/puzzles/spelling-bee"
 const NYT_ACTIVE_PUZZLES_URL = "https://www.nytimes.com/svc/spelling-bee/v1/active.json"
-const NYT_GAME_STATE_URL = "https://www.nytimes.com/svc/games/state/spelling_bee/latest"
+const NYT_GAME_STATE_URL = "https://www.nytimes.com/svc/games/state/spelling_bee"
 const NYT_STATS_BASE_URL =
   "https://static01.nyt.com/newsgraphics/2023-01-18-spelling-bee-buddy/stats"
 
@@ -109,6 +109,7 @@ async function handlePuzzle(): Promise<Response> {
 /**
  * Fetch user's progress from NYT games state API
  * Requires X-NYT-Token header with user's NYT-S cookie value
+ * Optionally accepts puzzleId query parameter to get progress for a specific puzzle
  */
 async function handleProgress(request: Request): Promise<Response> {
   const nytToken = request.headers.get("X-NYT-Token")
@@ -116,7 +117,16 @@ async function handleProgress(request: Request): Promise<Response> {
     return errorResponse("Missing X-NYT-Token header", 401)
   }
 
-  const response = await fetch(NYT_GAME_STATE_URL, {
+  // Check for optional puzzleId query parameter
+  const url = new URL(request.url)
+  const puzzleIdParam = url.searchParams.get("puzzleId")
+
+  // Build the appropriate URL: /latest for current puzzle, /{puzzleId} for specific puzzle
+  const stateUrl = puzzleIdParam ?
+    `${NYT_GAME_STATE_URL}/${puzzleIdParam}` :
+    `${NYT_GAME_STATE_URL}/latest`
+
+  const response = await fetch(stateUrl, {
     headers: {
       Cookie: `NYT-S=${nytToken}`,
       "User-Agent":
@@ -128,6 +138,21 @@ async function handleProgress(request: Request): Promise<Response> {
   if (!response.ok) {
     if (response.status === 401 || response.status === 403) {
       return errorResponse("Invalid or expired NYT token", 401)
+    }
+    // 404 means user hasn't started this puzzle yet
+    if (response.status === 404) {
+      // Return empty progress for puzzles not yet started
+      return jsonResponse({
+        success: true,
+        data: {
+          response_id: puzzleIdParam || "unknown",
+          project_version: puzzleIdParam || "unknown",
+          correct: null,
+          content: {
+            words: [],
+          },
+        },
+      })
     }
     return errorResponse(
       `Failed to fetch user progress: ${response.status} ${response.statusText}`,

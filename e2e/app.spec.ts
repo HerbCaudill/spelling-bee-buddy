@@ -142,8 +142,8 @@ async function setupMocks(
     }
   })
 
-  // Mock progress endpoint
-  await page.route("**/progress", async route => {
+  // Mock progress endpoint (matches both /progress and /progress?puzzleId=*)
+  await page.route("**/progress*", async route => {
     if (progressDelay) await new Promise(r => setTimeout(r, progressDelay))
     if (typeof progressResponse === "function") {
       progressResponse(route)

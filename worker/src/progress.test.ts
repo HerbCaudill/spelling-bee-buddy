@@ -156,4 +156,78 @@ describe("handleProgress", () => {
     expect(data.success).toBe(false)
     expect(data.error).toContain("Failed to fetch user progress")
   })
+
+  it("fetches progress for a specific puzzle when puzzleId is provided", async () => {
+    const mockGameStateResponse: GameStateResponse = {
+      game_data: {
+        answers: ["loop", "pool"],
+        isPlayingArchive: true,
+        isRevealed: false,
+        rank: "Nice",
+      },
+      puzzle_id: "20030",
+      game: "spelling_bee",
+      user_id: 12345,
+      version: "1",
+      timestamp: 1705276800,
+      print_date: "2026-01-10",
+      schema_version: "0.44.0",
+    }
+
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify(mockGameStateResponse), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    )
+
+    const request = new Request("http://localhost/progress?puzzleId=20030", {
+      method: "GET",
+      headers: {
+        "X-NYT-Token": "valid-token",
+      },
+    })
+
+    const response = await worker.fetch(request, mockEnv, mockCtx)
+    const data = (await response.json()) as SuccessResponse
+
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+    expect(data.data?.response_id).toBe("20030")
+    expect(data.data?.content.words).toEqual(["loop", "pool"])
+
+    // Verify fetch was called with the specific puzzle ID
+    expect(fetch).toHaveBeenCalledWith(
+      "https://www.nytimes.com/svc/games/state/spelling_bee/20030",
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Cookie: "NYT-S=valid-token",
+        }),
+      }),
+    )
+  })
+
+  it("returns empty words when user has not started the puzzle (404)", async () => {
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify({ error: "Not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      }),
+    )
+
+    const request = new Request("http://localhost/progress?puzzleId=20030", {
+      method: "GET",
+      headers: {
+        "X-NYT-Token": "valid-token",
+      },
+    })
+
+    const response = await worker.fetch(request, mockEnv, mockCtx)
+    const data = (await response.json()) as SuccessResponse
+
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+    expect(data.data?.response_id).toBe("20030")
+    expect(data.data?.content.words).toEqual([])
+  })
 })

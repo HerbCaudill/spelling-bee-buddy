@@ -116,7 +116,21 @@ describe("useUserProgress", () => {
       expect(result.current.error).toBeNull()
       expect(result.current.hasCredentials).toBe(true)
       expect(api.fetchProgress).toHaveBeenCalledTimes(1)
-      expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token")
+      expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token", undefined)
+    })
+
+    it("should fetch progress data for a specific puzzle when puzzleId is provided", async () => {
+      vi.mocked(api.fetchProgress).mockResolvedValue(mockCubbyResponse)
+
+      const { result } = renderHook(() => useUserProgress(mockPangrams, true, 20035))
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(result.current.foundWords).toEqual(["able", "bale", "placebo"])
+      expect(api.fetchProgress).toHaveBeenCalledTimes(1)
+      expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token", 20035)
     })
 
     it("should calculate current points correctly", async () => {
@@ -297,6 +311,31 @@ describe("useUserProgress", () => {
 
       expect(api.fetchProgress).toHaveBeenCalledTimes(1)
       expect(result.current.foundWords).toEqual(["able", "bale", "placebo"])
+    })
+
+    it("should refetch when puzzleId changes", async () => {
+      vi.mocked(api.fetchProgress).mockResolvedValue(mockCubbyResponse)
+
+      const { result, rerender } = renderHook(
+        ({ puzzleId }) => useUserProgress(mockPangrams, true, puzzleId),
+        { initialProps: { puzzleId: 20035 } },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token", 20035)
+      expect(api.fetchProgress).toHaveBeenCalledTimes(1)
+
+      // Change to a different puzzle
+      rerender({ puzzleId: 20036 })
+
+      await waitFor(() => {
+        expect(api.fetchProgress).toHaveBeenCalledTimes(2)
+      })
+
+      expect(api.fetchProgress).toHaveBeenCalledWith("test-nyt-token", 20036)
     })
   })
 

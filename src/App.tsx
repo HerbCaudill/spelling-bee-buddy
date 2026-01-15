@@ -35,7 +35,7 @@ export function App() {
     hasCredentials,
     currentPoints,
     refetch: refetchProgress,
-  } = useUserProgress(puzzle?.today.pangrams ?? [], !!puzzle && isToday)
+  } = useUserProgress(puzzle?.today.pangrams ?? [], !!puzzle, selectedPuzzle?.id)
 
   const {
     hints,
@@ -102,9 +102,6 @@ export function App() {
 
   const { today } = puzzle
 
-  // For non-today puzzles, we don't have progress tracking
-  const effectiveFoundWords = isToday ? foundWords : []
-
   return (
     <div className="bg-background min-h-screen">
       {/* Header */}
@@ -120,55 +117,52 @@ export function App() {
 
       {/* Main content */}
       <main className="container mx-auto max-w-4xl space-y-8 px-4 py-6">
-        {/* Notice for past puzzles */}
+        {/* Notice for past puzzles - hints only available for today */}
         {!isToday && (
           <div className="border-border bg-muted/50 rounded-lg border p-4 text-sm">
             <p className="text-muted-foreground">
-              Viewing a past puzzle. Progress tracking and hints are only available for today's
-              puzzle.
+              Viewing a past puzzle. AI-generated hints are only available for today's puzzle.
             </p>
           </div>
         )}
 
-        {/* Progress section - only show for today's puzzle */}
-        {isToday && (
-          <section aria-label="Progress">
-            {!hasCredentials && (
-              <div className="border-border bg-muted/50 mb-4 rounded-lg border p-4 text-sm">
-                <p className="text-muted-foreground">
-                  <strong>Tip:</strong> Click the settings icon to add your NYT token and track your
-                  progress.
-                </p>
-              </div>
-            )}
+        {/* Progress section */}
+        <section aria-label="Progress">
+          {!hasCredentials && (
+            <div className="border-border bg-muted/50 mb-4 rounded-lg border p-4 text-sm">
+              <p className="text-muted-foreground">
+                <strong>Tip:</strong> Click the settings icon to add your NYT token and track your
+                progress.
+              </p>
+            </div>
+          )}
 
-            {progressError && (
-              <div className="border-destructive/50 bg-destructive/10 mb-4 rounded-lg border p-4 text-sm">
-                <p className="text-destructive">{progressError}</p>
-              </div>
-            )}
+          {progressError && (
+            <div className="border-destructive/50 bg-destructive/10 mb-4 rounded-lg border p-4 text-sm">
+              <p className="text-destructive">{progressError}</p>
+            </div>
+          )}
 
-            <ProgressBar
-              currentPoints={currentPoints}
-              maxPoints={maxPoints}
-              pangrams={today.pangrams}
-              foundWords={foundWords}
-              className={progressLoading ? "opacity-50" : ""}
-            />
-          </section>
-        )}
+          <ProgressBar
+            currentPoints={currentPoints}
+            maxPoints={maxPoints}
+            pangrams={today.pangrams}
+            foundWords={foundWords}
+            className={progressLoading ? "opacity-50" : ""}
+          />
+        </section>
 
         {/* Word Grid section */}
         <section aria-label="Word grid">
           <h2 className="text-muted-foreground mb-3 text-sm font-semibold tracking-wide uppercase">
             Word grid
           </h2>
-          <WordGrid allWords={today.answers} foundWords={effectiveFoundWords} />
+          <WordGrid allWords={today.answers} foundWords={foundWords} />
         </section>
 
         {/* Two-Letter List section */}
         <section aria-label="Two-letter list">
-          <TwoLetterList allWords={today.answers} foundWords={effectiveFoundWords} />
+          <TwoLetterList allWords={today.answers} foundWords={foundWords} />
         </section>
 
         {/* Hints section - only show for today's puzzle */}
@@ -209,7 +203,7 @@ export function App() {
 
         {stats && !statsLoading && (
           <section aria-label="Player stats">
-            <StatsDisplay stats={stats} allWords={today.answers} foundWords={effectiveFoundWords} />
+            <StatsDisplay stats={stats} allWords={today.answers} foundWords={foundWords} />
           </section>
         )}
 
@@ -219,19 +213,17 @@ export function App() {
           </div>
         )}
 
-        {/* Refresh button - only show for today's puzzle */}
-        {isToday && (
-          <div className="flex justify-center pt-4">
-            <Button
-              variant="outline"
-              onClick={handleRefresh}
-              disabled={puzzleLoading || progressLoading}
-            >
-              <RefreshCw className={`mr-2 size-4 ${progressLoading ? "animate-spin" : ""}`} />
-              Refresh progress
-            </Button>
-          </div>
-        )}
+        {/* Refresh button */}
+        <div className="flex justify-center pt-4">
+          <Button
+            variant="outline"
+            onClick={handleRefresh}
+            disabled={puzzleLoading || progressLoading}
+          >
+            <RefreshCw className={`mr-2 size-4 ${progressLoading ? "animate-spin" : ""}`} />
+            Refresh progress
+          </Button>
+        </div>
       </main>
 
       {/* Settings modal */}

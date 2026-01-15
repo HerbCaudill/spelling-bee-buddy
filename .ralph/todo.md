@@ -1,11 +1,12 @@
 ### To do
 
 - [ ] Use storybook to show the various components in different states
-- [ ] Progress tracking is available for past puzzles - just pass the correct puzzle ID
 
 ---
 
 ### Done
+
+- [x] Progress tracking is available for past puzzles - just pass the correct puzzle ID
 
 - [x] Move "you vs other players" below everything else. Replace the current display with a chart showing each word with a bar showing the percentage of players who have found it. For words found by the user, show the word. For unfound words, show just the first letter and number of letters, e.g. A (6)
 - [x] Redesign TwoLetterList with dot-based display (A | AB ●●○ AC ●●●○) matching WordGrid style

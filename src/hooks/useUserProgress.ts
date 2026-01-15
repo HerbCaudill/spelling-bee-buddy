@@ -36,13 +36,14 @@ export interface UseUserProgressReturn extends UseUserProgressState {
  *
  * @param pangrams - Array of pangram words (needed for point calculation)
  * @param enabled - Whether to fetch progress (defaults to true)
+ * @param puzzleId - Optional puzzle ID to get progress for a specific puzzle
  *
  * @example
  * ```tsx
  * function ProgressDisplay() {
  *   const { puzzle } = usePuzzle()
  *   const { foundWords, currentPoints, isLoading, error, hasCredentials, refetch } =
- *     useUserProgress(puzzle?.today.pangrams ?? [])
+ *     useUserProgress(puzzle?.today.pangrams ?? [], true, puzzle?.today.id)
  *
  *   if (!hasCredentials) return <div>Please configure NYT credentials</div>
  *   if (isLoading) return <div>Loading...</div>
@@ -61,6 +62,7 @@ export interface UseUserProgressReturn extends UseUserProgressState {
 export function useUserProgress(
   pangrams: string[],
   enabled: boolean = true,
+  puzzleId?: number,
 ): UseUserProgressReturn {
   const [foundWords, setFoundWords] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -81,7 +83,7 @@ export function useUserProgress(
     setError(null)
 
     try {
-      const data: CubbyResponse = await fetchProgress(credentials.nytToken)
+      const data: CubbyResponse = await fetchProgress(credentials.nytToken, puzzleId)
       setFoundWords(data.content.words)
     } catch (err) {
       if (err instanceof ApiError) {
@@ -100,7 +102,7 @@ export function useUserProgress(
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [puzzleId])
 
   useEffect(() => {
     if (enabled) {

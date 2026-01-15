@@ -76,9 +76,12 @@ export async function fetchPuzzle(): Promise<GameData> {
 
 /**
  * Fetch user's found words from the Worker (requires NYT token)
+ * @param nytToken - User's NYT-S cookie token
+ * @param puzzleId - Optional puzzle ID to get progress for a specific puzzle
  */
-export async function fetchProgress(nytToken: string): Promise<CubbyResponse> {
-  return fetchApi<CubbyResponse>("/progress", {
+export async function fetchProgress(nytToken: string, puzzleId?: number): Promise<CubbyResponse> {
+  const endpoint = puzzleId ? `/progress?puzzleId=${puzzleId}` : "/progress"
+  return fetchApi<CubbyResponse>(endpoint, {
     headers: {
       "X-NYT-Token": nytToken,
     },
