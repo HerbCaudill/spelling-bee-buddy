@@ -94,7 +94,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
     percentage >= 10 ? `${Math.round(percentage)}%` : `${percentage.toFixed(1)}%`
 
   return (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="border-border flex items-center gap-2 border-b py-1 text-sm last:border-b-0">
       {/* Word display - fixed width for alignment */}
       <span
         className={cn(
@@ -108,7 +108,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
       </span>
 
       {/* Bar container with percentage on top */}
-      <div className="bg-muted relative h-4 flex-1 overflow-hidden rounded">
+      <div className="relative h-4 flex-1 overflow-hidden rounded">
         {/* Fill bar - yellow */}
         <div
           className="bg-accent absolute inset-y-0 left-0 rounded transition-all"
