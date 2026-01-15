@@ -35,3 +35,6 @@ playwright-report
 # Environment variables
 .env
 .env.local
+
+*storybook.log
+storybook-static

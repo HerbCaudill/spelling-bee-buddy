@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Set up Storybook with Vite and Tailwind CSS configuration
 - [ ] Create ProgressBar stories (beginner, mid-progress, genius, queen bee, with pangrams)
 - [ ] Create WordGrid stories (empty, partial progress, complete, single letter)
 - [ ] Create TwoLetterList stories (empty, partial progress, complete)
@@ -13,6 +12,7 @@
 
 ### Done
 
+- [x] Set up Storybook with Vite and Tailwind CSS configuration
 - [x] Progress tracking is available for past puzzles - just pass the correct puzzle ID
 
 - [x] Move "you vs other players" below everything else. Replace the current display with a chart showing each word with a bar showing the percentage of players who have found it. For words found by the user, show the word. For unfound words, show just the first letter and number of letters, e.g. A (6)
