@@ -4,7 +4,7 @@
 export const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, X-NYT-Token, X-Anthropic-Key",
+  "Access-Control-Allow-Headers": "Content-Type, X-NYT-Token, X-NYT-Subscriber-ID, X-Anthropic-Key",
   "Access-Control-Max-Age": "86400",
 }
 
