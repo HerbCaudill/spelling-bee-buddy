@@ -90,7 +90,7 @@ describe("Header", () => {
     it("displays calendar icon", () => {
       const { container } = render(<Header {...defaultProps} />)
       // Check for SVG with lucide-calendar class or similar
-      const calendarIcon = container.querySelector('svg.lucide-calendar')
+      const calendarIcon = container.querySelector("svg.lucide-calendar")
       expect(calendarIcon).toBeInTheDocument()
     })
   })
@@ -154,7 +154,9 @@ describe("Header", () => {
   describe("date picker", () => {
     it("does not show calendar button when no activePuzzles provided", () => {
       render(<Header {...defaultProps} />)
-      expect(screen.queryByRole("button", { name: /choose a different puzzle date/i })).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole("button", { name: /choose a different puzzle date/i }),
+      ).not.toBeInTheDocument()
     })
 
     it("shows calendar button when activePuzzles is provided", () => {
@@ -166,9 +168,11 @@ describe("Header", () => {
           activePuzzles={mockActivePuzzles}
           selectedPuzzleId={104}
           onSelectPuzzle={vi.fn()}
-        />
+        />,
       )
-      expect(screen.getByRole("button", { name: /choose a different puzzle date/i })).toBeInTheDocument()
+      expect(
+        screen.getByRole("button", { name: /choose a different puzzle date/i }),
+      ).toBeInTheDocument()
     })
 
     it("opens date picker popover when calendar button is clicked", async () => {
@@ -181,7 +185,7 @@ describe("Header", () => {
           activePuzzles={mockActivePuzzles}
           selectedPuzzleId={104}
           onSelectPuzzle={vi.fn()}
-        />
+        />,
       )
 
       const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
@@ -205,7 +209,7 @@ describe("Header", () => {
           activePuzzles={mockActivePuzzles}
           selectedPuzzleId={104}
           onSelectPuzzle={onSelectPuzzle}
-        />
+        />,
       )
 
       const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
@@ -240,7 +244,7 @@ describe("Header", () => {
           activePuzzles={mockActivePuzzles}
           selectedPuzzleId={104}
           onSelectPuzzle={onSelectPuzzle}
-        />
+        />,
       )
 
       const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
@@ -265,7 +269,7 @@ describe("Header", () => {
           activePuzzles={mockActivePuzzles}
           selectedPuzzleId={104}
           onSelectPuzzle={vi.fn()}
-        />
+        />,
       )
 
       const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
@@ -287,7 +291,7 @@ describe("Header", () => {
           activePuzzles={mockActivePuzzles}
           selectedPuzzleId={101}
           onSelectPuzzle={vi.fn()}
-        />
+        />,
       )
 
       const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })

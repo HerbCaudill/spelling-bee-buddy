@@ -120,12 +120,7 @@ describe("ProgressBar", () => {
 
     it("uses singular 'pangram' when there is only one", () => {
       render(
-        <ProgressBar
-          currentPoints={50}
-          maxPoints={100}
-          pangrams={["placebo"]}
-          foundWords={[]}
-        />,
+        <ProgressBar currentPoints={50} maxPoints={100} pangrams={["placebo"]} foundWords={[]} />,
       )
       expect(screen.getByLabelText("0 of 1 pangram found")).toBeInTheDocument()
     })
@@ -148,12 +143,7 @@ describe("ProgressBar", () => {
 
     it("does not show pangram hexagons when pangrams array is empty", () => {
       const { container } = render(
-        <ProgressBar
-          currentPoints={50}
-          maxPoints={100}
-          pangrams={[]}
-          foundWords={["able"]}
-        />,
+        <ProgressBar currentPoints={50} maxPoints={100} pangrams={[]} foundWords={["able"]} />,
       )
       expect(container.querySelectorAll("svg").length).toBe(0)
       expect(screen.queryByLabelText(/pangram/)).not.toBeInTheDocument()

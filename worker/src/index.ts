@@ -122,9 +122,8 @@ async function handleProgress(request: Request): Promise<Response> {
   const puzzleIdParam = url.searchParams.get("puzzleId")
 
   // Build the appropriate URL: /latest for current puzzle, /{puzzleId} for specific puzzle
-  const stateUrl = puzzleIdParam ?
-    `${NYT_GAME_STATE_URL}/${puzzleIdParam}` :
-    `${NYT_GAME_STATE_URL}/latest`
+  const stateUrl =
+    puzzleIdParam ? `${NYT_GAME_STATE_URL}/${puzzleIdParam}` : `${NYT_GAME_STATE_URL}/latest`
 
   const response = await fetch(stateUrl, {
     headers: {

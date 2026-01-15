@@ -202,5 +202,25 @@ describe("TwoLetterList", () => {
       const letterA = screen.getByRole("rowheader", { name: "Letter A" })
       expect(letterA).toHaveClass("border-r", "border-border")
     })
+
+    it("renders table with outer border", () => {
+      const { container } = render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
+
+      const table = container.querySelector("table")
+      expect(table).toHaveClass("border", "border-border")
+    })
+
+    it("renders horizontal gridlines between rows", () => {
+      render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
+
+      const rows = screen.getAllByRole("row")
+      // All rows except the last should have bottom border
+      rows.slice(0, -1).forEach(row => {
+        expect(row).toHaveClass("border-b", "border-border")
+      })
+      // Last row should not have bottom border
+      const lastRow = rows[rows.length - 1]
+      expect(lastRow).not.toHaveClass("border-b")
+    })
   })
 })

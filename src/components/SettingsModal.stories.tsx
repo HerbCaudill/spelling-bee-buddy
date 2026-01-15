@@ -124,8 +124,7 @@ export const Closed: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "When isOpen is false, the modal renders nothing. This story shows an empty canvas.",
+        story: "When isOpen is false, the modal renders nothing. This story shows an empty canvas.",
       },
     },
   },

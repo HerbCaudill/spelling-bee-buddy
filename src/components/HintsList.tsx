@@ -44,7 +44,7 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
   // Filter hints to only show unfound ones
   // Strategy: For each prefix/length combination, show hints only if there are more hints
   // of that length than found words of that length for that prefix
-  const getUnfoundHints = (prefix: string, prefixHints: typeof hints[string]) => {
+  const getUnfoundHints = (prefix: string, prefixHints: (typeof hints)[string]) => {
     const foundByLength = getFoundWordsByLength(prefix)
 
     // Group hints by length

@@ -49,15 +49,20 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
       <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
         Two-letter list
       </h2>
-      <table className="border-collapse" role="grid" aria-label="Two-letter list">
+      <table
+        className="border-border border-collapse border"
+        role="grid"
+        aria-label="Two-letter list"
+      >
         <tbody>
-          {firstLetters.map(letter => {
+          {firstLetters.map((letter, index) => {
             const prefixGroups = groupsByFirstLetter.get(letter) || []
+            const isLastRow = index === firstLetters.length - 1
             return (
-              <tr key={letter} role="row">
+              <tr key={letter} role="row" className={cn(!isLastRow && "border-border border-b")}>
                 {/* Letter header */}
                 <th
-                  className="text-muted-foreground w-6 border-r border-border pr-3 text-left font-bold"
+                  className="text-muted-foreground border-border w-6 border-r pr-3 text-left font-bold"
                   role="rowheader"
                   aria-label={`Letter ${letter}`}
                 >

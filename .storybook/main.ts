@@ -9,14 +9,14 @@ const __dirname = path.dirname(__filename)
 // Recursively filter out PWA-related plugins
 function filterPWAPlugins(plugins: unknown[]): unknown[] {
   return plugins
-    .filter((plugin) => {
+    .filter(plugin => {
       if (!plugin || typeof plugin !== "object") return true
       const p = plugin as Plugin
       // Filter out vite-plugin-pwa and its related plugins
       if (p.name && p.name.includes("pwa")) return false
       return true
     })
-    .map((plugin) => {
+    .map(plugin => {
       // Handle nested plugin arrays
       if (Array.isArray(plugin)) {
         return filterPWAPlugins(plugin)
@@ -34,7 +34,7 @@ const config: StorybookConfig = {
     "@storybook/addon-docs",
   ],
   framework: "@storybook/react-vite",
-  viteFinal: async (config) => {
+  viteFinal: async config => {
     // Remove PWA plugin from Storybook build
     const plugins = filterPWAPlugins(config.plugins || [])
 
@@ -46,7 +46,7 @@ const config: StorybookConfig = {
             "@": path.resolve(__dirname, "../src"),
           },
         },
-      }
+      },
     )
   },
 }

@@ -106,16 +106,7 @@ export const SingleLetter: Story = {
  */
 export const NoWordsFound: Story = {
   args: {
-    allWords: [
-      "able",
-      "abet",
-      "abate",
-      "bale",
-      "beat",
-      "cable",
-      "cabal",
-      "table",
-    ],
+    allWords: ["able", "abet", "abate", "bale", "beat", "cable", "cabal", "table"],
     foundWords: [],
   },
 }
@@ -159,18 +150,7 @@ export const LargePuzzle: Story = {
       "tall",
       "tattle",
     ],
-    foundWords: [
-      "able",
-      "abate",
-      "bale",
-      "beat",
-      "cable",
-      "call",
-      "dale",
-      "data",
-      "late",
-      "table",
-    ],
+    foundWords: ["able", "abate", "bale", "beat", "cable", "call", "dale", "data", "late", "table"],
   },
 }
 
@@ -199,14 +179,7 @@ export const VariedLengths: Story = {
  */
 export const AlmostComplete: Story = {
   args: {
-    allWords: [
-      "able",
-      "abet",
-      "abate",
-      "bale",
-      "beat",
-      "cable",
-    ],
+    allWords: ["able", "abet", "abate", "bale", "beat", "cable"],
     foundWords: [
       "able",
       "abet",

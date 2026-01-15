@@ -124,7 +124,9 @@ export function Header({
                   </Button>
 
                   <span className="text-muted-foreground text-sm">
-                    {currentIndex >= 0 ? formatDate(puzzles[currentIndex].print_date) : "Select a puzzle"}
+                    {currentIndex >= 0 ?
+                      formatDate(puzzles[currentIndex].print_date)
+                    : "Select a puzzle"}
                   </span>
 
                   <Button
@@ -177,9 +179,7 @@ export function Header({
         {!hasPuzzlePicker && (
           <div className="text-accent-foreground flex items-center gap-1 text-sm">
             <Calendar className="size-4" />
-            <time dateTime={printDate}>
-              {formatRelativeDate(printDate)}
-            </time>
+            <time dateTime={printDate}>{formatRelativeDate(printDate)}</time>
           </div>
         )}
 
@@ -188,7 +188,7 @@ export function Header({
           variant="outline"
           size="sm"
           asChild
-          className="border-accent-foreground/30 bg-transparent text-accent-foreground hover:bg-accent-foreground/10"
+          className="border-accent-foreground/30 text-accent-foreground hover:bg-accent-foreground/10 bg-transparent"
         >
           <a
             href={nytPuzzleUrl}

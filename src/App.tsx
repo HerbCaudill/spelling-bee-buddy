@@ -23,7 +23,6 @@ export function App() {
     isLoading: puzzleLoading,
     error: puzzleError,
     maxPoints,
-    isToday,
     selectPuzzle,
     refetch: refetchPuzzle,
   } = useSelectedPuzzle()

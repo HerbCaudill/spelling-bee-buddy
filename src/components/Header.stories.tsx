@@ -23,7 +23,7 @@ function getDaysAgoString(days: number): string {
  */
 function createMockActivePuzzles(
   selectedDate: string,
-  options?: { includeLastWeek?: boolean }
+  options?: { includeLastWeek?: boolean },
 ): { activePuzzles: ActivePuzzlesResponse; selectedPuzzleId: number } {
   // Generate puzzles for two weeks
   const puzzles = []
@@ -58,7 +58,7 @@ function createMockActivePuzzles(
   puzzles.forEach((puzzle, index) => {
     const puzzleDate = new Date(puzzle.print_date + "T12:00:00")
     const daysSinceSelected = Math.floor(
-      (startDate.getTime() - puzzleDate.getTime()) / (1000 * 60 * 60 * 24)
+      (startDate.getTime() - puzzleDate.getTime()) / (1000 * 60 * 60 * 24),
     )
     if (daysSinceSelected < 7) {
       thisWeek.push(index)
@@ -207,7 +207,9 @@ export const OlderPuzzleWithPicker: Story = {
       const olderPuzzle = data.activePuzzles.puzzles.find(p => {
         const puzzleDate = new Date(p.print_date + "T12:00:00")
         const today = new Date()
-        const diffDays = Math.round((today.getTime() - puzzleDate.getTime()) / (1000 * 60 * 60 * 24))
+        const diffDays = Math.round(
+          (today.getTime() - puzzleDate.getTime()) / (1000 * 60 * 60 * 24),
+        )
         return diffDays === 3
       })
       return {

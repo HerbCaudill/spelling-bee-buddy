@@ -1,6 +1,7 @@
 ### To do
 
 - [ ] On the word grid etc put horizontal gridlines and a border around the whole table
+
 ### Done
 
 - [x] Put the word grid and the two-letter words in a table with borders, rather than actually displaying a | character - Refactored WordGrid and TwoLetterList to use proper HTML table elements (`<table>`, `<tr>`, `<th>`, `<td>`) with CSS border styling instead of displaying a literal `|` character. The row headers now have a right border (`border-r border-border`) to visually separate the letter from the content. Added tests to verify the table structure and border styling.

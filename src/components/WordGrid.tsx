@@ -41,23 +41,30 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   }
 
   return (
-    <table className={cn("border-collapse", className)} role="grid" aria-label="Word grid">
+    <table
+      className={cn("border-border border-collapse border", className)}
+      role="grid"
+      aria-label="Word grid"
+    >
       <tbody>
         {/* Data rows */}
-        {letters.map(letter => {
+        {letters.map((letter, index) => {
           // Get all length groups for this letter that have words
           const lengthGroups = lengths
             .map(length => {
               const cell = cellMap.get(`${letter}-${length}`)
               return cell ? { length, found: cell.found, total: cell.total } : null
             })
-            .filter((group): group is { length: number; found: number; total: number } => group !== null)
+            .filter(
+              (group): group is { length: number; found: number; total: number } => group !== null,
+            )
 
+          const isLastRow = index === letters.length - 1
           return (
-            <tr key={letter} role="row">
+            <tr key={letter} role="row" className={cn(!isLastRow && "border-border border-b")}>
               {/* Letter header */}
               <th
-                className="text-muted-foreground w-6 border-r border-border pr-3 text-left font-bold"
+                className="text-muted-foreground border-border w-6 border-r pr-3 text-left font-bold"
                 role="rowheader"
                 aria-label={`Letter ${letter}`}
               >
@@ -96,10 +103,7 @@ function LengthGroup({ length, found, total }: LengthGroupProps) {
     dots.push(
       <span
         key={i}
-        className={cn(
-          "text-xs",
-          isFound ? "text-accent" : "text-muted-foreground/40",
-        )}
+        className={cn("text-xs", isFound ? "text-accent" : "text-muted-foreground/40")}
         aria-hidden="true"
       >
         {isFound ? "●" : "○"}
@@ -116,10 +120,7 @@ function LengthGroup({ length, found, total }: LengthGroupProps) {
       aria-label={`${length}-letter words: ${found} of ${total} found${isComplete ? ", complete" : ""}`}
     >
       <span
-        className={cn(
-          "text-muted-foreground text-xs font-medium",
-          isComplete && "text-accent",
-        )}
+        className={cn("text-muted-foreground text-xs font-medium", isComplete && "text-accent")}
       >
         {length}
       </span>

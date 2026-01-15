@@ -170,12 +170,8 @@ describe("StatsDisplay", () => {
       render(<StatsNotAvailable />)
 
       expect(screen.getByText("You vs other players")).toBeInTheDocument()
-      expect(
-        screen.getByText(/Stats are not available yet for this puzzle/),
-      ).toBeInTheDocument()
-      expect(
-        screen.getByText(/They typically appear within a few minutes/),
-      ).toBeInTheDocument()
+      expect(screen.getByText(/Stats are not available yet for this puzzle/)).toBeInTheDocument()
+      expect(screen.getByText(/They typically appear within a few minutes/)).toBeInTheDocument()
     })
 
     it("applies custom className", () => {

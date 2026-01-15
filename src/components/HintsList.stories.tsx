@@ -90,9 +90,7 @@ export const OneCompleteSection: Story = {
         { hint: "A bundle of goods", length: 4 },
         { hint: "A type of dance", length: 6 },
       ],
-      CA: [
-        { hint: "A thick wire rope", length: 5 },
-      ],
+      CA: [{ hint: "A thick wire rope", length: 5 }],
     },
     foundWords: ["able", "abet", "bale"], // AB section complete (2 words)
   },
@@ -108,9 +106,7 @@ export const AllComplete: Story = {
         { hint: "Capable of being done", length: 4 },
         { hint: "Reduce or diminish", length: 5 },
       ],
-      CA: [
-        { hint: "A thick wire rope", length: 5 },
-      ],
+      CA: [{ hint: "A thick wire rope", length: 5 }],
     },
     foundWords: ["able", "abate", "cable"],
   },

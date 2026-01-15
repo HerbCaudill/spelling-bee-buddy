@@ -71,12 +71,7 @@ export function StatsDisplay({ stats, allWords, foundWords, className }: Props) 
       {/* Word popularity chart */}
       <div className="space-y-1">
         {wordStats.map(({ word, pct, isFound }) => (
-          <WordBar
-            key={word}
-            word={word}
-            percentage={pct}
-            isFound={isFound}
-          />
+          <WordBar key={word} word={word} percentage={pct} isFound={isFound} />
         ))}
       </div>
     </div>
@@ -100,7 +95,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
       <span
         className={cn(
           "w-24 shrink-0 truncate font-mono text-xs",
-          isFound ? "text-foreground" : "text-muted-foreground"
+          isFound ? "text-foreground" : "text-muted-foreground",
         )}
         title={isFound ? word : `${word.length}-letter word starting with ${word[0].toUpperCase()}`}
         data-testid="word-display"
@@ -114,7 +109,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
         <div
           className={cn(
             "absolute inset-y-0 left-0 rounded transition-all",
-            isFound ? "bg-primary" : "bg-muted-foreground/30"
+            isFound ? "bg-primary" : "bg-muted-foreground/30",
           )}
           style={{ width: `${Math.max(percentage, 0.5)}%` }}
         />
