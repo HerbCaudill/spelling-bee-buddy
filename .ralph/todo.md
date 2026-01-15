@@ -6,12 +6,12 @@
 - [ ] Do something similar for the two-letter list
       A | AL ●●●○◯ AB ●●●◯ AI ◯◯◯
       B | BI ◯◯◯◯◯ 5 ●◯◯
-- [ ] Figure out a way to keep the "other players" stats up to date - by polling or something. Also note, that data won't be available for a few minutes when the puzzle first comes out, so we'll need a message that says "No data yet" or something like that
 
 ---
 
 ### Done
 
+- [x] Add polling to keep "other players" stats up to date (every 2 minutes, or every 30 seconds if stats aren't available yet). Show a "not available yet" message for new puzzles. Stats are also included in manual refresh.
 - [x] In the header, show the icon and the title "Spelling Bee Buddy". The date should just be with the icon for choosing a different date, and doesn't need to be so prominent.
 - [x] Redesign WordGrid with dot-based display (A | 4 ●●○ 5 ●●●○) showing found/unfound words
 - [x] Put the date picker behind an icon in the header.

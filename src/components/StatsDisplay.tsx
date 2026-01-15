@@ -1,3 +1,4 @@
+import { Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { PuzzleStats } from "@/types"
 
@@ -22,6 +23,28 @@ function getRarityLabel(count: number, total: number): { label: string; classNam
   if (pct >= 30) return { label: "Uncommon", className: "text-amber-600 dark:text-amber-500" }
   if (pct >= 10) return { label: "Rare", className: "text-orange-600 dark:text-orange-500" }
   return { label: "Very rare", className: "text-red-600 dark:text-red-500" }
+}
+
+/**
+ * Display a message when stats are not yet available for a new puzzle
+ */
+export function StatsNotAvailable({ className }: { className?: string }) {
+  return (
+    <div className={cn("space-y-4", className)}>
+      <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
+        You vs other players
+      </h2>
+      <div className="border-border bg-muted/50 flex items-center gap-3 rounded-lg border p-4 text-sm">
+        <Clock className="text-muted-foreground size-5 shrink-0" />
+        <div>
+          <p className="text-muted-foreground">
+            Stats are not available yet for this puzzle. They typically appear within a few minutes
+            after the puzzle is released.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export function StatsDisplay({ stats, allWords, foundWords, className }: Props) {

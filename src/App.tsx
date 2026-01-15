@@ -5,7 +5,7 @@ import { WordGrid } from "@/components/WordGrid"
 import { TwoLetterList } from "@/components/TwoLetterList"
 import { HintsList } from "@/components/HintsList"
 import { SettingsModal } from "@/components/SettingsModal"
-import { StatsDisplay } from "@/components/StatsDisplay"
+import { StatsDisplay, StatsNotAvailable } from "@/components/StatsDisplay"
 import { useSelectedPuzzle } from "@/hooks/useSelectedPuzzle"
 import { useUserProgress } from "@/hooks/useUserProgress"
 import { useHints } from "@/hooks/useHints"
@@ -49,14 +49,16 @@ export function App() {
     stats,
     isLoading: statsLoading,
     error: statsError,
-  } = usePuzzleStats(selectedPuzzle?.id ?? null, !!selectedPuzzle)
+    notAvailableYet: statsNotAvailableYet,
+    refetch: refetchStats,
+  } = usePuzzleStats(selectedPuzzle?.id ?? null, { enabled: !!selectedPuzzle })
 
   // Combined error - puzzle error is critical, progress error is not
   const criticalError = puzzleError
 
   // Handler for refresh
   const handleRefresh = async () => {
-    await Promise.all([refetchPuzzle(), refetchProgress(), refetchHints()])
+    await Promise.all([refetchPuzzle(), refetchProgress(), refetchHints(), refetchStats()])
   }
 
   // Initial loading state - only show full-page loader when we have no data yet
@@ -157,6 +159,12 @@ export function App() {
         )}
 
         {/* Stats section */}
+        {statsNotAvailableYet && (
+          <section aria-label="Player stats">
+            <StatsNotAvailable />
+          </section>
+        )}
+
         {stats && !statsLoading && (
           <section aria-label="Player stats">
             <StatsDisplay stats={stats} allWords={today.answers} foundWords={effectiveFoundWords} />

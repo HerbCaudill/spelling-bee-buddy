@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
-import { StatsDisplay } from "./StatsDisplay"
+import { StatsDisplay, StatsNotAvailable } from "./StatsDisplay"
 import type { PuzzleStats } from "@/types"
 
 const mockStats: PuzzleStats = {
@@ -108,6 +108,26 @@ describe("StatsDisplay", () => {
       render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
       expect(screen.queryByText("Your rare finds")).not.toBeInTheDocument()
+    })
+  })
+
+  describe("StatsNotAvailable", () => {
+    it("renders the not available message", () => {
+      render(<StatsNotAvailable />)
+
+      expect(screen.getByText("You vs other players")).toBeInTheDocument()
+      expect(
+        screen.getByText(/Stats are not available yet for this puzzle/),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/They typically appear within a few minutes/),
+      ).toBeInTheDocument()
+    })
+
+    it("applies custom className", () => {
+      const { container } = render(<StatsNotAvailable className="my-custom-class" />)
+
+      expect(container.firstChild).toHaveClass("my-custom-class")
     })
   })
 })
