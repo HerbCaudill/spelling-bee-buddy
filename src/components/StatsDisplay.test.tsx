@@ -37,14 +37,14 @@ describe("StatsDisplay", () => {
   })
 
   describe("word display", () => {
-    it("shows the full word for found words", () => {
+    it("shows the full word for found words in title case", () => {
       const allWords = ["able", "about"]
       const foundWords = ["able"]
 
       render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
-      // Found word should show the full word
-      expect(screen.getByText("able")).toBeInTheDocument()
+      // Found word should show the full word in title case
+      expect(screen.getByText("Able")).toBeInTheDocument()
     })
 
     it("shows first letter and length for unfound words", () => {
@@ -68,8 +68,8 @@ describe("StatsDisplay", () => {
 
       render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
-      // Both should show as found (full word displayed)
-      expect(screen.getByText("ABLE")).toBeInTheDocument()
+      // Both should show as found (displayed in title case)
+      expect(screen.getByText("Able")).toBeInTheDocument()
       expect(screen.getByText("About")).toBeInTheDocument()
     })
 
@@ -140,7 +140,7 @@ describe("StatsDisplay", () => {
 
       render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
-      const foundWord = screen.getByText("able")
+      const foundWord = screen.getByText("Able")
       // The unfound word display has text split across elements, find the parent span
       const unfoundWord = screen.getByText((content, element) => {
         return element?.textContent === "A (5)" && element?.tagName.toLowerCase() === "span"

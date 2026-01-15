@@ -3,12 +3,19 @@ import { cn } from "@/lib/utils"
 import type { PuzzleStats } from "@/types"
 
 /**
+ * Convert a word to title case (first letter uppercase, rest lowercase)
+ */
+function toTitleCase(word: string): string {
+  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+}
+
+/**
  * Format a word display - show the word if found, otherwise first letter + length
  * e.g. "A (6)" for an unfound 6-letter word starting with A
  * Returns a React node with the first letter bolded for unfound words
  */
 function formatWordDisplay(word: string, isFound: boolean): React.ReactNode {
-  if (isFound) return word
+  if (isFound) return toTitleCase(word)
   return (
     <>
       <span className="font-bold">{word[0].toUpperCase()}</span> ({word.length})
@@ -91,7 +98,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
       {/* Word display - fixed width for alignment */}
       <span
         className={cn(
-          "w-24 shrink-0 truncate font-mono text-xs",
+          "w-24 shrink-0 truncate text-xs",
           isFound ? "text-foreground" : "text-muted-foreground",
         )}
         title={isFound ? word : `${word.length}-letter word starting with ${word[0].toUpperCase()}`}
