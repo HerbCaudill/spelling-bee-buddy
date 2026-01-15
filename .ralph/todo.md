@@ -1,6 +1,5 @@
 ### To do
 
-- [ ] Create ProgressBar stories (beginner, mid-progress, genius, queen bee, with pangrams)
 - [ ] Create WordGrid stories (empty, partial progress, complete, single letter)
 - [ ] Create TwoLetterList stories (empty, partial progress, complete)
 - [ ] Create Header stories (with/without date picker, different dates)
@@ -12,6 +11,7 @@
 
 ### Done
 
+- [x] Create ProgressBar stories (beginner, mid-progress, genius, queen bee, with pangrams)
 - [x] Set up Storybook with Vite and Tailwind CSS configuration
 - [x] Progress tracking is available for past puzzles - just pass the correct puzzle ID
 
