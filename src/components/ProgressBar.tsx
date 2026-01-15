@@ -129,7 +129,7 @@ export function ProgressBar({
                 <div
                   className={cn(
                     "h-3 w-0.5 rounded-full",
-                    isAchieved ? "bg-accent-foreground/50" : "bg-muted-foreground/30",
+                    isAchieved ? "bg-white/70" : "bg-white/30",
                   )}
                 />
               </div>
