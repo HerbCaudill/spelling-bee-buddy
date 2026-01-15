@@ -77,13 +77,11 @@ describe("StatsDisplay", () => {
       const allWords = ["axle", "apple", "able", "about"]
       const foundWords: string[] = []
 
-      const { container } = render(
-        <StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />,
-      )
+      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
-      // Get all word displays in order
-      const wordDisplays = container.querySelectorAll(".font-mono")
-      const texts = Array.from(wordDisplays).map(el => el.textContent)
+      // Get all word displays in order using data-testid
+      const wordDisplays = screen.getAllByTestId("word-display")
+      const texts = wordDisplays.map(el => el.textContent)
 
       // Should be sorted: able (90%), about (80%), apple (50%), axle (10%)
       expect(texts[0]).toBe("A (4)") // able

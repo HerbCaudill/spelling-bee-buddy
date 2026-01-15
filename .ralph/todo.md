@@ -1,9 +1,10 @@
 ### To do
 
-- [ ] On the global stats, put the percentage for each word on the left side of the bar
 - [ ] Put the word grid and the two-letter words in a table with borders, rather than actually displaying a | character
 
 ### Done
+
+- [x] On the global stats, put the percentage for each word on the left side of the bar - Moved the percentage label from inside the bar (on the right) to a fixed-width column on the left side of each word bar. This improves readability and alignment. Updated tests to use data-testid for reliable element selection.
 
 - [x] only show hints for words I haven't gotten yet - Modified HintsList to filter hints by matching prefix and word length. Added `getFoundWordsByLength` and `getUnfoundHints` helper functions to track which word lengths have been found for each prefix. When a user finds a word, hints of matching prefix and length are hidden. Added 5 new tests to verify filtering behavior.
 

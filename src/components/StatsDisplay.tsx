@@ -91,6 +91,11 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
 
   return (
     <div className="flex items-center gap-2 text-sm">
+      {/* Percentage label - fixed width for alignment */}
+      <span className="text-muted-foreground w-10 shrink-0 text-right font-mono text-xs">
+        {percentage >= 10 ? `${Math.round(percentage)}%` : `${percentage.toFixed(1)}%`}
+      </span>
+
       {/* Word display - fixed width for alignment */}
       <span
         className={cn(
@@ -98,6 +103,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
           isFound ? "text-foreground" : "text-muted-foreground"
         )}
         title={isFound ? word : `${word.length}-letter word starting with ${word[0].toUpperCase()}`}
+        data-testid="word-display"
       >
         {display}
       </span>
@@ -112,16 +118,6 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
           )}
           style={{ width: `${Math.max(percentage, 0.5)}%` }}
         />
-
-        {/* Percentage label */}
-        <span
-          className={cn(
-            "absolute inset-y-0 right-1 flex items-center text-xs",
-            percentage > 50 ? "text-primary-foreground" : "text-muted-foreground"
-          )}
-        >
-          {percentage >= 10 ? `${Math.round(percentage)}%` : `${percentage.toFixed(1)}%`}
-        </span>
       </div>
     </div>
   )
