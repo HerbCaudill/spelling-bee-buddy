@@ -76,7 +76,7 @@ export function StatsDisplay({ stats, allWords, foundWords, className }: Props) 
       </div>
 
       {/* Word popularity chart */}
-      <div className="space-y-1">
+      <div>
         {wordStats.map(({ word, pct, isFound }) => (
           <WordBar key={word} word={word} percentage={pct} isFound={isFound} />
         ))}
