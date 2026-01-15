@@ -124,7 +124,37 @@ describe("useHints", () => {
       expect(result.current.error).toBeNull()
       expect(result.current.hasApiKey).toBe(true)
       expect(api.fetchHints).toHaveBeenCalledTimes(1)
-      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key")
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", undefined)
+    })
+
+    it("should fetch hints for specific puzzle when puzzleId is provided", async () => {
+      vi.mocked(api.fetchHints).mockResolvedValue(mockCachedHints)
+
+      const { result } = renderHook(() => useHints(true, 20034))
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(result.current.hints).toEqual(mockCachedHints.hints)
+      expect(api.fetchHints).toHaveBeenCalledTimes(1)
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20034)
+    })
+
+    it("should handle 404 error for unavailable puzzle hints", async () => {
+      const apiError = new api.ApiError("Puzzle not found", 404)
+      vi.mocked(api.fetchHints).mockRejectedValue(apiError)
+
+      const { result } = renderHook(() => useHints(true, 19999))
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(result.current.hints).toBeNull()
+      expect(result.current.error).toBe(
+        "Hints are only available for puzzles from the last two weeks.",
+      )
     })
 
     it("should handle ApiError with 401 status", async () => {
@@ -293,6 +323,33 @@ describe("useHints", () => {
 
       expect(api.fetchHints).toHaveBeenCalledTimes(1)
       expect(result.current.hints).toEqual(mockCachedHints.hints)
+    })
+
+    it("should refetch when puzzleId changes", async () => {
+      vi.mocked(api.fetchHints).mockResolvedValue(mockCachedHints)
+
+      const { result, rerender } = renderHook(
+        ({ enabled, puzzleId }) => useHints(enabled, puzzleId),
+        {
+          initialProps: { enabled: true, puzzleId: 20035 },
+        },
+      )
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20035)
+
+      // Change puzzleId
+      rerender({ enabled: true, puzzleId: 20034 })
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20034)
+      expect(api.fetchHints).toHaveBeenCalledTimes(2)
     })
   })
 

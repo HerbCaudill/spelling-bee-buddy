@@ -123,10 +123,13 @@ export async function fetchProgress(nytToken: string, puzzleId?: number): Promis
 }
 
 /**
- * Fetch hints for today's puzzle from the Worker (requires Anthropic API key)
+ * Fetch hints for a puzzle from the Worker (requires Anthropic API key)
+ * @param anthropicKey - User's Anthropic API key
+ * @param puzzleId - Optional puzzle ID to get hints for a specific puzzle
  */
-export async function fetchHints(anthropicKey: string): Promise<CachedHints> {
-  return fetchApi<CachedHints>("/hints", {
+export async function fetchHints(anthropicKey: string, puzzleId?: number): Promise<CachedHints> {
+  const endpoint = puzzleId ? `/hints?puzzleId=${puzzleId}` : "/hints"
+  return fetchApi<CachedHints>(endpoint, {
     headers: {
       "X-Anthropic-Key": anthropicKey,
     },

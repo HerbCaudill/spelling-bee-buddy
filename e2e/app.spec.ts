@@ -166,8 +166,8 @@ async function setupMocks(
     }
   })
 
-  // Mock hints endpoint
-  await page.route("**/hints", async route => {
+  // Mock hints endpoint (matches both /hints and /hints?puzzleId=*)
+  await page.route("**/hints*", async route => {
     if (hintsDelay) await new Promise(r => setTimeout(r, hintsDelay))
     if (typeof hintsResponse === "function") {
       hintsResponse(route)

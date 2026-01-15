@@ -6,7 +6,7 @@
  * - GET /active        - Fetch this week's and last week's puzzles
  * - GET /stats/:id     - Fetch stats for a puzzle (how many players found each word)
  * - GET /progress      - Fetch user's progress (requires X-NYT-Token header)
- * - GET /hints         - Get AI-generated hints (requires X-Anthropic-Key header, uses KV cache)
+ * - GET /hints         - Get AI-generated hints (requires X-Anthropic-Key header, optional puzzleId query param)
  */
 
 import type {
@@ -177,9 +177,10 @@ async function handleProgress(request: Request): Promise<Response> {
 }
 
 /**
- * Get AI-generated hints for the puzzle
+ * Get AI-generated hints for a puzzle
  * Checks KV cache first, generates with Anthropic API if not cached
  * Requires X-Anthropic-Key header with user's API key
+ * Accepts optional puzzleId query parameter to get hints for a specific puzzle
  */
 async function handleHints(request: Request, env: Env): Promise<Response> {
   const anthropicKey = request.headers.get("X-Anthropic-Key")
@@ -192,26 +193,61 @@ async function handleHints(request: Request, env: Env): Promise<Response> {
     return errorResponse("KV namespace not configured", 500)
   }
 
-  // First, fetch today's puzzle to get the answers and date
-  const puzzleResponse = await fetch(NYT_SPELLING_BEE_URL, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      Accept:
-        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.5",
-    },
-  })
+  // Check for optional puzzleId query parameter
+  const url = new URL(request.url)
+  const puzzleIdParam = url.searchParams.get("puzzleId")
 
-  if (!puzzleResponse.ok) {
-    return errorResponse(`Failed to fetch puzzle for hints: ${puzzleResponse.status}`, 502)
-  }
+  let gameData: GameData
 
-  const html = await puzzleResponse.text()
-  const gameData = parseGameData(html)
+  if (puzzleIdParam) {
+    // Fetch the specific puzzle from active puzzles
+    const activePuzzles = await fetchActivePuzzlesInternal()
+    if (!activePuzzles) {
+      return errorResponse("Failed to fetch active puzzles", 502)
+    }
 
-  if (!gameData) {
-    return errorResponse("Failed to parse puzzle data for hints", 502)
+    const puzzle = activePuzzles.puzzles.find(p => p.id === parseInt(puzzleIdParam, 10))
+    if (!puzzle) {
+      return errorResponse(`Puzzle ${puzzleIdParam} not found in active puzzles`, 404)
+    }
+
+    // Convert ActivePuzzle to GameData format
+    gameData = {
+      today: {
+        displayWeekday: "", // Not needed for hints
+        displayDate: "", // Not needed for hints
+        printDate: puzzle.print_date,
+        centerLetter: puzzle.center_letter,
+        outerLetters: puzzle.outer_letters.split(""),
+        validLetters: [puzzle.center_letter, ...puzzle.outer_letters.split("")],
+        pangrams: puzzle.pangrams,
+        answers: puzzle.answers,
+        id: puzzle.id,
+      },
+    }
+  } else {
+    // Fetch today's puzzle to get the answers and date
+    const puzzleResponse = await fetch(NYT_SPELLING_BEE_URL, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+      },
+    })
+
+    if (!puzzleResponse.ok) {
+      return errorResponse(`Failed to fetch puzzle for hints: ${puzzleResponse.status}`, 502)
+    }
+
+    const html = await puzzleResponse.text()
+    const parsedData = parseGameData(html)
+
+    if (!parsedData) {
+      return errorResponse("Failed to parse puzzle data for hints", 502)
+    }
+    gameData = parsedData
   }
 
   const cacheKey = buildCacheKey(gameData.today.printDate)
@@ -243,6 +279,25 @@ async function handleHints(request: Request, env: Env): Promise<Response> {
     const message = error instanceof Error ? error.message : "Unknown error"
     return errorResponse(`Failed to generate hints: ${message}`, 500)
   }
+}
+
+/**
+ * Internal helper to fetch active puzzles
+ */
+async function fetchActivePuzzlesInternal(): Promise<ActivePuzzlesResponse | null> {
+  const response = await fetch(NYT_ACTIVE_PUZZLES_URL, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Accept: "application/json",
+    },
+  })
+
+  if (!response.ok) {
+    return null
+  }
+
+  return response.json()
 }
 
 /**

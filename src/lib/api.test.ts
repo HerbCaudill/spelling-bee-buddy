@@ -151,7 +151,26 @@ describe("api", () => {
 
       expect(result).toEqual(mockHints)
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining("/hints"),
+        expect.stringMatching(/\/hints$/),
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            "X-Anthropic-Key": "my-anthropic-key",
+          }),
+        }),
+      )
+    })
+
+    it("should fetch hints for a specific puzzle when puzzleId is provided", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true, data: mockHints }),
+      })
+
+      const result = await fetchHints("my-anthropic-key", 20034)
+
+      expect(result).toEqual(mockHints)
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/hints\?puzzleId=20034$/),
         expect.objectContaining({
           headers: expect.objectContaining({
             "X-Anthropic-Key": "my-anthropic-key",

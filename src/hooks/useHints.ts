@@ -34,11 +34,12 @@ export interface UseHintsReturn extends UseHintsState {
  * If no API key is stored, returns null hints.
  *
  * @param enabled - Whether to fetch hints (defaults to true)
+ * @param puzzleId - Optional puzzle ID to get hints for a specific puzzle
  *
  * @example
  * ```tsx
  * function HintsDisplay() {
- *   const { hints, generatedAt, isLoading, error, hasApiKey, refetch } = useHints()
+ *   const { hints, generatedAt, isLoading, error, hasApiKey, refetch } = useHints(true, 20035)
  *
  *   if (!hasApiKey) return <div>Please configure Anthropic API key</div>
  *   if (isLoading) return <div>Loading hints...</div>
@@ -64,7 +65,7 @@ export interface UseHintsReturn extends UseHintsState {
  * }
  * ```
  */
-export function useHints(enabled: boolean = true): UseHintsReturn {
+export function useHints(enabled: boolean = true, puzzleId?: number): UseHintsReturn {
   const [hints, setHints] = useState<HintsByPrefix | null>(null)
   const [generatedAt, setGeneratedAt] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -86,7 +87,7 @@ export function useHints(enabled: boolean = true): UseHintsReturn {
     setError(null)
 
     try {
-      const data: CachedHints = await fetchHints(credentials.anthropicKey)
+      const data: CachedHints = await fetchHints(credentials.anthropicKey, puzzleId)
       setHints(data.hints)
       setGeneratedAt(data.generatedAt)
     } catch (err) {
@@ -94,6 +95,8 @@ export function useHints(enabled: boolean = true): UseHintsReturn {
         // Handle 401 specifically - likely invalid API key
         if (err.status === 401) {
           setError("Invalid Anthropic API key. Please update your credentials.")
+        } else if (err.status === 404) {
+          setError("Hints are only available for puzzles from the last two weeks.")
         } else {
           setError(err.message)
         }
@@ -107,7 +110,7 @@ export function useHints(enabled: boolean = true): UseHintsReturn {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [puzzleId])
 
   useEffect(() => {
     if (enabled) {

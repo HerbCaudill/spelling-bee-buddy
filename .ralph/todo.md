@@ -1,6 +1,13 @@
 ### To do
 
+- [ ] only show hints for words I haven't gotten yet
+- [ ] On the global stats, put the percentage for each word on the left side of the bar
+- [ ] Put the word grid and the two-letter words in a table with borders, rather than actually displaying a | character
+- [ ] Any time we're showing a single letter, make it bold (e.g. in the row headings of the word grid)
+
 ### Done
+
+- [x] there's no reason why hints should only be available for today's puzzle - Extended the hints system to support any puzzle in the active puzzles list (last ~2 weeks). Added puzzleId query parameter to the /hints worker endpoint, updated frontend API and useHints hook to pass puzzle ID, and removed the "today only" restriction from the UI.
 
 - [x] We don't need the totals - Removed the summary rows (Σ totals) from both WordGrid and TwoLetterList components. These showed the grand total count of found/total words at the bottom of each grid.
 
