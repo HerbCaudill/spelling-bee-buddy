@@ -52,9 +52,6 @@ export function App() {
     error: statsError,
   } = usePuzzleStats(selectedPuzzle?.id ?? null, !!selectedPuzzle)
 
-  // Combined loading state - show loading while puzzle is fetching
-  const isLoading = puzzleLoading
-
   // Combined error - puzzle error is critical, progress error is not
   const criticalError = puzzleError
 
@@ -63,8 +60,9 @@ export function App() {
     await Promise.all([refetchPuzzle(), refetchProgress(), refetchHints()])
   }
 
-  // Loading state
-  if (isLoading) {
+  // Initial loading state - only show full-page loader when we have no data yet
+  // During refreshes, we keep the existing UI to avoid unmounting the settings modal
+  if (puzzleLoading && !puzzle) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -224,7 +222,7 @@ export function App() {
             <Button
               variant="outline"
               onClick={handleRefresh}
-              disabled={isLoading || progressLoading}
+              disabled={puzzleLoading || progressLoading}
             >
               <RefreshCw className={`mr-2 size-4 ${progressLoading ? "animate-spin" : ""}`} />
               Refresh progress

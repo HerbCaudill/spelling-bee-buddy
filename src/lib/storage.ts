@@ -17,31 +17,31 @@ function getEnvCredentials(): UserCredentials | null {
 
 /**
  * Get user credentials from localStorage
- * In development, checks environment variables first
+ * In development, environment variables are used as fallback if localStorage is empty
  * Returns null if no credentials are stored
  */
 export function getCredentials(): UserCredentials | null {
-  // In development, check env variables first
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored) as UserCredentials
+
+      // Validate that all fields exist
+      if (typeof parsed.nytToken === "string" && typeof parsed.anthropicKey === "string") {
+        return parsed
+      }
+    }
+  } catch {
+    // Fall through to env check
+  }
+
+  // In development, check env variables as fallback
   if (import.meta.env.DEV) {
     const envCreds = getEnvCredentials()
     if (envCreds) return envCreds
   }
 
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (!stored) return null
-
-    const parsed = JSON.parse(stored) as UserCredentials
-
-    // Validate that all fields exist
-    if (typeof parsed.nytToken === "string" && typeof parsed.anthropicKey === "string") {
-      return parsed
-    }
-
-    return null
-  } catch {
-    return null
-  }
+  return null
 }
 
 /**
