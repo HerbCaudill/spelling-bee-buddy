@@ -1,9 +1,16 @@
 ### To do
 
 - [ ] I'm no longer seeing my own results for today
----
+- [ ] Make the header yellow
+- [ ] In "you vs other players" the denominator should be `n` rather than `numberOfUsers`.
+- [ ] Make the progress bar yellow
+- [ ] For the pangrams, show little yellow hexagons that are filled or blank
+- [ ] Make the filled-in dots yellow
+- [ ] We don't need the totals
 
 ### Done
+
+- [x] Instead of the full date in the header, show "Today", "Yesterday", "Tuesday", etc. Also add a calendar icon.
 
 - [x] Create SettingsModal stories (open, with credentials, saving state)
 - [x] Create HintsList stories (empty, collapsed, expanded, complete section)

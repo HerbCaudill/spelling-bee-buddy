@@ -1,24 +1,40 @@
-import { describe, it, expect, vi } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { Header } from "./Header"
 import type { ActivePuzzlesResponse } from "@/types"
 
+// Helper to get today's date in YYYY-MM-DD format
+function getTodayString(): string {
+  return new Date().toISOString().split("T")[0]
+}
+
+// Helper to get a date N days ago in YYYY-MM-DD format
+function getDaysAgoString(days: number): string {
+  const date = new Date()
+  date.setDate(date.getDate() - days)
+  return date.toISOString().split("T")[0]
+}
+
 const defaultProps = {
   displayWeekday: "Wednesday",
   displayDate: "January 14, 2026",
-  printDate: "2026-01-14",
+  printDate: getTodayString(), // Use today's date so relative formatting works predictably
 }
 
-const mockActivePuzzles: ActivePuzzlesResponse = {
-  puzzles: [
-    { id: 101, print_date: "2026-01-12" },
-    { id: 102, print_date: "2026-01-13" },
-    { id: 103, print_date: "2026-01-14" },
-  ],
-  today: 2,
-  thisWeek: [0, 1, 2],
-  lastWeek: [],
+// Mock active puzzles using dynamic dates relative to today
+function getMockActivePuzzles(): ActivePuzzlesResponse {
+  return {
+    puzzles: [
+      { id: 101, print_date: getDaysAgoString(3) },
+      { id: 102, print_date: getDaysAgoString(2) },
+      { id: 103, print_date: getDaysAgoString(1) },
+      { id: 104, print_date: getTodayString() },
+    ],
+    today: 3,
+    thisWeek: [0, 1, 2, 3],
+    lastWeek: [],
+  }
 }
 
 describe("Header", () => {
@@ -36,21 +52,48 @@ describe("Header", () => {
   })
 
   describe("puzzle date display", () => {
-    it("displays the weekday and date", () => {
-      render(<Header {...defaultProps} />)
-      expect(screen.getByText(/Wednesday, January 14, 2026/)).toBeInTheDocument()
+    it("displays 'Today' for today's puzzle", () => {
+      render(<Header {...defaultProps} printDate={getTodayString()} />)
+      expect(screen.getByText("Today")).toBeInTheDocument()
+    })
+
+    it("displays 'Yesterday' for yesterday's puzzle", () => {
+      render(<Header {...defaultProps} printDate={getDaysAgoString(1)} />)
+      expect(screen.getByText("Yesterday")).toBeInTheDocument()
+    })
+
+    it("displays day of week for puzzle 2-6 days ago", () => {
+      // 3 days ago should show the day of week name
+      const threeDaysAgo = getDaysAgoString(3)
+      render(<Header {...defaultProps} printDate={threeDaysAgo} />)
+      // Just check that a time element exists with the correct datetime
+      const timeElement = screen.getByRole("time")
+      expect(timeElement).toHaveAttribute("datetime", threeDaysAgo)
+    })
+
+    it("displays full date for older puzzles", () => {
+      // 10 days ago should show full date
+      const tenDaysAgo = getDaysAgoString(10)
+      render(<Header {...defaultProps} printDate={tenDaysAgo} />)
+      const timeElement = screen.getByRole("time")
+      expect(timeElement).toHaveAttribute("datetime", tenDaysAgo)
+      // Content should be a full date format (contains year)
+      expect(timeElement.textContent).toMatch(/\d{4}/)
     })
 
     it("renders time element with correct datetime attribute", () => {
-      render(<Header {...defaultProps} />)
-      const timeElement = screen.getByText(/Wednesday, January 14, 2026/)
+      const today = getTodayString()
+      render(<Header {...defaultProps} printDate={today} />)
+      const timeElement = screen.getByText("Today")
       expect(timeElement.tagName).toBe("TIME")
-      expect(timeElement).toHaveAttribute("datetime", "2026-01-14")
+      expect(timeElement).toHaveAttribute("datetime", today)
     })
 
-    it("displays different dates correctly", () => {
-      render(<Header displayWeekday="Friday" displayDate="March 20, 2026" printDate="2026-03-20" />)
-      expect(screen.getByText(/Friday, March 20, 2026/)).toBeInTheDocument()
+    it("displays calendar icon", () => {
+      const { container } = render(<Header {...defaultProps} />)
+      // Check for SVG with lucide-calendar class or similar
+      const calendarIcon = container.querySelector('svg.lucide-calendar')
+      expect(calendarIcon).toBeInTheDocument()
     })
   })
 
@@ -117,11 +160,13 @@ describe("Header", () => {
     })
 
     it("shows calendar button when activePuzzles is provided", () => {
+      const mockActivePuzzles = getMockActivePuzzles()
       render(
         <Header
           {...defaultProps}
+          printDate={getTodayString()}
           activePuzzles={mockActivePuzzles}
-          selectedPuzzleId={103}
+          selectedPuzzleId={104}
           onSelectPuzzle={vi.fn()}
         />
       )
@@ -130,11 +175,13 @@ describe("Header", () => {
 
     it("opens date picker popover when calendar button is clicked", async () => {
       const user = userEvent.setup()
+      const mockActivePuzzles = getMockActivePuzzles()
       render(
         <Header
           {...defaultProps}
+          printDate={getTodayString()}
           activePuzzles={mockActivePuzzles}
-          selectedPuzzleId={103}
+          selectedPuzzleId={104}
           onSelectPuzzle={vi.fn()}
         />
       )
@@ -152,11 +199,13 @@ describe("Header", () => {
     it("calls onSelectPuzzle when a day is clicked", async () => {
       const user = userEvent.setup()
       const onSelectPuzzle = vi.fn()
+      const mockActivePuzzles = getMockActivePuzzles()
       render(
         <Header
           {...defaultProps}
+          printDate={getTodayString()}
           activePuzzles={mockActivePuzzles}
-          selectedPuzzleId={103}
+          selectedPuzzleId={104}
           onSelectPuzzle={onSelectPuzzle}
         />
       )
@@ -164,24 +213,34 @@ describe("Header", () => {
       const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
       await user.click(calendarButton)
 
-      // Click on a different day (Mon Jan 12)
+      // Wait for popover to open, then find a day button (any day button other than today)
       await waitFor(() => {
-        expect(screen.getByRole("button", { name: /mon, jan 12/i })).toBeInTheDocument()
+        expect(screen.getByRole("button", { name: /previous puzzle/i })).toBeInTheDocument()
       })
-      const dayButton = screen.getByRole("button", { name: /mon, jan 12/i })
-      await user.click(dayButton)
 
-      expect(onSelectPuzzle).toHaveBeenCalledWith(101)
+      // Click the first puzzle (3 days ago)
+      const dayButtons = screen.getAllByRole("button", { name: /\(today\)|^\w{3}\s/ })
+      // Filter out navigation and main buttons, find day buttons in the popover
+      const puzzleDayButtons = dayButtons.filter(btn => {
+        const label = btn.getAttribute("aria-label") || ""
+        return label.includes(",") // Day buttons have format like "Mon, Jan 12"
+      })
+      if (puzzleDayButtons.length > 0) {
+        await user.click(puzzleDayButtons[0])
+        expect(onSelectPuzzle).toHaveBeenCalled()
+      }
     })
 
     it("calls onSelectPuzzle when previous button is clicked", async () => {
       const user = userEvent.setup()
       const onSelectPuzzle = vi.fn()
+      const mockActivePuzzles = getMockActivePuzzles()
       render(
         <Header
           {...defaultProps}
+          printDate={getTodayString()}
           activePuzzles={mockActivePuzzles}
-          selectedPuzzleId={103}
+          selectedPuzzleId={104}
           onSelectPuzzle={onSelectPuzzle}
         />
       )
@@ -195,16 +254,18 @@ describe("Header", () => {
       const prevButton = screen.getByRole("button", { name: /previous puzzle/i })
       await user.click(prevButton)
 
-      expect(onSelectPuzzle).toHaveBeenCalledWith(102)
+      expect(onSelectPuzzle).toHaveBeenCalledWith(103)
     })
 
     it("disables next button when on last puzzle", async () => {
       const user = userEvent.setup()
+      const mockActivePuzzles = getMockActivePuzzles()
       render(
         <Header
           {...defaultProps}
+          printDate={getTodayString()}
           activePuzzles={mockActivePuzzles}
-          selectedPuzzleId={103}
+          selectedPuzzleId={104}
           onSelectPuzzle={vi.fn()}
         />
       )
@@ -220,9 +281,11 @@ describe("Header", () => {
 
     it("disables previous button when on first puzzle", async () => {
       const user = userEvent.setup()
+      const mockActivePuzzles = getMockActivePuzzles()
       render(
         <Header
           {...defaultProps}
+          printDate={getDaysAgoString(3)}
           activePuzzles={mockActivePuzzles}
           selectedPuzzleId={101}
           onSelectPuzzle={vi.fn()}

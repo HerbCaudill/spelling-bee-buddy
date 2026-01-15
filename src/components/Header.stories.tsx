@@ -3,6 +3,22 @@ import { Header } from "./Header"
 import type { ActivePuzzlesResponse } from "@/types"
 
 /**
+ * Helper to get today's date in YYYY-MM-DD format
+ */
+function getTodayString(): string {
+  return new Date().toISOString().split("T")[0]
+}
+
+/**
+ * Helper to get a date N days ago in YYYY-MM-DD format
+ */
+function getDaysAgoString(days: number): string {
+  const date = new Date()
+  date.setDate(date.getDate() - days)
+  return date.toISOString().split("T")[0]
+}
+
+/**
  * Generate mock active puzzles for a given date range
  */
 function createMockActivePuzzles(
@@ -110,27 +126,60 @@ export default meta
 type Story = StoryObj<typeof Header>
 
 /**
- * Basic header without date picker - displays date as static text
+ * Basic header showing "Today" - without date picker
  * Used when active puzzles data hasn't loaded yet
  */
-export const WithoutDatePicker: Story = {
+export const TodayWithoutPicker: Story = {
   args: {
     displayWeekday: "Wednesday",
     displayDate: "January 14, 2026",
-    printDate: "2026-01-14",
+    printDate: getTodayString(),
   },
 }
 
 /**
- * Header with date picker enabled - click the date to see available puzzles
+ * Header showing "Yesterday"
+ */
+export const Yesterday: Story = {
+  args: {
+    displayWeekday: "Tuesday",
+    displayDate: "January 13, 2026",
+    printDate: getDaysAgoString(1),
+  },
+}
+
+/**
+ * Header showing day of week (for puzzles 2-6 days ago)
+ */
+export const DayOfWeek: Story = {
+  args: {
+    displayWeekday: "Sunday",
+    displayDate: "January 11, 2026",
+    printDate: getDaysAgoString(3),
+  },
+}
+
+/**
+ * Header showing full date (for puzzles older than a week)
+ */
+export const OlderDate: Story = {
+  args: {
+    displayWeekday: "Wednesday",
+    displayDate: "January 1, 2026",
+    printDate: getDaysAgoString(10),
+  },
+}
+
+/**
+ * Header with date picker enabled showing "Today" - click the date to see available puzzles
  * Shows navigation arrows and week view for selecting different days
  */
 export const WithDatePicker: Story = {
   args: {
     displayWeekday: "Wednesday",
     displayDate: "January 14, 2026",
-    printDate: "2026-01-14",
-    ...createMockActivePuzzles("2026-01-14"),
+    printDate: getTodayString(),
+    ...createMockActivePuzzles(getTodayString()),
   },
 }
 
@@ -142,44 +191,57 @@ export const WithLastWeekPuzzles: Story = {
   args: {
     displayWeekday: "Wednesday",
     displayDate: "January 14, 2026",
-    printDate: "2026-01-14",
-    ...createMockActivePuzzles("2026-01-14", { includeLastWeek: true }),
+    printDate: getTodayString(),
+    ...createMockActivePuzzles(getTodayString(), { includeLastWeek: true }),
   },
 }
 
 /**
- * Monday puzzle - beginning of the week
+ * Yesterday's puzzle selected with date picker
+ * Shows "Yesterday" as the relative date
  */
-export const MondayPuzzle: Story = {
+export const YesterdayWithPicker: Story = {
+  args: {
+    displayWeekday: "Tuesday",
+    displayDate: "January 13, 2026",
+    printDate: getDaysAgoString(1),
+    ...(() => {
+      const data = createMockActivePuzzles(getTodayString())
+      // Select yesterday's puzzle (second to last in the list)
+      const yesterdayPuzzle = data.activePuzzles.puzzles[data.activePuzzles.puzzles.length - 2]
+      return {
+        ...data,
+        printDate: yesterdayPuzzle?.print_date ?? getDaysAgoString(1),
+        selectedPuzzleId: yesterdayPuzzle?.id ?? data.selectedPuzzleId,
+      }
+    })(),
+  },
+}
+
+/**
+ * Older puzzle selected - shows day of week
+ * 3 days ago shows the day name (e.g., "Monday")
+ */
+export const OlderPuzzleWithPicker: Story = {
   args: {
     displayWeekday: "Monday",
-    displayDate: "January 12, 2026",
-    printDate: "2026-01-12",
-    ...createMockActivePuzzles("2026-01-12"),
-  },
-}
-
-/**
- * Sunday puzzle - end of the week
- */
-export const SundayPuzzle: Story = {
-  args: {
-    displayWeekday: "Sunday",
-    displayDate: "January 18, 2026",
-    printDate: "2026-01-18",
-    ...createMockActivePuzzles("2026-01-18"),
-  },
-}
-
-/**
- * Different month - showing date display flexibility
- */
-export const DifferentMonth: Story = {
-  args: {
-    displayWeekday: "Friday",
-    displayDate: "March 20, 2026",
-    printDate: "2026-03-20",
-    ...createMockActivePuzzles("2026-03-20"),
+    displayDate: "January 11, 2026",
+    printDate: getDaysAgoString(3),
+    ...(() => {
+      const data = createMockActivePuzzles(getTodayString(), { includeLastWeek: true })
+      // Select a puzzle from 3 days ago
+      const olderPuzzle = data.activePuzzles.puzzles.find(p => {
+        const puzzleDate = new Date(p.print_date + "T12:00:00")
+        const today = new Date()
+        const diffDays = Math.round((today.getTime() - puzzleDate.getTime()) / (1000 * 60 * 60 * 24))
+        return diffDays === 3
+      })
+      return {
+        ...data,
+        printDate: olderPuzzle?.print_date ?? getDaysAgoString(3),
+        selectedPuzzleId: olderPuzzle?.id ?? data.selectedPuzzleId,
+      }
+    })(),
   },
 }
 
@@ -191,29 +253,30 @@ export const FirstPuzzleSelected: Story = {
   args: {
     displayWeekday: "Wednesday",
     displayDate: "January 14, 2026",
-    printDate: "2026-01-14",
     ...(() => {
-      const data = createMockActivePuzzles("2026-01-14")
+      const data = createMockActivePuzzles(getTodayString(), { includeLastWeek: true })
       // Select the first puzzle
+      const firstPuzzle = data.activePuzzles.puzzles[0]
       return {
         ...data,
-        selectedPuzzleId: data.activePuzzles.puzzles[0].id,
+        printDate: firstPuzzle?.print_date ?? getDaysAgoString(13),
+        selectedPuzzleId: firstPuzzle?.id ?? data.activePuzzles.puzzles[0].id,
       }
     })(),
   },
 }
 
 /**
- * Last puzzle in the list - next button disabled
+ * Last puzzle in the list (today) - next button disabled
  * The most common case - today's puzzle selected
  */
 export const LastPuzzleSelected: Story = {
   args: {
     displayWeekday: "Wednesday",
     displayDate: "January 14, 2026",
-    printDate: "2026-01-14",
+    printDate: getTodayString(),
     ...(() => {
-      const data = createMockActivePuzzles("2026-01-14")
+      const data = createMockActivePuzzles(getTodayString())
       // Select the last puzzle
       const lastPuzzle = data.activePuzzles.puzzles[data.activePuzzles.puzzles.length - 1]
       return {
@@ -231,7 +294,7 @@ export const WithCustomClassName: Story = {
   args: {
     displayWeekday: "Wednesday",
     displayDate: "January 14, 2026",
-    printDate: "2026-01-14",
+    printDate: getTodayString(),
     className: "bg-amber-50",
   },
 }

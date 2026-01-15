@@ -1,7 +1,7 @@
-import { cn } from "@/lib/utils"
+import { cn, formatRelativeDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Settings, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react"
+import { Settings, ExternalLink, ChevronLeft, ChevronRight, Calendar } from "lucide-react"
 import type { ActivePuzzlesResponse, ActivePuzzle } from "@/types"
 
 export interface HeaderProps {
@@ -109,8 +109,9 @@ export function Header({
                 aria-label="Choose a different puzzle date"
                 className="text-muted-foreground"
               >
+                <Calendar className="size-4" />
                 <time dateTime={printDate} className="text-sm">
-                  {displayWeekday}, {displayDate}
+                  {formatRelativeDate(printDate)}
                 </time>
               </Button>
             </PopoverTrigger>
@@ -180,9 +181,12 @@ export function Header({
 
         {/* Static date display when no picker available */}
         {!hasPuzzlePicker && (
-          <time dateTime={printDate} className="text-muted-foreground text-sm">
-            {displayWeekday}, {displayDate}
-          </time>
+          <div className="text-muted-foreground flex items-center gap-1 text-sm">
+            <Calendar className="size-4" />
+            <time dateTime={printDate}>
+              {formatRelativeDate(printDate)}
+            </time>
+          </div>
         )}
 
         {/* Link to NYT Spelling Bee */}

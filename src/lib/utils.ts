@@ -7,6 +7,48 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Format a date relative to today for display
+ *
+ * Returns:
+ * - "Today" for today's date
+ * - "Yesterday" for yesterday's date
+ * - Day of week (e.g., "Tuesday") for dates within the past week
+ * - Full date (e.g., "January 14, 2026") for older dates
+ *
+ * @param printDate - The date in YYYY-MM-DD format
+ * @param referenceDate - Optional reference date for "today" (defaults to current date)
+ * @returns Formatted relative date string
+ */
+export function formatRelativeDate(printDate: string, referenceDate?: Date): string {
+  // Parse the print date (add time to avoid timezone issues)
+  const puzzleDate = new Date(printDate + "T12:00:00")
+
+  // Get reference date (today) at noon for comparison
+  const today = referenceDate ?? new Date()
+  const todayNoon = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0, 0)
+
+  // Calculate difference in days
+  const diffMs = todayNoon.getTime() - puzzleDate.getTime()
+  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24))
+
+  if (diffDays === 0) {
+    return "Today"
+  } else if (diffDays === 1) {
+    return "Yesterday"
+  } else if (diffDays >= 2 && diffDays <= 6) {
+    // Within the past week - show day of week
+    return puzzleDate.toLocaleDateString("en-US", { weekday: "long" })
+  } else {
+    // Older than a week - show full date
+    return puzzleDate.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })
+  }
+}
+
+/**
  * Rank thresholds as percentage of max points (in ascending order)
  */
 const RANK_THRESHOLDS: { rank: Rank; threshold: number }[] = [

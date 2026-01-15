@@ -1,5 +1,15 @@
 import { test, expect, Page, Route } from "@playwright/test"
 
+/**
+ * Helper to wait for app to load and verify date is displayed
+ * Since the date is now shown as a relative date, we check for the time element
+ */
+async function waitForAppToLoad(page: Page) {
+  const timeElement = page.getByRole("time")
+  await expect(timeElement).toBeVisible()
+  await expect(timeElement).toHaveAttribute("datetime", "2025-01-15")
+}
+
 // Mock data matching the new ActivePuzzlesResponse format
 const mockActivePuzzles = {
   success: true,
@@ -246,7 +256,10 @@ test.describe("Error state", () => {
 
     await page.getByRole("button", { name: /Try again/ }).click()
 
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    // Date is now shown as a relative date, check the time element has the correct datetime
+    const timeElement = page.getByRole("time")
+    await expect(timeElement).toBeVisible()
+    await expect(timeElement).toHaveAttribute("datetime", "2025-01-15")
   })
 })
 
@@ -258,8 +271,11 @@ test.describe("Main app render", () => {
   test("renders header with puzzle date", async ({ page }) => {
     await page.goto("/")
 
-    await expect(page.getByText("Wednesday")).toBeVisible()
-    await expect(page.getByText("January 15, 2025")).toBeVisible()
+    // Date is now shown as a relative date (e.g., "Today", "Yesterday", day name, or full date)
+    // The mock date is 2025-01-15, so we check for the time element with correct datetime attribute
+    const timeElement = page.getByRole("time")
+    await expect(timeElement).toBeVisible()
+    await expect(timeElement).toHaveAttribute("datetime", "2025-01-15")
   })
 
   test("renders NYT Spelling Bee link", async ({ page }) => {
@@ -359,7 +375,7 @@ test.describe("Progress tracking", () => {
     })
 
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     // Wait for progress to load, then check tip is hidden
     await expect(page.getByText(/18 \/ \d+ points/)).toBeVisible()
@@ -389,7 +405,7 @@ test.describe("Progress tracking", () => {
     await page.goto("/")
 
     // App should still render
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
     // Error message should be visible (the hook transforms 401 to a specific message)
     await expect(page.getByText(/Invalid or expired NYT token/)).toBeVisible()
   })
@@ -402,7 +418,7 @@ test.describe("Settings modal", () => {
 
   test("opens settings modal when settings button is clicked", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     await page.getByRole("button", { name: /Open settings/ }).click()
 
@@ -414,7 +430,7 @@ test.describe("Settings modal", () => {
 
   test("closes settings modal when Cancel button is clicked", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     await page.getByRole("button", { name: /Open settings/ }).click()
     await expect(page.getByRole("dialog", { name: "Settings" })).toBeVisible()
@@ -426,7 +442,7 @@ test.describe("Settings modal", () => {
 
   test("closes settings modal when close button is clicked", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     await page.getByRole("button", { name: /Open settings/ }).click()
     await expect(page.getByRole("dialog", { name: "Settings" })).toBeVisible()
@@ -438,7 +454,7 @@ test.describe("Settings modal", () => {
 
   test("closes settings modal when Escape is pressed", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     await page.getByRole("button", { name: /Open settings/ }).click()
     await expect(page.getByRole("dialog", { name: "Settings" })).toBeVisible()
@@ -450,7 +466,7 @@ test.describe("Settings modal", () => {
 
   test("closes settings modal when clicking outside", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     await page.getByRole("button", { name: /Open settings/ }).click()
     await expect(page.getByRole("dialog", { name: "Settings" })).toBeVisible()
@@ -463,7 +479,7 @@ test.describe("Settings modal", () => {
 
   test("saves credentials when Save button is clicked", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     await page.getByRole("button", { name: /Open settings/ }).click()
 
@@ -494,7 +510,7 @@ test.describe("Settings modal", () => {
     })
 
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     await page.getByRole("button", { name: /Open settings/ }).click()
 
@@ -513,7 +529,7 @@ test.describe("Settings modal", () => {
 
   test("shows credentials in plain text", async ({ page }) => {
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     await page.getByRole("button", { name: /Open settings/ }).click()
 
@@ -563,7 +579,7 @@ test.describe("Hints section", () => {
     await page.goto("/")
 
     // Wait for puzzle to load first
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     // Wait for hints to load - check for the Hints header
     await expect(page.getByRole("heading", { name: "Hints" })).toBeVisible()
@@ -591,7 +607,7 @@ test.describe("Hints section", () => {
     await page.goto("/")
 
     // Wait for puzzle and hints to load
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
     await expect(page.getByRole("heading", { name: "Hints" })).toBeVisible()
 
     // Click on AB prefix to expand
@@ -617,7 +633,7 @@ test.describe("Hints section", () => {
     await page.goto("/")
 
     // Wait for puzzle to load first
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     // Then check for hints loading state
     await expect(page.getByText(/Generating hints/)).toBeVisible()
@@ -646,7 +662,7 @@ test.describe("Hints section", () => {
     await page.goto("/")
 
     // Wait for puzzle to load first
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     // Then check for hints error
     await expect(page.getByText(/Hints generation failed/)).toBeVisible()
@@ -679,7 +695,7 @@ test.describe("Refresh functionality", () => {
     })
 
     await page.goto("/")
-    await expect(page.getByText("Wednesday")).toBeVisible()
+    await waitForAppToLoad(page)
 
     // Wait for initial progress fetch - points displayed as "18 / X points"
     await expect(page.getByText(/18 \/ \d+ points/)).toBeVisible()

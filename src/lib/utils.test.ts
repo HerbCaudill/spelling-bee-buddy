@@ -10,6 +10,7 @@ import {
   getWordLengths,
   getStartingLetters,
   buildTwoLetterGroups,
+  formatRelativeDate,
 } from "./utils"
 
 describe("calculateWordPoints", () => {
@@ -314,5 +315,55 @@ describe("buildTwoLetterGroups", () => {
       total: 2,
       found: 1,
     })
+  })
+})
+
+describe("formatRelativeDate", () => {
+  // Reference date: January 15, 2026 (a Thursday)
+  const referenceDate = new Date(2026, 0, 15, 12, 0, 0)
+
+  it("returns 'Today' for today's date", () => {
+    expect(formatRelativeDate("2026-01-15", referenceDate)).toBe("Today")
+  })
+
+  it("returns 'Yesterday' for yesterday's date", () => {
+    expect(formatRelativeDate("2026-01-14", referenceDate)).toBe("Yesterday")
+  })
+
+  it("returns day of week for 2 days ago", () => {
+    // 2 days ago from Thursday Jan 15 is Tuesday Jan 13
+    expect(formatRelativeDate("2026-01-13", referenceDate)).toBe("Tuesday")
+  })
+
+  it("returns day of week for 3 days ago", () => {
+    // 3 days ago from Thursday Jan 15 is Monday Jan 12
+    expect(formatRelativeDate("2026-01-12", referenceDate)).toBe("Monday")
+  })
+
+  it("returns day of week for 6 days ago", () => {
+    // 6 days ago from Thursday Jan 15 is Friday Jan 9
+    expect(formatRelativeDate("2026-01-09", referenceDate)).toBe("Friday")
+  })
+
+  it("returns full date for 7 days ago", () => {
+    // 7 days ago from Thursday Jan 15 is Thursday Jan 8
+    expect(formatRelativeDate("2026-01-08", referenceDate)).toBe("January 8, 2026")
+  })
+
+  it("returns full date for older dates", () => {
+    expect(formatRelativeDate("2025-12-25", referenceDate)).toBe("December 25, 2025")
+    expect(formatRelativeDate("2025-01-01", referenceDate)).toBe("January 1, 2025")
+  })
+
+  it("handles future dates by showing full date", () => {
+    // Future dates should show full date (negative diffDays)
+    expect(formatRelativeDate("2026-01-20", referenceDate)).toBe("January 20, 2026")
+  })
+
+  it("uses current date when no reference date is provided", () => {
+    // This test is less precise but ensures the function works without a reference date
+    const today = new Date()
+    const todayStr = today.toISOString().split("T")[0]
+    expect(formatRelativeDate(todayStr)).toBe("Today")
   })
 })

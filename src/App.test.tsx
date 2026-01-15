@@ -119,7 +119,10 @@ describe("App", () => {
       await waitFor(() => {
         expect(screen.getByRole("heading", { name: "Spelling Bee Buddy" })).toBeInTheDocument()
       })
-      expect(screen.getByText(/Wednesday, January 15, 2025/)).toBeInTheDocument()
+      // Date is now shown as a relative date (e.g., "Today", "Yesterday", day name, or full date)
+      // Check that the time element has the correct datetime attribute
+      const timeElement = screen.getByRole("time")
+      expect(timeElement).toHaveAttribute("datetime", "2025-01-15")
     })
 
     it("renders progress bar", async () => {
