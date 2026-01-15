@@ -42,7 +42,7 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
 
   return (
     <table
-      className={cn("border-border border-collapse border", className)}
+      className={cn("border-border w-full border-collapse border", className)}
       role="grid"
       aria-label="Word grid"
     >
@@ -64,7 +64,7 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
             <tr key={letter} role="row" className={cn(!isLastRow && "border-border border-b")}>
               {/* Letter header */}
               <th
-                className="text-muted-foreground border-border w-6 border-r pr-3 text-left font-bold"
+                className="text-muted-foreground border-border w-6 border-r px-3 text-center font-bold"
                 role="rowheader"
                 aria-label={`Letter ${letter}`}
               >
@@ -119,11 +119,7 @@ function LengthGroup({ length, found, total }: LengthGroupProps) {
       role="cell"
       aria-label={`${length}-letter words: ${found} of ${total} found${isComplete ? ", complete" : ""}`}
     >
-      <span
-        className={cn("text-muted-foreground text-xs font-medium", isComplete && "text-accent")}
-      >
-        {length}
-      </span>
+      <span className="text-muted-foreground text-xs font-medium">{length}</span>
       <span className="inline-flex gap-px">{dots}</span>
     </span>
   )
