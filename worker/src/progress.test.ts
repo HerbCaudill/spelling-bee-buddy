@@ -196,9 +196,9 @@ describe("handleProgress", () => {
     expect(data.data?.response_id).toBe("20030")
     expect(data.data?.content.words).toEqual(["loop", "pool"])
 
-    // Verify fetch was called with the specific puzzle ID
+    // Verify fetch was called with the specific puzzle ID as a query param
     expect(fetch).toHaveBeenCalledWith(
-      "https://www.nytimes.com/svc/games/state/spelling_bee/20030",
+      "https://www.nytimes.com/svc/games/state/spelling_bee/latest?puzzle_id=20030",
       expect.objectContaining({
         headers: expect.objectContaining({
           Cookie: "NYT-S=valid-token",
