@@ -1,4 +1,10 @@
-import type { GameData, CubbyResponse, CachedHints } from "@/types"
+import type {
+  GameData,
+  CubbyResponse,
+  CachedHints,
+  ActivePuzzlesResponse,
+  PuzzleStats,
+} from "@/types"
 
 /**
  * Worker API base URL
@@ -111,4 +117,18 @@ export async function checkHealth(): Promise<boolean> {
  */
 export function getWorkerUrl(): string {
   return WORKER_URL
+}
+
+/**
+ * Fetch the list of active puzzles (this week and last week)
+ */
+export async function fetchActivePuzzles(): Promise<ActivePuzzlesResponse> {
+  return fetchApi<ActivePuzzlesResponse>("/active")
+}
+
+/**
+ * Fetch stats for a specific puzzle (how many players found each word)
+ */
+export async function fetchPuzzleStats(puzzleId: number): Promise<PuzzleStats> {
+  return fetchApi<PuzzleStats>(`/stats/${puzzleId}`)
 }

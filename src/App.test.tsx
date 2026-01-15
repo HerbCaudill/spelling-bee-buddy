@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { App } from "./App"
 import * as api from "@/lib/api"
 import * as storage from "@/lib/storage"
-import type { GameData, CubbyResponse } from "@/types"
+import type { CubbyResponse, ActivePuzzlesResponse, PuzzleStats } from "@/types"
 
 // Mock the API module
 vi.mock("@/lib/api")
@@ -14,18 +14,37 @@ const mockedApi = vi.mocked(api)
 vi.mock("@/lib/storage")
 const mockedStorage = vi.mocked(storage)
 
-const mockPuzzle: GameData = {
-  today: {
-    displayWeekday: "Wednesday",
-    displayDate: "January 15, 2025",
-    printDate: "2025-01-15",
-    centerLetter: "o",
-    outerLetters: ["a", "b", "c", "e", "l", "p"],
-    validLetters: ["o", "a", "b", "c", "e", "l", "p"],
-    pangrams: ["peaceable"],
-    answers: ["cope", "coal", "boat", "peaceable", "able", "bale", "pale"],
-    id: 20035,
+const mockActivePuzzles: ActivePuzzlesResponse = {
+  today: 0,
+  yesterday: 0,
+  thisWeek: [0],
+  lastWeek: [],
+  puzzles: [
+    {
+      id: 20035,
+      center_letter: "o",
+      outer_letters: "abcelp",
+      pangrams: ["peaceable"],
+      answers: ["cope", "coal", "boat", "peaceable", "able", "bale", "pale"],
+      print_date: "2025-01-15",
+      editor: "Sam Ezersky",
+    },
+  ],
+}
+
+const mockStats: PuzzleStats = {
+  id: 20035,
+  answers: {
+    cope: 8000,
+    coal: 9000,
+    boat: 7500,
+    peaceable: 3000,
+    able: 9500,
+    bale: 6000,
+    pale: 8500,
   },
+  n: 10000,
+  numberOfUsers: 10000,
 }
 
 const mockProgress: CubbyResponse = {
@@ -42,12 +61,14 @@ describe("App", () => {
     vi.resetAllMocks()
     // Default: no credentials
     mockedStorage.getCredentials.mockReturnValue(null)
+    // Default: stats succeed
+    mockedApi.fetchPuzzleStats.mockResolvedValue(mockStats)
   })
 
   describe("loading state", () => {
     it("shows loading spinner while fetching puzzle", () => {
-      // Make fetchPuzzle hang
-      mockedApi.fetchPuzzle.mockImplementation(() => new Promise(() => {}))
+      // Make fetchActivePuzzles hang
+      mockedApi.fetchActivePuzzles.mockImplementation(() => new Promise(() => {}))
 
       render(<App />)
 
@@ -57,29 +78,29 @@ describe("App", () => {
 
   describe("error state", () => {
     it("shows error message when puzzle fails to load", async () => {
-      mockedApi.fetchPuzzle.mockRejectedValue(new Error("Network error"))
+      mockedApi.fetchActivePuzzles.mockRejectedValue(new Error("Network error"))
 
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText(/Failed to Load Puzzle/)).toBeInTheDocument()
+        expect(screen.getByText(/Failed to load puzzle/)).toBeInTheDocument()
       })
       expect(screen.getByText(/Network error/)).toBeInTheDocument()
-      expect(screen.getByRole("button", { name: /Try Again/ })).toBeInTheDocument()
+      expect(screen.getByRole("button", { name: /Try again/ })).toBeInTheDocument()
     })
 
-    it("retries loading when Try Again is clicked", async () => {
+    it("retries loading when Try again is clicked", async () => {
       const user = userEvent.setup()
-      mockedApi.fetchPuzzle.mockRejectedValueOnce(new Error("Network error"))
-      mockedApi.fetchPuzzle.mockResolvedValueOnce(mockPuzzle)
+      mockedApi.fetchActivePuzzles.mockRejectedValueOnce(new Error("Network error"))
+      mockedApi.fetchActivePuzzles.mockResolvedValueOnce(mockActivePuzzles)
 
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText(/Failed to Load Puzzle/)).toBeInTheDocument()
+        expect(screen.getByText(/Failed to load puzzle/)).toBeInTheDocument()
       })
 
-      await user.click(screen.getByRole("button", { name: /Try Again/ }))
+      await user.click(screen.getByRole("button", { name: /Try again/ }))
 
       await waitFor(() => {
         expect(screen.getByText("Wednesday")).toBeInTheDocument()
@@ -89,7 +110,7 @@ describe("App", () => {
 
   describe("successful render", () => {
     beforeEach(() => {
-      mockedApi.fetchPuzzle.mockResolvedValue(mockPuzzle)
+      mockedApi.fetchActivePuzzles.mockResolvedValue(mockActivePuzzles)
     })
 
     it("renders header with puzzle date", async () => {
@@ -113,7 +134,7 @@ describe("App", () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText("Word Grid")).toBeInTheDocument()
+        expect(screen.getByText("Word grid")).toBeInTheDocument()
       })
     })
 
@@ -121,7 +142,7 @@ describe("App", () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByText("Two-Letter List")).toBeInTheDocument()
+        expect(screen.getByText("Two-letter list")).toBeInTheDocument()
       })
     })
 
@@ -129,7 +150,7 @@ describe("App", () => {
       render(<App />)
 
       await waitFor(() => {
-        expect(screen.getByRole("button", { name: /Refresh Progress/ })).toBeInTheDocument()
+        expect(screen.getByRole("button", { name: /Refresh progress/ })).toBeInTheDocument()
       })
     })
 
@@ -180,7 +201,7 @@ describe("App", () => {
 
   describe("settings modal", () => {
     beforeEach(() => {
-      mockedApi.fetchPuzzle.mockResolvedValue(mockPuzzle)
+      mockedApi.fetchActivePuzzles.mockResolvedValue(mockActivePuzzles)
     })
 
     it("opens settings modal when settings button is clicked", async () => {
@@ -231,7 +252,7 @@ describe("App", () => {
 
   describe("refresh functionality", () => {
     beforeEach(() => {
-      mockedApi.fetchPuzzle.mockResolvedValue(mockPuzzle)
+      mockedApi.fetchActivePuzzles.mockResolvedValue(mockActivePuzzles)
     })
 
     it("refetches data when refresh button is clicked", async () => {
@@ -250,13 +271,13 @@ describe("App", () => {
       })
 
       // Clear the mock calls
-      mockedApi.fetchPuzzle.mockClear()
+      mockedApi.fetchActivePuzzles.mockClear()
       mockedApi.fetchProgress.mockClear()
 
-      await user.click(screen.getByRole("button", { name: /Refresh Progress/ }))
+      await user.click(screen.getByRole("button", { name: /Refresh progress/ }))
 
       await waitFor(() => {
-        expect(mockedApi.fetchPuzzle).toHaveBeenCalled()
+        expect(mockedApi.fetchActivePuzzles).toHaveBeenCalled()
         expect(mockedApi.fetchProgress).toHaveBeenCalled()
       })
     })
@@ -264,7 +285,7 @@ describe("App", () => {
 
   describe("progress error handling", () => {
     beforeEach(() => {
-      mockedApi.fetchPuzzle.mockResolvedValue(mockPuzzle)
+      mockedApi.fetchActivePuzzles.mockResolvedValue(mockActivePuzzles)
     })
 
     it("shows progress error message when fetching progress fails", async () => {

@@ -3,16 +3,21 @@
  *
  * Endpoints:
  * - GET /puzzle        - Fetch today's puzzle data from NYT
+ * - GET /active        - Fetch this week's and last week's puzzles
+ * - GET /stats/:id     - Fetch stats for a puzzle (how many players found each word)
  * - GET /progress      - Fetch user's progress (requires X-NYT-Token header)
  * - GET /hints         - Get AI-generated hints (requires X-Anthropic-Key header, uses KV cache)
  */
 
-import type { Env, GameData, CachedHints } from "./types"
+import type { Env, GameData, CachedHints, ActivePuzzlesResponse, PuzzleStats } from "./types"
 import { handleCorsPreFlight, errorResponse, jsonResponse } from "./cors"
 import { parseGameData } from "./parser"
 import { generateHints, buildCacheKey } from "./hints"
 
 const NYT_SPELLING_BEE_URL = "https://www.nytimes.com/puzzles/spelling-bee"
+const NYT_ACTIVE_PUZZLES_URL = "https://www.nytimes.com/svc/spelling-bee/v1/active.json"
+const NYT_STATS_BASE_URL =
+  "https://static01.nyt.com/newsgraphics/2023-01-18-spelling-bee-buddy/stats"
 
 export default {
   async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
@@ -25,9 +30,18 @@ export default {
     }
 
     try {
+      // Handle /stats/:id route
+      const statsMatch = path.match(/^\/stats\/(\d+)$/)
+      if (statsMatch) {
+        return await handleStats(parseInt(statsMatch[1], 10))
+      }
+
       switch (path) {
         case "/puzzle":
           return await handlePuzzle()
+
+        case "/active":
+          return await handleActive()
 
         case "/progress":
           return await handleProgress(request)
@@ -220,4 +234,58 @@ async function handleHints(request: Request, env: Env): Promise<Response> {
     const message = error instanceof Error ? error.message : "Unknown error"
     return errorResponse(`Failed to generate hints: ${message}`, 500)
   }
+}
+
+/**
+ * Fetch the list of active puzzles (this week and last week)
+ */
+async function handleActive(): Promise<Response> {
+  const response = await fetch(NYT_ACTIVE_PUZZLES_URL, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Accept: "application/json",
+    },
+  })
+
+  if (!response.ok) {
+    return errorResponse(
+      `Failed to fetch active puzzles: ${response.status} ${response.statusText}`,
+      502,
+    )
+  }
+
+  const data: ActivePuzzlesResponse = await response.json()
+
+  return jsonResponse({
+    success: true,
+    data,
+  })
+}
+
+/**
+ * Fetch stats for a specific puzzle (how many players found each word)
+ */
+async function handleStats(puzzleId: number): Promise<Response> {
+  const response = await fetch(`${NYT_STATS_BASE_URL}/${puzzleId}.json`, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Accept: "application/json",
+    },
+  })
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      return errorResponse(`Stats not found for puzzle ${puzzleId}`, 404)
+    }
+    return errorResponse(`Failed to fetch stats: ${response.status} ${response.statusText}`, 502)
+  }
+
+  const data: PuzzleStats = await response.json()
+
+  return jsonResponse({
+    success: true,
+    data,
+  })
 }

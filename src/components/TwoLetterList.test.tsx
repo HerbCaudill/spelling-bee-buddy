@@ -10,7 +10,7 @@ describe("TwoLetterList", () => {
     it("renders heading", () => {
       render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
 
-      expect(screen.getByText("Two-Letter List")).toBeInTheDocument()
+      expect(screen.getByText("Two-letter list")).toBeInTheDocument()
     })
 
     it("renders all two-letter prefixes", () => {

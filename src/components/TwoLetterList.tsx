@@ -33,7 +33,7 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
   return (
     <div className={cn("space-y-3", className)}>
       <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
-        Two-Letter List
+        Two-letter list
       </h2>
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
         {groups.map(group => {

@@ -1,31 +1,56 @@
 import { test, expect, Page, Route } from "@playwright/test"
 
-// Mock data matching the types in src/types/index.ts
-const mockPuzzle = {
+// Mock data matching the new ActivePuzzlesResponse format
+const mockActivePuzzles = {
   success: true,
   data: {
-    today: {
-      displayWeekday: "Wednesday",
-      displayDate: "January 15, 2025",
-      printDate: "2025-01-15",
-      centerLetter: "o",
-      outerLetters: ["a", "b", "c", "e", "l", "p"],
-      validLetters: ["o", "a", "b", "c", "e", "l", "p"],
-      pangrams: ["peaceable"],
-      answers: [
-        "cope",
-        "coal",
-        "boat",
-        "peaceable",
-        "able",
-        "bale",
-        "pale",
-        "lope",
-        "pole",
-        "opal",
-      ],
-      id: 20035,
+    today: 0,
+    yesterday: 0,
+    thisWeek: [0],
+    lastWeek: [],
+    puzzles: [
+      {
+        id: 20035,
+        center_letter: "o",
+        outer_letters: "abcelp",
+        pangrams: ["peaceable"],
+        answers: [
+          "cope",
+          "coal",
+          "boat",
+          "peaceable",
+          "able",
+          "bale",
+          "pale",
+          "lope",
+          "pole",
+          "opal",
+        ],
+        print_date: "2025-01-15",
+        editor: "Sam Ezersky",
+      },
+    ],
+  },
+}
+
+const mockStats = {
+  success: true,
+  data: {
+    id: 20035,
+    answers: {
+      cope: 8000,
+      coal: 9000,
+      boat: 7500,
+      peaceable: 3000,
+      able: 9500,
+      bale: 6000,
+      pale: 8500,
+      lope: 7000,
+      pole: 8000,
+      opal: 6500,
     },
+    n: 10000,
+    numberOfUsers: 10000,
   },
 }
 
@@ -68,33 +93,51 @@ const mockHints = {
 async function setupMocks(
   page: Page,
   options: {
-    puzzleResponse?: object | ((route: Route) => void)
+    activeResponse?: object | ((route: Route) => void)
+    statsResponse?: object | ((route: Route) => void)
     progressResponse?: object | ((route: Route) => void)
     hintsResponse?: object | ((route: Route) => void)
-    puzzleDelay?: number
+    activeDelay?: number
+    statsDelay?: number
     progressDelay?: number
     hintsDelay?: number
   } = {},
 ) {
   const {
-    puzzleResponse = mockPuzzle,
+    activeResponse = mockActivePuzzles,
+    statsResponse = mockStats,
     progressResponse = mockProgress,
     hintsResponse = mockHints,
-    puzzleDelay = 0,
+    activeDelay = 0,
+    statsDelay = 0,
     progressDelay = 0,
     hintsDelay = 0,
   } = options
 
-  // Mock puzzle endpoint
-  await page.route("**/puzzle", async route => {
-    if (puzzleDelay) await new Promise(r => setTimeout(r, puzzleDelay))
-    if (typeof puzzleResponse === "function") {
-      puzzleResponse(route)
+  // Mock active puzzles endpoint
+  await page.route("**/active", async route => {
+    if (activeDelay) await new Promise(r => setTimeout(r, activeDelay))
+    if (typeof activeResponse === "function") {
+      activeResponse(route)
     } else {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify(puzzleResponse),
+        body: JSON.stringify(activeResponse),
+      })
+    }
+  })
+
+  // Mock stats endpoint
+  await page.route("**/stats/*", async route => {
+    if (statsDelay) await new Promise(r => setTimeout(r, statsDelay))
+    if (typeof statsResponse === "function") {
+      statsResponse(route)
+    } else {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(statsResponse),
       })
     }
   })
@@ -130,14 +173,14 @@ async function setupMocks(
 
 test.describe("Loading state", () => {
   test("displays loading state initially", async ({ page }) => {
-    await setupMocks(page, { puzzleDelay: 1000 })
+    await setupMocks(page, { activeDelay: 1000 })
     await page.goto("/")
 
     await expect(page.getByText(/Loading puzzle/)).toBeVisible()
   })
 
   test("shows spinner icon during loading", async ({ page }) => {
-    await setupMocks(page, { puzzleDelay: 1000 })
+    await setupMocks(page, { activeDelay: 1000 })
     await page.goto("/")
 
     // The Loader2 icon has the animate-spin class
@@ -148,7 +191,7 @@ test.describe("Loading state", () => {
 test.describe("Error state", () => {
   test("shows error message when puzzle fails to load", async ({ page }) => {
     await setupMocks(page, {
-      puzzleResponse: route =>
+      activeResponse: route =>
         route.fulfill({
           status: 500,
           contentType: "application/json",
@@ -158,13 +201,13 @@ test.describe("Error state", () => {
 
     await page.goto("/")
 
-    await expect(page.getByText(/Failed to Load Puzzle/)).toBeVisible()
+    await expect(page.getByText(/Failed to load puzzle/)).toBeVisible()
     await expect(page.getByText(/Server unavailable/)).toBeVisible()
   })
 
-  test("shows Try Again button on error", async ({ page }) => {
+  test("shows Try again button on error", async ({ page }) => {
     await setupMocks(page, {
-      puzzleResponse: route =>
+      activeResponse: route =>
         route.fulfill({
           status: 500,
           contentType: "application/json",
@@ -174,13 +217,13 @@ test.describe("Error state", () => {
 
     await page.goto("/")
 
-    await expect(page.getByRole("button", { name: /Try Again/ })).toBeVisible()
+    await expect(page.getByRole("button", { name: /Try again/ })).toBeVisible()
   })
 
-  test("retries loading when Try Again is clicked", async ({ page }) => {
+  test("retries loading when Try again is clicked", async ({ page }) => {
     let callCount = 0
     await setupMocks(page, {
-      puzzleResponse: route => {
+      activeResponse: route => {
         callCount++
         if (callCount === 1) {
           route.fulfill({
@@ -192,16 +235,16 @@ test.describe("Error state", () => {
           route.fulfill({
             status: 200,
             contentType: "application/json",
-            body: JSON.stringify(mockPuzzle),
+            body: JSON.stringify(mockActivePuzzles),
           })
         }
       },
     })
 
     await page.goto("/")
-    await expect(page.getByText(/Failed to Load Puzzle/)).toBeVisible()
+    await expect(page.getByText(/Failed to load puzzle/)).toBeVisible()
 
-    await page.getByRole("button", { name: /Try Again/ }).click()
+    await page.getByRole("button", { name: /Try again/ }).click()
 
     await expect(page.getByText("Wednesday")).toBeVisible()
   })
@@ -244,21 +287,21 @@ test.describe("Main app render", () => {
   test("renders word grid section", async ({ page }) => {
     await page.goto("/")
 
-    await expect(page.getByText("Word Grid")).toBeVisible()
+    await expect(page.getByText("Word grid")).toBeVisible()
     await expect(page.getByRole("region", { name: "Word grid" })).toBeVisible()
   })
 
   test("renders two-letter list section", async ({ page }) => {
     await page.goto("/")
 
-    await expect(page.getByText("Two-Letter List")).toBeVisible()
+    await expect(page.getByText("Two-letter list")).toBeVisible()
     await expect(page.getByRole("region", { name: "Two-letter list" })).toBeVisible()
   })
 
   test("renders refresh progress button", async ({ page }) => {
     await page.goto("/")
 
-    await expect(page.getByRole("button", { name: /Refresh Progress/ })).toBeVisible()
+    await expect(page.getByRole("button", { name: /Refresh progress/ })).toBeVisible()
   })
 
   test("shows tip when no credentials are configured", async ({ page }) => {
@@ -630,7 +673,7 @@ test.describe("Refresh functionality", () => {
     const initialCallCount = progressCallCount
 
     // Click refresh
-    await page.getByRole("button", { name: /Refresh Progress/ }).click()
+    await page.getByRole("button", { name: /Refresh progress/ }).click()
 
     // Wait for refetch
     await page.waitForTimeout(500)
@@ -644,7 +687,7 @@ test.describe("Word Grid interaction", () => {
     await setupMocks(page)
     await page.goto("/")
 
-    await expect(page.getByText("Word Grid")).toBeVisible()
+    await expect(page.getByText("Word grid")).toBeVisible()
 
     // The word grid should show letters and counts
     // Our mock data has words starting with various letters at length 4
@@ -657,7 +700,7 @@ test.describe("Two-Letter List interaction", () => {
     await setupMocks(page)
     await page.goto("/")
 
-    await expect(page.getByText("Two-Letter List")).toBeVisible()
+    await expect(page.getByText("Two-letter list")).toBeVisible()
     await expect(page.getByRole("region", { name: "Two-letter list" })).toBeVisible()
   })
 })

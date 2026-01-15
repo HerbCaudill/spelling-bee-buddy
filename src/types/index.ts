@@ -131,3 +131,37 @@ export interface TwoLetterGroup {
   total: number
   found: number
 }
+
+/**
+ * A single puzzle from the active puzzles list
+ */
+export interface ActivePuzzle {
+  id: number
+  center_letter: string
+  outer_letters: string // "giknoy" (concatenated)
+  pangrams: string[]
+  answers: string[]
+  print_date: string // "2026-01-05"
+  editor: string
+}
+
+/**
+ * Response from /svc/spelling-bee/v1/active.json
+ */
+export interface ActivePuzzlesResponse {
+  today: number // Index into puzzles array
+  yesterday: number
+  thisWeek: number[] // Indices
+  lastWeek: number[]
+  puzzles: ActivePuzzle[]
+}
+
+/**
+ * Stats for a puzzle showing how many players found each word
+ */
+export interface PuzzleStats {
+  id: number
+  answers: Record<string, number> // word -> number of players who found it
+  n: number // Sample size (typically 10000)
+  numberOfUsers: number // Total players
+}
