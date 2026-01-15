@@ -101,6 +101,9 @@ export function App() {
 
   const { today } = puzzle
 
+  // Check if all words have been found
+  const allWordsFound = foundWords.length >= today.answers.length
+
   return (
     <div className="bg-background min-h-screen">
       {/* Header */}
@@ -153,32 +156,34 @@ export function App() {
           <TwoLetterList allWords={today.answers} foundWords={foundWords} />
         </section>
 
-        {/* Hints section */}
-        <section aria-label="Hints">
-          {!hasApiKey && (
-            <div className="border-border bg-muted/50 mb-4 rounded-lg border p-4 text-sm">
-              <p className="text-muted-foreground">
-                <strong>Tip:</strong> Add your Anthropic API key in settings to see AI-generated
-                hints.
-              </p>
-            </div>
-          )}
+        {/* Hints section - hidden when all words are found */}
+        {!allWordsFound && (
+          <section aria-label="Hints">
+            {!hasApiKey && (
+              <div className="border-border bg-muted/50 mb-4 rounded-lg border p-4 text-sm">
+                <p className="text-muted-foreground">
+                  <strong>Tip:</strong> Add your Anthropic API key in settings to see AI-generated
+                  hints.
+                </p>
+              </div>
+            )}
 
-          {hintsError && (
-            <div className="border-destructive/50 bg-destructive/10 mb-4 rounded-lg border p-4 text-sm">
-              <p className="text-destructive">{hintsError}</p>
-            </div>
-          )}
+            {hintsError && (
+              <div className="border-destructive/50 bg-destructive/10 mb-4 rounded-lg border p-4 text-sm">
+                <p className="text-destructive">{hintsError}</p>
+              </div>
+            )}
 
-          {hintsLoading && (
-            <div className="text-muted-foreground flex items-center justify-center gap-2 py-8">
-              <Loader2 className="size-4 animate-spin" />
-              <span>Generating hints...</span>
-            </div>
-          )}
+            {hintsLoading && (
+              <div className="text-muted-foreground flex items-center justify-center gap-2 py-8">
+                <Loader2 className="size-4 animate-spin" />
+                <span>Generating hints...</span>
+              </div>
+            )}
 
-          {hints && !hintsLoading && <HintsList hints={hints} foundWords={foundWords} />}
-        </section>
+            {hints && !hintsLoading && <HintsList hints={hints} foundWords={foundWords} />}
+          </section>
+        )}
 
         {/* Stats section - you vs other players */}
         {statsNotAvailableYet && (

@@ -145,6 +145,11 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
           const totalHints = prefixHints.length
           const isComplete = foundCount >= totalHints && totalHints > 0
 
+          // Don't show completed prefixes
+          if (isComplete) {
+            return null
+          }
+
           return (
             <div key={prefix} className="overflow-hidden rounded-md border">
               {/* Prefix header - clickable to toggle */}

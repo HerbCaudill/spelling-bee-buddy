@@ -166,40 +166,30 @@ describe("HintsList", () => {
   })
 
   describe("found words tracking", () => {
-    it("shows found count based on foundWords prop", () => {
+    it("hides prefix when all words are found", () => {
       render(
         <HintsList
           hints={sampleHints}
-          foundWords={["able", "about"]} // Two AB words
+          foundWords={["able", "about"]} // Two AB words - completes AB prefix
         />,
       )
 
-      // AB should show 2 found
-      expect(screen.getByLabelText("2 of 2, complete")).toBeInTheDocument()
+      // AB prefix should be hidden since all words are found
+      expect(screen.queryByRole("button", { name: /AB/ })).not.toBeInTheDocument()
+      // Other prefixes should still be visible
+      expect(screen.getByRole("button", { name: /BA/ })).toBeInTheDocument()
     })
 
-    it("shows checkmark for complete prefixes", () => {
+    it("handles case-insensitive word matching for hiding", () => {
       render(
         <HintsList
           hints={sampleHints}
-          foundWords={["able", "about"]} // All AB words found
+          foundWords={["ABLE", "About"]} // Mixed case - completes AB prefix
         />,
       )
 
-      // AB should show checkmark
-      expect(screen.getByText(/✓/)).toBeInTheDocument()
-    })
-
-    it("handles case-insensitive word matching", () => {
-      render(
-        <HintsList
-          hints={sampleHints}
-          foundWords={["ABLE", "About"]} // Mixed case
-        />,
-      )
-
-      // Should still count as 2 found for AB
-      expect(screen.getByLabelText("2 of 2, complete")).toBeInTheDocument()
+      // AB prefix should be hidden since all words are found (case-insensitive)
+      expect(screen.queryByRole("button", { name: /AB/ })).not.toBeInTheDocument()
     })
 
     it("handles empty foundWords array", () => {
@@ -228,10 +218,9 @@ describe("HintsList", () => {
       expect(screen.getByText("Approximately")).toBeInTheDocument()
     })
 
-    it("shows no hints when all words of prefix are found", async () => {
-      const user = userEvent.setup()
+    it("hides entire prefix when all words are found", () => {
       // AB has hints: length 4 and length 5
-      // If user found both, no hints should be shown
+      // If user found both, the prefix should be hidden entirely
       render(
         <HintsList
           hints={sampleHints}
@@ -239,9 +228,9 @@ describe("HintsList", () => {
         />,
       )
 
-      await user.click(screen.getByRole("button", { name: /AB/ }))
-
-      // Both hints should be filtered out
+      // AB prefix should be hidden since all words are found
+      expect(screen.queryByRole("button", { name: /AB/ })).not.toBeInTheDocument()
+      // Hints for AB should not be in the document at all
       expect(screen.queryByText("Capable of doing something")).not.toBeInTheDocument()
       expect(screen.queryByText("Approximately")).not.toBeInTheDocument()
     })
@@ -333,7 +322,7 @@ describe("HintsList", () => {
       expect(container.firstChild).toHaveClass("custom-class")
     })
 
-    it("applies complete styling to complete prefixes", () => {
+    it("hides complete prefixes entirely", () => {
       render(
         <HintsList
           hints={sampleHints}
@@ -341,9 +330,8 @@ describe("HintsList", () => {
         />,
       )
 
-      // Check that the complete prefix has the checkmark
-      const completeLabel = screen.getByLabelText("2 of 2, complete")
-      expect(completeLabel).toBeInTheDocument()
+      // AB prefix should not be rendered at all when complete
+      expect(screen.queryByRole("button", { name: /AB/ })).not.toBeInTheDocument()
     })
   })
 
