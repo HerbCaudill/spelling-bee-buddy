@@ -117,7 +117,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
           style={{ width: `${Math.max(percentage, 0.5)}%` }}
         />
         {/* Percentage label positioned on top of bar */}
-        <span className="absolute inset-y-0 left-1 flex items-center font-mono text-[10px] text-black/70">
+        <span className="absolute inset-y-0 right-0 flex items-center px-2 font-mono text-[10px] text-black/70">
           {percentageText}
         </span>
       </div>
