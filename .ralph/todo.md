@@ -1,13 +1,13 @@
 ### To do
 
 - [ ] Use storybook to show the various components in different states
-- [ ] Move "you vs other players below everything else. Replace the current display with a chart showing each word with the bar showing the percentage of people who have found it. For words that I've found, show the word. For other words, show just the first letter and number of letters, e.g. A (6)
 - [ ] Progress tracking is available for past puzzles - just pass the correct puzzle ID
 
 ---
 
 ### Done
 
+- [x] Move "you vs other players" below everything else. Replace the current display with a chart showing each word with a bar showing the percentage of players who have found it. For words found by the user, show the word. For unfound words, show just the first letter and number of letters, e.g. A (6)
 - [x] Redesign TwoLetterList with dot-based display (A | AB ●●○ AC ●●●○) matching WordGrid style
 - [x] Add polling to keep "other players" stats up to date (every 2 minutes, or every 30 seconds if stats aren't available yet). Show a "not available yet" message for new puzzles. Stats are also included in manual refresh.
 - [x] In the header, show the icon and the title "Spelling Bee Buddy". The date should just be with the icon for choosing a different date, and doesn't need to be so prominent.

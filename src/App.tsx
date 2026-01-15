@@ -158,25 +158,6 @@ export function App() {
           </section>
         )}
 
-        {/* Stats section */}
-        {statsNotAvailableYet && (
-          <section aria-label="Player stats">
-            <StatsNotAvailable />
-          </section>
-        )}
-
-        {stats && !statsLoading && (
-          <section aria-label="Player stats">
-            <StatsDisplay stats={stats} allWords={today.answers} foundWords={effectiveFoundWords} />
-          </section>
-        )}
-
-        {statsError && (
-          <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4 text-sm">
-            <p className="text-destructive">{statsError}</p>
-          </div>
-        )}
-
         {/* Word Grid section */}
         <section aria-label="Word grid">
           <h2 className="text-muted-foreground mb-3 text-sm font-semibold tracking-wide uppercase">
@@ -217,6 +198,25 @@ export function App() {
 
             {hints && !hintsLoading && <HintsList hints={hints} foundWords={foundWords} />}
           </section>
+        )}
+
+        {/* Stats section - you vs other players */}
+        {statsNotAvailableYet && (
+          <section aria-label="Player stats">
+            <StatsNotAvailable />
+          </section>
+        )}
+
+        {stats && !statsLoading && (
+          <section aria-label="Player stats">
+            <StatsDisplay stats={stats} allWords={today.answers} foundWords={effectiveFoundWords} />
+          </section>
+        )}
+
+        {statsError && (
+          <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4 text-sm">
+            <p className="text-destructive">{statsError}</p>
+          </div>
         )}
 
         {/* Refresh button - only show for today's puzzle */}

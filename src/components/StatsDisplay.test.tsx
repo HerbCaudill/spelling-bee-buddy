@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { StatsDisplay, StatsNotAvailable } from "./StatsDisplay"
 import type { PuzzleStats } from "@/types"
@@ -14,70 +14,6 @@ const mockStats: PuzzleStats = {
 }
 
 describe("StatsDisplay", () => {
-  describe("remaining words calculation", () => {
-    it("shows correct remaining count when foundWords matches allWords", () => {
-      const allWords = ["able", "about", "apple", "axle"]
-      const foundWords = ["able", "about"]
-
-      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
-
-      // Found: 2, Remaining: 2
-      const foundSection = screen.getByText("Words found").parentElement!
-      expect(within(foundSection).getByText("2")).toBeInTheDocument()
-
-      const remainingSection = screen.getByText("Remaining").parentElement!
-      expect(within(remainingSection).getByText("2")).toBeInTheDocument()
-    })
-
-    it("never shows negative remaining when foundWords has more items than allWords", () => {
-      // This can happen if user's foundWords includes words not in the puzzle's answer list
-      const allWords = ["able", "about"]
-      const foundWords = ["able", "about", "apple", "axle", "extra"] // 5 words, but only 2 in allWords
-
-      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
-
-      // Should show 2 found (only the ones in allWords), 0 remaining
-      const remainingSection = screen.getByText("Remaining").parentElement!
-      expect(within(remainingSection).getByText("0")).toBeInTheDocument()
-    })
-
-    it("only counts found words that exist in allWords", () => {
-      const allWords = ["able", "about"]
-      const foundWords = ["able", "nonexistent", "another"]
-
-      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
-
-      // Only "able" should count as found since it's the only one in allWords
-      const foundSection = screen.getByText("Words found").parentElement!
-      expect(within(foundSection).getByText("1")).toBeInTheDocument()
-
-      // The remaining should be 1 (about)
-      const remainingSection = screen.getByText("Remaining").parentElement!
-      expect(within(remainingSection).getByText("1")).toBeInTheDocument()
-    })
-
-    it("handles case-insensitive word matching", () => {
-      const allWords = ["ABLE", "About"]
-      const foundWords = ["able", "ABOUT"]
-
-      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
-
-      // Both should match despite case differences
-      const foundSection = screen.getByText("Words found").parentElement!
-      expect(within(foundSection).getByText("2")).toBeInTheDocument()
-    })
-
-    it("shows 0 remaining when all words are found", () => {
-      const allWords = ["able", "about"]
-      const foundWords = ["able", "about"]
-
-      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
-
-      const remainingSection = screen.getByText("Remaining").parentElement!
-      expect(within(remainingSection).getByText("0")).toBeInTheDocument()
-    })
-  })
-
   describe("rendering", () => {
     it("returns null when stats is null", () => {
       const { container } = render(
@@ -91,23 +27,117 @@ describe("StatsDisplay", () => {
       expect(screen.getByText("1,000 players")).toBeInTheDocument()
     })
 
-    it("shows rare finds section when user has rare words", () => {
-      const allWords = ["able", "axle"]
-      const foundWords = ["axle"] // axle is rare (10% of players)
+    it("shows the section header", () => {
+      render(<StatsDisplay stats={mockStats} allWords={["able"]} foundWords={[]} />)
+      expect(screen.getByText("You vs other players")).toBeInTheDocument()
+    })
+  })
+
+  describe("word display", () => {
+    it("shows the full word for found words", () => {
+      const allWords = ["able", "about"]
+      const foundWords = ["able"]
 
       render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
-      expect(screen.getByText("Your rare finds")).toBeInTheDocument()
-      expect(screen.getByText("axle")).toBeInTheDocument()
+      // Found word should show the full word
+      expect(screen.getByText("able")).toBeInTheDocument()
     })
 
-    it("does not show rare finds section when user has no rare words", () => {
+    it("shows first letter and length for unfound words", () => {
       const allWords = ["able", "about"]
-      const foundWords = ["able", "about"] // both are common (90% and 80%)
+      const foundWords = ["able"]
 
       render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
 
-      expect(screen.queryByText("Your rare finds")).not.toBeInTheDocument()
+      // Unfound word "about" (5 letters) should show "A (5)"
+      expect(screen.getByText("A (5)")).toBeInTheDocument()
+    })
+
+    it("handles case-insensitive word matching", () => {
+      const allWords = ["ABLE", "About"]
+      const foundWords = ["able", "ABOUT"]
+
+      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
+
+      // Both should show as found (full word displayed)
+      expect(screen.getByText("ABLE")).toBeInTheDocument()
+      expect(screen.getByText("About")).toBeInTheDocument()
+    })
+
+    it("shows words sorted by popularity (most found first)", () => {
+      const allWords = ["axle", "apple", "able", "about"]
+      const foundWords: string[] = []
+
+      const { container } = render(
+        <StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />,
+      )
+
+      // Get all word displays in order
+      const wordDisplays = container.querySelectorAll(".font-mono")
+      const texts = Array.from(wordDisplays).map(el => el.textContent)
+
+      // Should be sorted: able (90%), about (80%), apple (50%), axle (10%)
+      expect(texts[0]).toBe("A (4)") // able
+      expect(texts[1]).toBe("A (5)") // about
+      expect(texts[2]).toBe("A (5)") // apple
+      expect(texts[3]).toBe("A (4)") // axle
+    })
+  })
+
+  describe("percentage display", () => {
+    it("shows percentage for each word", () => {
+      const allWords = ["able"]
+      const foundWords: string[] = []
+
+      render(<StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />)
+
+      // able is found by 900/1000 = 90%
+      expect(screen.getByText("90%")).toBeInTheDocument()
+    })
+
+    it("shows one decimal place for low percentages", () => {
+      const statsWithLowPct: PuzzleStats = {
+        numberOfUsers: 1000,
+        answers: {
+          rare: 50, // 5%
+        },
+      }
+
+      render(<StatsDisplay stats={statsWithLowPct} allWords={["rare"]} foundWords={[]} />)
+
+      expect(screen.getByText("5.0%")).toBeInTheDocument()
+    })
+
+    it("handles zero users gracefully", () => {
+      const statsWithZeroUsers: PuzzleStats = {
+        numberOfUsers: 0,
+        answers: { able: 0 },
+      }
+
+      render(<StatsDisplay stats={statsWithZeroUsers} allWords={["able"]} foundWords={[]} />)
+
+      expect(screen.getByText("0.0%")).toBeInTheDocument()
+    })
+  })
+
+  describe("word highlighting", () => {
+    it("applies different styling for found vs unfound words", () => {
+      const allWords = ["able", "about"]
+      const foundWords = ["able"]
+
+      const { container } = render(
+        <StatsDisplay stats={mockStats} allWords={allWords} foundWords={foundWords} />,
+      )
+
+      const foundWord = screen.getByText("able")
+      const unfoundWord = screen.getByText("A (5)")
+
+      // Found word should have foreground text color (not muted)
+      expect(foundWord).toHaveClass("text-foreground")
+
+      // Unfound word should have muted text color
+      expect(unfoundWord).toHaveClass("text-muted-foreground")
     })
   })
 
