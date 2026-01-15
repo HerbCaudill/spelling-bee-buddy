@@ -1,12 +1,12 @@
 ### To do
 
-- [ ] Create HintsList stories (empty, collapsed, expanded, complete section)
 - [ ] Create SettingsModal stories (open, with credentials, saving state)
 
 ---
 
 ### Done
 
+- [x] Create HintsList stories (empty, collapsed, expanded, complete section)
 - [x] Create Header stories (with/without date picker, different dates)
 - [x] Create StatsDisplay stories (no stats, loading, with data, user found vs unfound)
 - [x] Create TwoLetterList stories (empty, partial progress, complete)
