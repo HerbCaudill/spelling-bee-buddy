@@ -94,6 +94,25 @@ export function AppContent({
           <TwoLetterList allWords={today.answers} foundWords={foundWords} />
         </section>
 
+        {/* Stats section - you vs other players */}
+        {statsNotAvailableYet && (
+          <section aria-label="Player stats">
+            <StatsNotAvailable />
+          </section>
+        )}
+
+        {stats && (
+          <section aria-label="Player stats">
+            <StatsDisplay stats={stats} allWords={today.answers} foundWords={foundWords} />
+          </section>
+        )}
+
+        {statsError && (
+          <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4 text-sm">
+            <p className="text-destructive">{statsError}</p>
+          </div>
+        )}
+
         {/* Hints section - hidden when all words are found */}
         {!allWordsFound && (
           <section aria-label="Hints">
@@ -121,25 +140,6 @@ export function AppContent({
 
             {hints && !hintsLoading && <HintsList hints={hints} foundWords={foundWords} />}
           </section>
-        )}
-
-        {/* Stats section - you vs other players */}
-        {statsNotAvailableYet && (
-          <section aria-label="Player stats">
-            <StatsNotAvailable />
-          </section>
-        )}
-
-        {stats && (
-          <section aria-label="Player stats">
-            <StatsDisplay stats={stats} allWords={today.answers} foundWords={foundWords} />
-          </section>
-        )}
-
-        {statsError && (
-          <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4 text-sm">
-            <p className="text-destructive">{statsError}</p>
-          </div>
         )}
 
         {/* Refresh button */}
