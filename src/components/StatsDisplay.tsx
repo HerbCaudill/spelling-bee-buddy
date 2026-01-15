@@ -112,7 +112,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
         <div
           className={cn(
             "absolute inset-y-0 left-0 transition-all",
-            isFound ? "bg-accent" : "bg-muted",
+            isFound ? "bg-yellow-300" : "bg-muted",
           )}
           style={{ width: `${Math.max(percentage, 0.5)}%` }}
         />
