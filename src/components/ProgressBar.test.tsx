@@ -96,4 +96,71 @@ describe("ProgressBar", () => {
       expect(markers.length).toBe(8)
     })
   })
+
+  describe("pangram display", () => {
+    it("shows pangram count when pangrams are provided", () => {
+      render(
+        <ProgressBar
+          currentPoints={50}
+          maxPoints={100}
+          pangrams={["placebo", "capable"]}
+          foundWords={["placebo"]}
+        />,
+      )
+      expect(screen.getByText("1 / 2 pangrams")).toBeInTheDocument()
+    })
+
+    it("uses singular 'pangram' when there is only one", () => {
+      render(
+        <ProgressBar
+          currentPoints={50}
+          maxPoints={100}
+          pangrams={["placebo"]}
+          foundWords={[]}
+        />,
+      )
+      expect(screen.getByText("0 / 1 pangram")).toBeInTheDocument()
+    })
+
+    it("shows all pangrams found", () => {
+      render(
+        <ProgressBar
+          currentPoints={50}
+          maxPoints={100}
+          pangrams={["placebo", "capable"]}
+          foundWords={["placebo", "capable"]}
+        />,
+      )
+      expect(screen.getByText("2 / 2 pangrams")).toBeInTheDocument()
+    })
+
+    it("does not show pangram count when pangrams array is empty", () => {
+      render(
+        <ProgressBar
+          currentPoints={50}
+          maxPoints={100}
+          pangrams={[]}
+          foundWords={["able"]}
+        />,
+      )
+      expect(screen.queryByText(/pangram/)).not.toBeInTheDocument()
+    })
+
+    it("does not show pangram count when pangrams is not provided", () => {
+      render(<ProgressBar currentPoints={50} maxPoints={100} />)
+      expect(screen.queryByText(/pangram/)).not.toBeInTheDocument()
+    })
+
+    it("is case-insensitive when matching found pangrams", () => {
+      render(
+        <ProgressBar
+          currentPoints={50}
+          maxPoints={100}
+          pangrams={["placebo"]}
+          foundWords={["PLACEBO"]}
+        />,
+      )
+      expect(screen.getByText("1 / 1 pangram")).toBeInTheDocument()
+    })
+  })
 })

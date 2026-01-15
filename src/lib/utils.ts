@@ -93,6 +93,14 @@ export function getTwoLetterPrefix(word: string): string {
 }
 
 /**
+ * Get the pangrams that have been found from a list of found words
+ */
+export function getPangramsFound(foundWords: string[], pangrams: string[]): string[] {
+  const pangramSet = new Set(pangrams.map(p => p.toLowerCase()))
+  return foundWords.filter(w => pangramSet.has(w.toLowerCase()))
+}
+
+/**
  * Group words by their starting letter and length for the word grid
  */
 export function buildWordGrid(allWords: string[], foundWords: string[]): WordGridCell[] {

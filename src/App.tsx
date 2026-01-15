@@ -156,6 +156,8 @@ export function App() {
             <ProgressBar
               currentPoints={currentPoints}
               maxPoints={maxPoints}
+              pangrams={today.pangrams}
+              foundWords={foundWords}
               className={progressLoading ? "opacity-50" : ""}
             />
           </section>

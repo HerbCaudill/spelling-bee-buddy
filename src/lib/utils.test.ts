@@ -5,6 +5,7 @@ import {
   getRank,
   getPointsToNextRank,
   getTwoLetterPrefix,
+  getPangramsFound,
   buildWordGrid,
   getWordLengths,
   getStartingLetters,
@@ -139,6 +140,45 @@ describe("getTwoLetterPrefix", () => {
     expect(getTwoLetterPrefix("apple")).toBe("AP")
     expect(getTwoLetterPrefix("BANANA")).toBe("BA")
     expect(getTwoLetterPrefix("cApE")).toBe("CA")
+  })
+})
+
+describe("getPangramsFound", () => {
+  const pangrams = ["placebo", "capable"]
+
+  it("returns pangrams that are in foundWords", () => {
+    const foundWords = ["able", "placebo", "cape"]
+    expect(getPangramsFound(foundWords, pangrams)).toEqual(["placebo"])
+  })
+
+  it("returns all pangrams when all are found", () => {
+    const foundWords = ["placebo", "capable", "able"]
+    const result = getPangramsFound(foundWords, pangrams)
+    expect(result).toHaveLength(2)
+    expect(result).toContain("placebo")
+    expect(result).toContain("capable")
+  })
+
+  it("returns empty array when no pangrams are found", () => {
+    const foundWords = ["able", "cape", "cope"]
+    expect(getPangramsFound(foundWords, pangrams)).toEqual([])
+  })
+
+  it("returns empty array when foundWords is empty", () => {
+    expect(getPangramsFound([], pangrams)).toEqual([])
+  })
+
+  it("returns empty array when pangrams is empty", () => {
+    const foundWords = ["able", "cape"]
+    expect(getPangramsFound(foundWords, [])).toEqual([])
+  })
+
+  it("is case-insensitive", () => {
+    const foundWords = ["PLACEBO", "Capable"]
+    const result = getPangramsFound(foundWords, pangrams)
+    expect(result).toHaveLength(2)
+    expect(result).toContain("PLACEBO")
+    expect(result).toContain("Capable")
   })
 })
 

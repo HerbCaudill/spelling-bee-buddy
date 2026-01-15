@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { getRank, getPointsToNextRank } from "@/lib/utils"
+import { getRank, getPointsToNextRank, getPangramsFound } from "@/lib/utils"
 import type { Rank } from "@/types"
 
 /**
@@ -39,6 +39,10 @@ export interface ProgressBarProps {
   currentPoints: number
   /** Maximum possible points for the puzzle */
   maxPoints: number
+  /** List of all pangrams in the puzzle */
+  pangrams?: string[]
+  /** List of words the user has found */
+  foundWords?: string[]
   /** Optional className for the container */
   className?: string
 }
@@ -50,10 +54,20 @@ export interface ProgressBarProps {
  * - Current rank name
  * - Visual progress bar with rank markers
  * - Current points and points needed for next rank
+ * - Pangram progress (if pangrams provided)
  */
-export function ProgressBar({ currentPoints, maxPoints, className }: ProgressBarProps) {
+export function ProgressBar({
+  currentPoints,
+  maxPoints,
+  pangrams = [],
+  foundWords = [],
+  className,
+}: ProgressBarProps) {
   const currentRank = getRank(currentPoints, maxPoints)
   const nextRankInfo = getPointsToNextRank(currentPoints, maxPoints)
+  const pangramsFound = getPangramsFound(foundWords, pangrams)
+  const totalPangrams = pangrams.length
+  const foundPangramCount = pangramsFound.length
 
   // Calculate percentage for progress bar
   const percentage = maxPoints > 0 ? (currentPoints / maxPoints) * 100 : 0
@@ -63,9 +77,21 @@ export function ProgressBar({ currentPoints, maxPoints, className }: ProgressBar
       {/* Rank display */}
       <div className="flex items-center justify-between">
         <span className="text-lg font-semibold">{currentRank}</span>
-        <span className="text-muted-foreground text-sm">
-          {currentPoints} / {maxPoints} points
-        </span>
+        <div className="flex items-center gap-4 text-sm">
+          {totalPangrams > 0 && (
+            <span
+              className={cn(
+                "text-muted-foreground",
+                foundPangramCount === totalPangrams && "text-primary font-medium",
+              )}
+            >
+              {foundPangramCount} / {totalPangrams} pangram{totalPangrams === 1 ? "" : "s"}
+            </span>
+          )}
+          <span className="text-muted-foreground">
+            {currentPoints} / {maxPoints} points
+          </span>
+        </div>
       </div>
 
       {/* Progress bar with rank markers */}
