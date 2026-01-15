@@ -305,6 +305,18 @@ test.describe("Main app render", () => {
   })
 
   test("shows tip when no credentials are configured", async ({ page }) => {
+    // Explicitly clear credentials to ensure env variables don't interfere
+    // (In DEV mode, getCredentials() falls back to env variables if localStorage is empty)
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        "spelling-bee-buddy-credentials",
+        JSON.stringify({
+          nytToken: "",
+          anthropicKey: "",
+        }),
+      )
+    })
+
     await page.goto("/")
 
     await expect(page.getByText(/Click the settings icon to add your NYT token/)).toBeVisible()
@@ -517,6 +529,19 @@ test.describe("Settings modal", () => {
 test.describe("Hints section", () => {
   test("shows tip when no API key is configured", async ({ page }) => {
     await setupMocks(page)
+
+    // Explicitly set empty credentials to ensure env variables don't interfere
+    // (In DEV mode, getCredentials() falls back to env variables if localStorage is empty)
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        "spelling-bee-buddy-credentials",
+        JSON.stringify({
+          nytToken: "",
+          anthropicKey: "",
+        }),
+      )
+    })
+
     await page.goto("/")
 
     await expect(page.getByText(/Add your Anthropic API key in settings/)).toBeVisible()
