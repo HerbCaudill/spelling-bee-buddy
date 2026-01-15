@@ -98,8 +98,8 @@ describe("ProgressBar", () => {
   })
 
   describe("pangram display", () => {
-    it("shows pangram count when pangrams are provided", () => {
-      render(
+    it("shows hexagon icons when pangrams are provided", () => {
+      const { container } = render(
         <ProgressBar
           currentPoints={50}
           maxPoints={100}
@@ -107,7 +107,15 @@ describe("ProgressBar", () => {
           foundWords={["placebo"]}
         />,
       )
-      expect(screen.getByText("1 / 2 pangrams")).toBeInTheDocument()
+      // Should have 2 hexagon SVGs (one filled, one outline)
+      const hexagons = container.querySelectorAll("svg")
+      expect(hexagons.length).toBe(2)
+      // First hexagon should be filled (found)
+      expect(hexagons[0]).toHaveAttribute("fill", "currentColor")
+      // Second hexagon should be outline (unfound)
+      expect(hexagons[1]).toHaveAttribute("fill", "none")
+      // aria-label should describe the pangram status
+      expect(screen.getByLabelText("1 of 2 pangrams found")).toBeInTheDocument()
     })
 
     it("uses singular 'pangram' when there is only one", () => {
@@ -119,11 +127,11 @@ describe("ProgressBar", () => {
           foundWords={[]}
         />,
       )
-      expect(screen.getByText("0 / 1 pangram")).toBeInTheDocument()
+      expect(screen.getByLabelText("0 of 1 pangram found")).toBeInTheDocument()
     })
 
     it("shows all pangrams found", () => {
-      render(
+      const { container } = render(
         <ProgressBar
           currentPoints={50}
           maxPoints={100}
@@ -131,11 +139,15 @@ describe("ProgressBar", () => {
           foundWords={["placebo", "capable"]}
         />,
       )
-      expect(screen.getByText("2 / 2 pangrams")).toBeInTheDocument()
+      // Both hexagons should be filled
+      const hexagons = container.querySelectorAll("svg")
+      expect(hexagons[0]).toHaveAttribute("fill", "currentColor")
+      expect(hexagons[1]).toHaveAttribute("fill", "currentColor")
+      expect(screen.getByLabelText("2 of 2 pangrams found")).toBeInTheDocument()
     })
 
-    it("does not show pangram count when pangrams array is empty", () => {
-      render(
+    it("does not show pangram hexagons when pangrams array is empty", () => {
+      const { container } = render(
         <ProgressBar
           currentPoints={50}
           maxPoints={100}
@@ -143,16 +155,18 @@ describe("ProgressBar", () => {
           foundWords={["able"]}
         />,
       )
-      expect(screen.queryByText(/pangram/)).not.toBeInTheDocument()
+      expect(container.querySelectorAll("svg").length).toBe(0)
+      expect(screen.queryByLabelText(/pangram/)).not.toBeInTheDocument()
     })
 
-    it("does not show pangram count when pangrams is not provided", () => {
-      render(<ProgressBar currentPoints={50} maxPoints={100} />)
-      expect(screen.queryByText(/pangram/)).not.toBeInTheDocument()
+    it("does not show pangram hexagons when pangrams is not provided", () => {
+      const { container } = render(<ProgressBar currentPoints={50} maxPoints={100} />)
+      expect(container.querySelectorAll("svg").length).toBe(0)
+      expect(screen.queryByLabelText(/pangram/)).not.toBeInTheDocument()
     })
 
     it("is case-insensitive when matching found pangrams", () => {
-      render(
+      const { container } = render(
         <ProgressBar
           currentPoints={50}
           maxPoints={100}
@@ -160,7 +174,11 @@ describe("ProgressBar", () => {
           foundWords={["PLACEBO"]}
         />,
       )
-      expect(screen.getByText("1 / 1 pangram")).toBeInTheDocument()
+      // Single hexagon should be filled
+      const hexagons = container.querySelectorAll("svg")
+      expect(hexagons.length).toBe(1)
+      expect(hexagons[0]).toHaveAttribute("fill", "currentColor")
+      expect(screen.getByLabelText("1 of 1 pangram found")).toBeInTheDocument()
     })
   })
 })

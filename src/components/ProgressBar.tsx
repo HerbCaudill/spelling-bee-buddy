@@ -80,12 +80,22 @@ export function ProgressBar({
         <div className="flex items-center gap-4 text-sm">
           {totalPangrams > 0 && (
             <span
-              className={cn(
-                "text-muted-foreground",
-                foundPangramCount === totalPangrams && "text-primary font-medium",
-              )}
+              className="inline-flex items-center gap-1"
+              aria-label={`${foundPangramCount} of ${totalPangrams} pangram${totalPangrams === 1 ? "" : "s"} found`}
             >
-              {foundPangramCount} / {totalPangrams} pangram{totalPangrams === 1 ? "" : "s"}
+              {Array.from({ length: totalPangrams }, (_, i) => {
+                const isFound = i < foundPangramCount
+                return (
+                  <Hexagon
+                    key={i}
+                    filled={isFound}
+                    className={cn(
+                      "h-3.5 w-3.5",
+                      isFound ? "text-accent" : "text-muted-foreground/40",
+                    )}
+                  />
+                )
+              })}
             </span>
           )}
           <span className="text-muted-foreground">
@@ -143,5 +153,28 @@ export function ProgressBar({
         </div>
       )}
     </div>
+  )
+}
+
+interface HexagonProps {
+  filled: boolean
+  className?: string
+}
+
+/**
+ * A small hexagon icon for pangram progress display
+ */
+function Hexagon({ filled, className }: HexagonProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+    >
+      <path d="M12 2L21.5 7.5V16.5L12 22L2.5 16.5V7.5L12 2Z" />
+    </svg>
   )
 }

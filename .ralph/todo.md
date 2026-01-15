@@ -1,10 +1,11 @@
 ### To do
 
-- [ ] For the pangrams, show little yellow hexagons that are filled or blank
 - [ ] We don't need the totals
 - [ ] Log API requests and responses to the console so we can debug why I'm not seeing my own results. If you run chrome (using the claude extension, not playwright)
 
 ### Done
+
+- [x] For the pangrams, show little yellow hexagons that are filled or blank - Replaced text "1 / 2 pangrams" with SVG hexagon icons. Filled yellow hexagons show found pangrams, outline hexagons show unfound pangrams. Updated tests to verify the visual representation and aria-labels for accessibility.
 
 - [x] Make the progress bar yellow - Changed the progress bar fill from `bg-primary` (black) to `bg-accent` (yellow #F8CC10) and updated the rank markers to use `bg-accent-foreground/50` for proper contrast on the yellow bar.
 
