@@ -116,7 +116,7 @@ describe("StatsDisplay", () => {
 
       render(<StatsDisplay stats={statsWithLowPct} allWords={["rare"]} foundWords={[]} />)
 
-      expect(screen.getByText("5.0%")).toBeInTheDocument()
+      expect(screen.getByText("5%")).toBeInTheDocument()
     })
 
     it("handles zero sample size gracefully", () => {
@@ -129,7 +129,7 @@ describe("StatsDisplay", () => {
 
       render(<StatsDisplay stats={statsWithZeroN} allWords={["able"]} foundWords={[]} />)
 
-      expect(screen.getByText("0.0%")).toBeInTheDocument()
+      expect(screen.getByText("0%")).toBeInTheDocument()
     })
   })
 

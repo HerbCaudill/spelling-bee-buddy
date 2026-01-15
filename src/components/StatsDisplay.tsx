@@ -90,8 +90,7 @@ export function StatsDisplay({ stats, allWords, foundWords, className }: Props) 
  */
 function WordBar({ word, percentage, isFound }: WordBarProps) {
   const display = formatWordDisplay(word, isFound)
-  const percentageText =
-    percentage >= 10 ? `${Math.round(percentage)}%` : `${percentage.toFixed(1)}%`
+  const percentageText = `${Math.round(percentage)}%`
 
   return (
     <div className="border-border flex h-6 items-center gap-2 border-b text-sm last:border-b-0">
@@ -118,7 +117,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
           style={{ width: `${Math.max(percentage, 0.5)}%` }}
         />
         {/* Percentage label positioned on top of bar */}
-        <span className="absolute inset-y-0 left-1 flex items-center font-mono text-xs text-black/70">
+        <span className="absolute inset-y-0 left-1 flex items-center font-mono text-[10px] text-black/70">
           {percentageText}
         </span>
       </div>
