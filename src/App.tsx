@@ -1,11 +1,5 @@
 import { useState } from "react"
-import { Header } from "@/components/Header"
-import { ProgressBar } from "@/components/ProgressBar"
-import { WordGrid } from "@/components/WordGrid"
-import { TwoLetterList } from "@/components/TwoLetterList"
-import { HintsList } from "@/components/HintsList"
-import { SettingsModal } from "@/components/SettingsModal"
-import { StatsDisplay, StatsNotAvailable } from "@/components/StatsDisplay"
+import { AppContent } from "@/AppContent"
 import { useSelectedPuzzle } from "@/hooks/useSelectedPuzzle"
 import { useUserProgress } from "@/hooks/useUserProgress"
 import { useHints } from "@/hooks/useHints"
@@ -99,130 +93,30 @@ export function App() {
     )
   }
 
-  const { today } = puzzle
-
-  // Check if all words have been found
-  const allWordsFound = foundWords.length >= today.answers.length
-
   return (
-    <div className="bg-background min-h-screen">
-      {/* Header */}
-      <Header
-        printDate={today.printDate}
-        onSettingsClick={() => setSettingsOpen(true)}
-        activePuzzles={activePuzzles}
-        selectedPuzzleId={selectedPuzzle?.id ?? null}
-        onSelectPuzzle={selectPuzzle}
-      />
-
-      {/* Main content */}
-      <main className="container mx-auto max-w-4xl space-y-8 px-4 py-6">
-        {/* Progress section */}
-        <section aria-label="Progress">
-          {!hasCredentials && (
-            <div className="border-border bg-muted/50 mb-4 rounded-lg border p-4 text-sm">
-              <p className="text-muted-foreground">
-                <strong>Tip:</strong> Click the settings icon to add your NYT token and track your
-                progress.
-              </p>
-            </div>
-          )}
-
-          {progressError && (
-            <div className="border-destructive/50 bg-destructive/10 mb-4 rounded-lg border p-4 text-sm">
-              <p className="text-destructive">{progressError}</p>
-            </div>
-          )}
-
-          <ProgressBar
-            currentPoints={currentPoints}
-            maxPoints={maxPoints}
-            pangrams={today.pangrams}
-            foundWords={foundWords}
-            className={progressLoading ? "opacity-50" : ""}
-          />
-        </section>
-
-        {/* Word Grid section */}
-        <section aria-label="Word grid">
-          <h2 className="text-muted-foreground mb-3 text-sm font-semibold tracking-wide uppercase">
-            Word grid
-          </h2>
-          <WordGrid allWords={today.answers} foundWords={foundWords} />
-        </section>
-
-        {/* Two-Letter List section */}
-        <section aria-label="Two-letter list">
-          <TwoLetterList allWords={today.answers} foundWords={foundWords} />
-        </section>
-
-        {/* Hints section - hidden when all words are found */}
-        {!allWordsFound && (
-          <section aria-label="Hints">
-            {!hasApiKey && (
-              <div className="border-border bg-muted/50 mb-4 rounded-lg border p-4 text-sm">
-                <p className="text-muted-foreground">
-                  <strong>Tip:</strong> Add your Anthropic API key in settings to see AI-generated
-                  hints.
-                </p>
-              </div>
-            )}
-
-            {hintsError && (
-              <div className="border-destructive/50 bg-destructive/10 mb-4 rounded-lg border p-4 text-sm">
-                <p className="text-destructive">{hintsError}</p>
-              </div>
-            )}
-
-            {hintsLoading && (
-              <div className="text-muted-foreground flex items-center justify-center gap-2 py-8">
-                <Loader2 className="size-4 animate-spin" />
-                <span>Generating hints...</span>
-              </div>
-            )}
-
-            {hints && !hintsLoading && <HintsList hints={hints} foundWords={foundWords} />}
-          </section>
-        )}
-
-        {/* Stats section - you vs other players */}
-        {statsNotAvailableYet && (
-          <section aria-label="Player stats">
-            <StatsNotAvailable />
-          </section>
-        )}
-
-        {stats && !statsLoading && (
-          <section aria-label="Player stats">
-            <StatsDisplay stats={stats} allWords={today.answers} foundWords={foundWords} />
-          </section>
-        )}
-
-        {statsError && (
-          <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4 text-sm">
-            <p className="text-destructive">{statsError}</p>
-          </div>
-        )}
-
-        {/* Refresh button */}
-        <div className="flex justify-center pt-4">
-          <Button
-            variant="outline"
-            onClick={handleRefresh}
-            disabled={puzzleLoading || progressLoading}
-          >
-            <RefreshCw className={`mr-2 size-4 ${progressLoading ? "animate-spin" : ""}`} />
-            Refresh progress
-          </Button>
-        </div>
-      </main>
-
-      {/* Settings modal */}
-      <SettingsModal
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        onSave={handleRefresh}
-      />
-    </div>
+    <AppContent
+      puzzle={puzzle}
+      activePuzzles={activePuzzles}
+      selectedPuzzleId={selectedPuzzle?.id ?? null}
+      maxPoints={maxPoints}
+      foundWords={foundWords}
+      currentPoints={currentPoints}
+      hints={hints}
+      stats={stats && !statsLoading ? stats : null}
+      hasCredentials={hasCredentials}
+      hasApiKey={hasApiKey}
+      progressLoading={progressLoading}
+      hintsLoading={hintsLoading}
+      statsNotAvailableYet={statsNotAvailableYet}
+      progressError={progressError}
+      hintsError={hintsError}
+      statsError={statsError}
+      settingsOpen={settingsOpen}
+      onSettingsOpen={() => setSettingsOpen(true)}
+      onSettingsClose={() => setSettingsOpen(false)}
+      onSelectPuzzle={selectPuzzle}
+      onRefresh={handleRefresh}
+      onSaveSettings={handleRefresh}
+    />
   )
 }
