@@ -100,7 +100,7 @@ export function ProgressBar({
         <div className="bg-secondary h-3 rounded-full">
           {/* Filled progress */}
           <div
-            className="bg-primary h-full rounded-full transition-all duration-300"
+            className="bg-accent h-full rounded-full transition-all duration-300"
             style={{ width: `${Math.min(percentage, 100)}%` }}
           />
         </div>
@@ -119,7 +119,7 @@ export function ProgressBar({
                 <div
                   className={cn(
                     "h-3 w-0.5 rounded-full",
-                    isAchieved ? "bg-primary-foreground/50" : "bg-muted-foreground/30",
+                    isAchieved ? "bg-accent-foreground/50" : "bg-muted-foreground/30",
                   )}
                 />
               </div>

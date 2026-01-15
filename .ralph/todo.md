@@ -1,11 +1,12 @@
 ### To do
 
-- [ ] Make the progress bar yellow
 - [ ] For the pangrams, show little yellow hexagons that are filled or blank
 - [ ] We don't need the totals
 - [ ] Log API requests and responses to the console so we can debug why I'm not seeing my own results. If you run chrome (using the claude extension, not playwright)
 
 ### Done
+
+- [x] Make the progress bar yellow - Changed the progress bar fill from `bg-primary` (black) to `bg-accent` (yellow #F8CC10) and updated the rank markers to use `bg-accent-foreground/50` for proper contrast on the yellow bar.
 
 - [x] Make the header yellow - Added yellow background (`bg-accent`) to the header and updated all buttons and text to use `text-accent-foreground` with appropriate hover states for proper contrast on the yellow background.
 
