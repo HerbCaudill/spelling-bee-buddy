@@ -1,83 +1,173 @@
 {
-  "_meta": {
-    "source": "AI-generated hints in Steve G style",
-    "puzzleDate": "2026-01-14",
-    "notes": "Hints are grouped by two-letter prefix. Each hint includes word length in parentheses."
-  },
+  "generatedAt": "2026-01-15T20:20:46.323Z",
   "hints": {
-    "AL": [
-      { "hint": "Soda + liquor premix", "length": 7 },
-      { "hint": "Can be meted proportionally", "length": 9 },
-      { "hint": "Succulent plant", "length": 4 }
+    "DI": [
+      {
+        "hint": "Ceased to exist, passed away permanently",
+        "length": 4
+      },
+      {
+        "hint": "Food plan or nutritional regimen",
+        "length": 4
+      },
+      {
+        "hint": "Single number or finger/toe",
+        "length": 5
+      },
+      {
+        "hint": "Followed a restrictive eating plan",
+        "length": 6
+      }
     ],
-    "BA": [{ "hint": "Tree of life", "length": 6 }],
-    "BE": [{ "hint": "Type of jazz", "length": 5 }],
-    "BL": [
-      { "hint": "Small splotch", "length": 4 },
-      { "hint": "Group of nations", "length": 4 },
-      { "hint": "Sound of something falling in water", "length": 5 }
+    "ED": [
+      {
+        "hint": "Revise, correct, or modify text",
+        "length": 4
+      },
+      {
+        "hint": "Swirled in circular water currents",
+        "length": 6
+      },
+      {
+        "hint": "Revised and corrected written material",
+        "length": 6
+      }
     ],
-    "BO": [
-      { "hint": "Tapioca pearls in tea", "length": 4 },
-      { "hint": "Jiggle toy", "length": 6 },
-      { "hint": "Italian ball game", "length": 5 },
-      { "hint": "Weighted throwing weapon", "length": 4 },
-      { "hint": "Cotton pod", "length": 4 },
-      { "hint": "Gaucho's lasso", "length": 4 },
-      { "hint": "Slang for mistake", "length": 4 },
-      { "hint": "Minor injury, child's word", "length": 6 },
-      { "hint": "Betty White sound", "length": 4 }
+    "EI": [
+      {
+        "hint": "Number after seven, before nine",
+        "length": 5
+      },
+      {
+        "hint": "Ordinal position in musical intervals",
+        "length": 6
+      },
+      {
+        "hint": "Ordinal number marking four-score milestone",
+        "length": 9
+      }
     ],
-    "CA": [
-      { "hint": "Chocolate tree beans", "length": 5 },
-      { "hint": "Jamaican leafy green stew", "length": 8 },
-      { "hint": "Guitar fret clamp", "length": 4 }
+    "GI": [
+      {
+        "hint": "Performed music shows or speared fish",
+        "length": 6
+      }
     ],
-    "CE": [{ "hint": "Yo-Yo Ma's instrument", "length": 5 }],
-    "CL": [
-      { "hint": "Bird's digestive chamber", "length": 6 },
-      { "hint": "Horse hoof sound", "length": 4 }
+    "HE": [
+      {
+        "hint": "Vertical measurement from bottom to top",
+        "length": 6
+      }
     ],
-    "CO": [
-      { "hint": "Black rock fuel", "length": 4 },
-      { "hint": "Street stone", "length": 6 },
-      { "hint": "Leaf used in soft drinks", "length": 4 },
-      { "hint": "Hot chocolate", "length": 5 },
-      { "hint": "Nut-flavored soda", "length": 4 },
-      { "hint": "Joint creative work", "length": 6 },
-      { "hint": "Not warm", "length": 4 },
-      { "hint": "Chicken house", "length": 4 },
-      { "hint": "Deal with", "length": 4 }
+    "HI": [
+      {
+        "hint": "Conceal yourself or animal skin",
+        "length": 4
+      },
+      {
+        "hint": "Elevated position or intoxicated state",
+        "length": 4
+      }
     ],
-    "EL": [{ "hint": "Run away to marry", "length": 5 }],
-    "LO": [
-      { "hint": "Ear part", "length": 4 },
-      { "hint": "Spanish for wolf", "length": 4 },
-      { "hint": "Neighborhood", "length": 5 },
-      { "hint": "Place or setting", "length": 6 },
-      { "hint": "Crazy, in Spanish", "length": 4 },
-      { "hint": "Hang loosely", "length": 4 },
-      { "hint": "Gallop awkwardly", "length": 6 },
-      { "hint": "Circle shape", "length": 4 },
-      { "hint": "Easy run", "length": 4 }
+    "TH": [
+      {
+        "hint": "Upper leg between knee and hip",
+        "length": 5
+      }
     ],
-    "OB": [{ "hint": "Double-reed woodwind", "length": 4 }],
-    "OL": [{ "hint": "Margarine", "length": 4 }],
-    "OP": [{ "hint": "Iridescent gemstone", "length": 4 }],
-    "PA": [{ "hint": "Caveman diet", "length": 5 }],
-    "PE": [{ "hint": "Humans", "length": 6 }],
-    "PL": [
-      { "hint": "Sugar pill", "length": 7 },
-      { "hint": "Fall with a splash", "length": 4 }
+    "TI": [
+      {
+        "hint": "Ocean's rhythmic rise and fall",
+        "length": 4
+      },
+      {
+        "hint": "Bound or connected with rope",
+        "length": 4
+      },
+      {
+        "hint": "Carried along by ocean currents",
+        "length": 5
+      },
+      {
+        "hint": "Snug, secure, or stingy person",
+        "length": 5
+      },
+      {
+        "hint": "Religious donation of one-tenth income",
+        "length": 5
+      },
+      {
+        "hint": "Cleaned up and organized neatly",
+        "length": 6
+      },
+      {
+        "hint": "Gave ten percent to church",
+        "length": 6
+      }
     ],
-    "PO": [
-      { "hint": "Fishing stick", "length": 4 },
-      { "hint": "Survey or vote", "length": 4 },
-      { "hint": "Water sport, or Marco's game", "length": 4 },
-      { "hint": "Swimming spot", "length": 4 },
-      { "hint": "Baby word for feces", "length": 4 },
-      { "hint": "Catholic leader", "length": 4 },
-      { "hint": "Informal father", "length": 5 }
+    "TW": [
+      {
+        "hint": "Small branch from a tree",
+        "length": 4
+      },
+      {
+        "hint": "Foolish person or mock playfully",
+        "length": 4
+      }
+    ],
+    "WE": [
+      {
+        "hint": "Measure mass on a scale",
+        "length": 5
+      },
+      {
+        "hint": "Uncomfortable underwear prank or situation",
+        "length": 6
+      },
+      {
+        "hint": "Heaviness or burden to carry",
+        "length": 6
+      },
+      {
+        "hint": "Measured mass or considered carefully",
+        "length": 7
+      }
+    ],
+    "WH": [
+      {
+        "hint": "Tiny amount or smallest particle",
+        "length": 4
+      },
+      {
+        "hint": "Color of fresh snow or milk",
+        "length": 5
+      }
+    ],
+    "WI": [
+      {
+        "hint": "Broad measurement from side to side",
+        "length": 4
+      },
+      {
+        "hint": "Alongside or in company of someone",
+        "length": 4
+      },
+      {
+        "hint": "Measurement across from side to side",
+        "length": 5
+      },
+      {
+        "hint": "Archaic term for human being",
+        "length": 5
+      },
+      {
+        "hint": "Small gadget or user interface element",
+        "length": 6
+      },
+      {
+        "hint": "Wore artificial hair or freaked out",
+        "length": 6
+      }
     ]
   }
 }
