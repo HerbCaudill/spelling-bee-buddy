@@ -109,6 +109,7 @@ describe("hints", () => {
 
       // Check structure of hint entries
       expect(result.hints["AB"][0]).toEqual({
+        word: "ABLE",
         hint: "Capable of doing something",
         length: 4,
       })

@@ -3,168 +3,204 @@
   "hints": {
     "DI": [
       {
+        "word": "DIED",
         "hint": "Ceased to exist, passed away permanently",
         "length": 4
       },
       {
+        "word": "DIET",
         "hint": "Food plan or nutritional regimen",
         "length": 4
       },
       {
+        "word": "DIGIT",
         "hint": "Single number or finger/toe",
         "length": 5
       },
       {
+        "word": "DIETED",
         "hint": "Followed a restrictive eating plan",
         "length": 6
       }
     ],
     "ED": [
       {
+        "word": "EDIT",
         "hint": "Revise, correct, or modify text",
         "length": 4
       },
       {
+        "word": "EDDIED",
         "hint": "Swirled in circular water currents",
         "length": 6
       },
       {
+        "word": "EDITED",
         "hint": "Revised and corrected written material",
         "length": 6
       }
     ],
     "EI": [
       {
+        "word": "EIGHT",
         "hint": "Number after seven, before nine",
         "length": 5
       },
       {
+        "word": "EIGHTH",
         "hint": "Ordinal position in musical intervals",
         "length": 6
       },
       {
+        "word": "EIGHTIETH",
         "hint": "Ordinal number marking four-score milestone",
         "length": 9
       }
     ],
     "GI": [
       {
+        "word": "GIGGED",
         "hint": "Performed music shows or speared fish",
         "length": 6
       }
     ],
     "HE": [
       {
+        "word": "HEIGHT",
         "hint": "Vertical measurement from bottom to top",
         "length": 6
       }
     ],
     "HI": [
       {
+        "word": "HIDE",
         "hint": "Conceal yourself or animal skin",
         "length": 4
       },
       {
+        "word": "HIGH",
         "hint": "Elevated position or intoxicated state",
         "length": 4
       }
     ],
     "TH": [
       {
+        "word": "THIGH",
         "hint": "Upper leg between knee and hip",
         "length": 5
       }
     ],
     "TI": [
       {
+        "word": "TIDE",
         "hint": "Ocean's rhythmic rise and fall",
         "length": 4
       },
       {
+        "word": "TIED",
         "hint": "Bound or connected with rope",
         "length": 4
       },
       {
+        "word": "TIDED",
         "hint": "Carried along by ocean currents",
         "length": 5
       },
       {
+        "word": "TIGHT",
         "hint": "Snug, secure, or stingy person",
         "length": 5
       },
       {
+        "word": "TITHE",
         "hint": "Religious donation of one-tenth income",
         "length": 5
       },
       {
+        "word": "TIDIED",
         "hint": "Cleaned up and organized neatly",
         "length": 6
       },
       {
+        "word": "TITHED",
         "hint": "Gave ten percent to church",
         "length": 6
       }
     ],
     "TW": [
       {
+        "word": "TWIG",
         "hint": "Small branch from a tree",
         "length": 4
       },
       {
+        "word": "TWIT",
         "hint": "Foolish person or mock playfully",
         "length": 4
       }
     ],
     "WE": [
       {
+        "word": "WEIGH",
         "hint": "Measure mass on a scale",
         "length": 5
       },
       {
+        "word": "WEDGIE",
         "hint": "Uncomfortable underwear prank or situation",
         "length": 6
       },
       {
+        "word": "WEIGHT",
         "hint": "Heaviness or burden to carry",
         "length": 6
       },
       {
+        "word": "WEIGHED",
         "hint": "Measured mass or considered carefully",
         "length": 7
       }
     ],
     "WH": [
       {
+        "word": "WHIT",
         "hint": "Tiny amount or smallest particle",
         "length": 4
       },
       {
+        "word": "WHITE",
         "hint": "Color of fresh snow or milk",
         "length": 5
       }
     ],
     "WI": [
       {
+        "word": "WIDE",
         "hint": "Broad measurement from side to side",
         "length": 4
       },
       {
+        "word": "WITH",
         "hint": "Alongside or in company of someone",
         "length": 4
       },
       {
+        "word": "WIDTH",
         "hint": "Measurement across from side to side",
         "length": 5
       },
       {
+        "word": "WIGHT",
         "hint": "Archaic term for human being",
         "length": 5
       },
       {
+        "word": "WIDGET",
         "hint": "Small gadget or user interface element",
         "length": 6
       },
       {
+        "word": "WIGGED",
         "hint": "Wore artificial hair or freaked out",
         "length": 6
       }

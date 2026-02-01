@@ -27,22 +27,22 @@ type Story = StoryObj<typeof HintsList>
 // Sample hints data for stories
 const sampleHints: HintsByPrefix = {
   AB: [
-    { hint: "Capable of being done", length: 4 },
-    { hint: "Reduce or diminish", length: 5 },
-    { hint: "Give up or abandon", length: 4 },
+    { word: "ABLE", hint: "Capable of being done", length: 4 },
+    { word: "ABATE", hint: "Reduce or diminish", length: 5 },
+    { word: "ABET", hint: "Give up or abandon", length: 4 },
   ],
   BA: [
-    { hint: "A bundle of goods", length: 4 },
-    { hint: "A type of dance", length: 6 },
+    { word: "BALE", hint: "A bundle of goods", length: 4 },
+    { word: "BALLET", hint: "A type of dance", length: 6 },
   ],
   CA: [
-    { hint: "A thick wire rope", length: 5 },
-    { hint: "A secret group or faction", length: 5 },
+    { word: "CABLE", hint: "A thick wire rope", length: 5 },
+    { word: "CABAL", hint: "A secret group or faction", length: 5 },
   ],
   TA: [
-    { hint: "A piece of furniture", length: 5 },
-    { hint: "A flat handheld device", length: 6 },
-    { hint: "Prohibited or forbidden", length: 5 },
+    { word: "TABLE", hint: "A piece of furniture", length: 5 },
+    { word: "TABLET", hint: "A flat handheld device", length: 6 },
+    { word: "TABOO", hint: "Prohibited or forbidden", length: 5 },
   ],
 }
 
@@ -83,14 +83,14 @@ export const OneCompleteSection: Story = {
   args: {
     hints: {
       AB: [
-        { hint: "Capable of being done", length: 4 },
-        { hint: "Give up or abandon", length: 4 },
+        { word: "ABLE", hint: "Capable of being done", length: 4 },
+        { word: "ABET", hint: "Give up or abandon", length: 4 },
       ],
       BA: [
-        { hint: "A bundle of goods", length: 4 },
-        { hint: "A type of dance", length: 6 },
+        { word: "BALE", hint: "A bundle of goods", length: 4 },
+        { word: "BALLET", hint: "A type of dance", length: 6 },
       ],
-      CA: [{ hint: "A thick wire rope", length: 5 }],
+      CA: [{ word: "CABLE", hint: "A thick wire rope", length: 5 }],
     },
     foundWords: ["able", "abet", "bale"], // AB section complete (2 words)
   },
@@ -103,10 +103,10 @@ export const AllComplete: Story = {
   args: {
     hints: {
       AB: [
-        { hint: "Capable of being done", length: 4 },
-        { hint: "Reduce or diminish", length: 5 },
+        { word: "ABLE", hint: "Capable of being done", length: 4 },
+        { word: "ABATE", hint: "Reduce or diminish", length: 5 },
       ],
-      CA: [{ hint: "A thick wire rope", length: 5 }],
+      CA: [{ word: "CABLE", hint: "A thick wire rope", length: 5 }],
     },
     foundWords: ["able", "abate", "cable"],
   },
@@ -119,14 +119,14 @@ export const SinglePrefixManyHints: Story = {
   args: {
     hints: {
       AB: [
-        { hint: "Capable of being done", length: 4 },
-        { hint: "Reduce or diminish", length: 5 },
-        { hint: "Give up or abandon", length: 4 },
-        { hint: "Remove by cutting", length: 6 },
-        { hint: "Stomach muscles", length: 3 },
-        { hint: "A church recess", length: 4 },
-        { hint: "Wash or cleanse", length: 5 },
-        { hint: "Take away", length: 5 },
+        { word: "ABLE", hint: "Capable of being done", length: 4 },
+        { word: "ABATE", hint: "Reduce or diminish", length: 5 },
+        { word: "ABET", hint: "Give up or abandon", length: 4 },
+        { word: "ABLATE", hint: "Remove by cutting", length: 6 },
+        { word: "ABS", hint: "Stomach muscles", length: 3 },
+        { word: "APSE", hint: "A church recess", length: 4 },
+        { word: "ABODE", hint: "Wash or cleanse", length: 5 },
+        { word: "ABORT", hint: "Take away", length: 5 },
       ],
     },
     foundWords: ["able", "abate", "abet"],
@@ -139,21 +139,21 @@ export const SinglePrefixManyHints: Story = {
 export const ManyPrefixes: Story = {
   args: {
     hints: {
-      AB: [{ hint: "Capable of being done", length: 4 }],
-      AC: [{ hint: "To behave", length: 3 }],
-      AD: [{ hint: "To include", length: 3 }],
-      AL: [{ hint: "Relating to all", length: 3 }],
-      AN: [{ hint: "Indefinite article", length: 2 }],
-      AP: [{ hint: "A type of primate", length: 3 }],
-      AT: [{ hint: "Positioned near", length: 2 }],
-      BA: [{ hint: "A bundle of goods", length: 4 }],
-      BE: [{ hint: "To exist", length: 2 }],
-      BL: [{ hint: "Color or pale", length: 5 }],
-      CA: [{ hint: "A thick wire rope", length: 5 }],
-      CE: [{ hint: "A room", length: 4 }],
-      CL: [{ hint: "To applaud", length: 4 }],
-      DA: [{ hint: "Information", length: 4 }],
-      DE: [{ hint: "A valley", length: 4 }],
+      AB: [{ word: "ABLE", hint: "Capable of being done", length: 4 }],
+      AC: [{ word: "ACT", hint: "To behave", length: 3 }],
+      AD: [{ word: "ADD", hint: "To include", length: 3 }],
+      AL: [{ word: "ALL", hint: "Relating to all", length: 3 }],
+      AN: [{ word: "AN", hint: "Indefinite article", length: 2 }],
+      AP: [{ word: "APE", hint: "A type of primate", length: 3 }],
+      AT: [{ word: "AT", hint: "Positioned near", length: 2 }],
+      BA: [{ word: "BALE", hint: "A bundle of goods", length: 4 }],
+      BE: [{ word: "BE", hint: "To exist", length: 2 }],
+      BL: [{ word: "BLANK", hint: "Color or pale", length: 5 }],
+      CA: [{ word: "CABLE", hint: "A thick wire rope", length: 5 }],
+      CE: [{ word: "CELL", hint: "A room", length: 4 }],
+      CL: [{ word: "CLAP", hint: "To applaud", length: 4 }],
+      DA: [{ word: "DATA", hint: "Information", length: 4 }],
+      DE: [{ word: "DELL", hint: "A valley", length: 4 }],
     },
     foundWords: ["able", "act", "add", "bale", "cable"],
   },
@@ -166,10 +166,18 @@ export const VaryingLengths: Story = {
   args: {
     hints: {
       AB: [
-        { hint: "Short hint", length: 4 },
-        { hint: "Medium length hint text", length: 5 },
-        { hint: "This is a longer hint that describes the word in more detail", length: 7 },
-        { hint: "A very detailed and comprehensive hint for a longer word", length: 9 },
+        { word: "ABLE", hint: "Short hint", length: 4 },
+        { word: "ABATE", hint: "Medium length hint text", length: 5 },
+        {
+          word: "ABOLISH",
+          hint: "This is a longer hint that describes the word in more detail",
+          length: 7,
+        },
+        {
+          word: "ABSORBENT",
+          hint: "A very detailed and comprehensive hint for a longer word",
+          length: 9,
+        },
       ],
     },
     foundWords: [],
@@ -192,7 +200,7 @@ export const NoWordsFound: Story = {
 export const SingleHint: Story = {
   args: {
     hints: {
-      AB: [{ hint: "Capable of being done", length: 4 }],
+      AB: [{ word: "ABLE", hint: "Capable of being done", length: 4 }],
     },
     foundWords: [],
   },
@@ -204,7 +212,7 @@ export const SingleHint: Story = {
 export const SingleHintFound: Story = {
   args: {
     hints: {
-      AB: [{ hint: "Capable of being done", length: 4 }],
+      AB: [{ word: "ABLE", hint: "Capable of being done", length: 4 }],
     },
     foundWords: ["able"],
   },

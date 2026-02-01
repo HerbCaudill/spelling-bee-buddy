@@ -81,18 +81,18 @@ const mockHints = {
   data: {
     generatedAt: "2025-01-15T12:00:00Z",
     hints: {
-      AB: [{ hint: "Capable of being done", length: 4 }],
-      BA: [{ hint: "Something you tie around your waist", length: 4 }],
-      BO: [{ hint: "A watercraft", length: 4 }],
+      AB: [{ word: "ABLE", hint: "Capable of being done", length: 4 }],
+      BA: [{ word: "BAND", hint: "Something you tie around your waist", length: 4 }],
+      BO: [{ word: "BOAT", hint: "A watercraft", length: 4 }],
       CO: [
-        { hint: "Handle a difficult situation", length: 4 },
-        { hint: "A black mineral used for fuel", length: 4 },
+        { word: "COPE", hint: "Handle a difficult situation", length: 4 },
+        { word: "COAL", hint: "A black mineral used for fuel", length: 4 },
       ],
-      LO: [{ hint: "Move with long strides", length: 4 }],
-      OP: [{ hint: "A gemstone", length: 4 }],
-      PA: [{ hint: "Not bright in color", length: 4 }],
-      PE: [{ hint: "Can be calmed or satisfied", length: 9 }],
-      PO: [{ hint: "A long stick", length: 4 }],
+      LO: [{ word: "LOPE", hint: "Move with long strides", length: 4 }],
+      OP: [{ word: "OPAL", hint: "A gemstone", length: 4 }],
+      PA: [{ word: "PALE", hint: "Not bright in color", length: 4 }],
+      PE: [{ word: "PLACEABLE", hint: "Can be calmed or satisfied", length: 9 }],
+      PO: [{ word: "POLE", hint: "A long stick", length: 4 }],
     },
   },
 }

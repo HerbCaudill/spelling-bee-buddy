@@ -7,14 +7,14 @@ import type { HintsByPrefix } from "@/types"
 describe("HintsList", () => {
   const sampleHints: HintsByPrefix = {
     AB: [
-      { hint: "Capable of doing something", length: 4 },
-      { hint: "Approximately", length: 5 },
+      { word: "ABLE", hint: "Capable of doing something", length: 4 },
+      { word: "ABOUT", hint: "Approximately", length: 5 },
     ],
     BA: [
-      { hint: "A spherical object used in games", length: 4 },
-      { hint: "A large inflatable decoration", length: 7 },
+      { word: "BALL", hint: "A spherical object used in games", length: 4 },
+      { word: "BALLOON", hint: "A large inflatable decoration", length: 7 },
     ],
-    CA: [{ hint: "A cloak or covering", length: 4 }],
+    CA: [{ word: "CAPE", hint: "A cloak or covering", length: 4 }],
   }
 
   describe("basic rendering", () => {
@@ -257,9 +257,9 @@ describe("HintsList", () => {
       const user = userEvent.setup()
       const hintsWithSameLength: HintsByPrefix = {
         AB: [
-          { hint: "Hint for first 4-letter word", length: 4 },
-          { hint: "Hint for second 4-letter word", length: 4 },
-          { hint: "Hint for 5-letter word", length: 5 },
+          { word: "ABLE", hint: "Hint for first 4-letter word", length: 4 },
+          { word: "ABET", hint: "Hint for second 4-letter word", length: 4 },
+          { word: "ABOUT", hint: "Hint for 5-letter word", length: 5 },
         ],
       }
 
@@ -272,8 +272,7 @@ describe("HintsList", () => {
 
       await user.click(screen.getByRole("button", { name: /AB/ }))
 
-      // One 4-letter hint should remain (we found 1, there are 2)
-      // Since we slice from index 1, the second hint should be shown
+      // ABLE's hint should be filtered out, ABET's hint should remain
       expect(screen.queryByText("Hint for first 4-letter word")).not.toBeInTheDocument()
       expect(screen.getByText("Hint for second 4-letter word")).toBeInTheDocument()
       // The 5-letter hint should still be visible

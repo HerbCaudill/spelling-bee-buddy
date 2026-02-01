@@ -141,6 +141,7 @@ function parseHintsResponse(responseText: string, words: string[]): CachedHints[
     }
 
     hintsByPrefix[prefix].push({
+      word: word.toUpperCase(),
       hint,
       length: word.length,
     })

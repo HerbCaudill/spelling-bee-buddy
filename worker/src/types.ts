@@ -61,6 +61,7 @@ export interface CachedHints {
   generatedAt: string // ISO timestamp
   hints: {
     [twoLetterPrefix: string]: Array<{
+      word: string
       hint: string
       length: number
     }>
