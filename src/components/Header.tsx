@@ -107,7 +107,7 @@ export function Header({
                 className="text-accent-foreground hover:bg-accent-foreground/10"
               >
                 <Calendar className="size-4" />
-                <time dateTime={printDate} className="text-sm">
+                <time dateTime={printDate} className="hidden text-sm sm:inline">
                   {formatRelativeDate(printDate)}
                 </time>
               </Button>
@@ -188,7 +188,9 @@ export function Header({
         {!hasPuzzlePicker && (
           <div className="text-accent-foreground flex items-center gap-1 text-sm">
             <Calendar className="size-4" />
-            <time dateTime={printDate}>{formatRelativeDate(printDate)}</time>
+            <time dateTime={printDate} className="hidden sm:inline">
+              {formatRelativeDate(printDate)}
+            </time>
           </div>
         )}
 
