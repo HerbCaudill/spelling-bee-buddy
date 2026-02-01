@@ -101,7 +101,10 @@ describe("Header", () => {
       const link = screen.getByRole("link", {
         name: /open nyt spelling bee puzzle/i,
       })
-      expect(link).toHaveAttribute("href", "https://www.nytimes.com/puzzles/spelling-bee")
+      expect(link).toHaveAttribute(
+        "href",
+        `https://www.nytimes.com/puzzles/spelling-bee?d=${getTodayString()}`,
+      )
     })
 
     it("opens link in new tab", () => {
