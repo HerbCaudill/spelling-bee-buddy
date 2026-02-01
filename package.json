@@ -20,7 +20,6 @@
     "dev:worker": "pnpm --filter spelling-bee-buddy-worker dev",
     "deploy:worker": "pnpm --filter spelling-bee-buddy-worker deploy",
     "format": "prettier --write .",
-    "ralph": "npx @herbcaudill/ralph",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
