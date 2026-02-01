@@ -171,16 +171,23 @@ export function useUserProgress(
       }
     }
 
+    /** Fetch when the browser window regains focus (e.g. switching back from another app) */
+    const handleWindowFocus = () => {
+      fetchData(false)
+    }
+
     // Start polling if page is currently visible
     if (document.visibilityState === "visible") {
       startPolling()
     }
 
     document.addEventListener("visibilitychange", handleVisibilityChange)
+    window.addEventListener("focus", handleWindowFocus)
 
     return () => {
       stopPolling()
       document.removeEventListener("visibilitychange", handleVisibilityChange)
+      window.removeEventListener("focus", handleWindowFocus)
     }
   }, [enabled, pollInterval, fetchData])
 
