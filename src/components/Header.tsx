@@ -203,7 +203,7 @@ function DatePicker({
           variant="ghost"
           size="sm"
           aria-label="Choose a different puzzle date"
-          className="text-accent-foreground hover:bg-accent-foreground/10 p-0"
+          className="text-accent-foreground hover:bg-accent-foreground/10 h-auto px-0 py-0"
         >
           <Calendar className="size-4" />
           <time dateTime={printDate} className="text-sm">
