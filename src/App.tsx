@@ -66,7 +66,7 @@ export function App() {
   // During refreshes, we keep the existing UI to avoid unmounting the settings modal
   if (puzzleLoading && !puzzle) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="text-muted-foreground size-8 animate-spin" />
           <p className="text-muted-foreground">Loading puzzle...</p>
@@ -78,7 +78,7 @@ export function App() {
   // Critical error state (can't load puzzle)
   if (criticalError) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="bg-background flex min-h-screen items-center justify-center p-4">
         <div className="flex max-w-md flex-col items-center gap-4 text-center">
           <AlertCircle className="text-destructive size-12" />
           <h1 className="text-xl font-semibold">Failed to load puzzle</h1>
@@ -95,7 +95,7 @@ export function App() {
   // No puzzle data (shouldn't happen if no error, but handle gracefully)
   if (!puzzle) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="bg-background flex min-h-screen items-center justify-center">
         <p className="text-muted-foreground">No puzzle available</p>
       </div>
     )
