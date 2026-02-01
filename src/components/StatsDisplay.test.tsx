@@ -27,7 +27,7 @@ describe("StatsDisplay", () => {
     it("shows player count (using numberOfUsers, not n)", () => {
       render(<StatsDisplay stats={mockStats} allWords={["able"]} foundWords={[]} />)
       // Should display numberOfUsers (5000), not n (1000)
-      expect(screen.getByText("5,000 players")).toBeInTheDocument()
+      expect(screen.getByText("5,000")).toBeInTheDocument()
     })
 
     it("shows the section header", () => {

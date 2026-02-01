@@ -1,4 +1,4 @@
-import { Clock } from "lucide-react"
+import { Clock, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { PuzzleStats } from "@/types"
 
@@ -66,12 +66,13 @@ export function StatsDisplay({ stats, allWords, foundWords, className }: Props) 
 
   return (
     <div className={cn("space-y-4", className)}>
-      <div className="flex items-baseline justify-between">
+      <div className="flex items-center justify-between">
         <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
           You vs other players
         </h2>
-        <span className="text-muted-foreground text-xs">
-          {numberOfUsers.toLocaleString()} players
+        <span className="text-muted-foreground flex items-center gap-1 text-xs">
+          <Users className="size-3" />
+          {numberOfUsers.toLocaleString()}
         </span>
       </div>
 
