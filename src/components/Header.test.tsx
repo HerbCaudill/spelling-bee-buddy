@@ -103,7 +103,7 @@ describe("Header", () => {
       })
       expect(link).toHaveAttribute(
         "href",
-        `https://www.nytimes.com/puzzles/spelling-bee?d=${getTodayString()}`,
+        `https://www.nytimes.com/puzzles/spelling-bee/${getTodayString()}`,
       )
     })
 

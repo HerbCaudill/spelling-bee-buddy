@@ -52,7 +52,7 @@ export function Header({
   selectedPuzzleId,
   onSelectPuzzle,
 }: HeaderProps) {
-  const nytPuzzleUrl = `https://www.nytimes.com/puzzles/spelling-bee?d=${printDate}`
+  const nytPuzzleUrl = `https://www.nytimes.com/puzzles/spelling-bee/${printDate}`
 
   // Date picker props
   const hasPuzzlePicker = activePuzzles && selectedPuzzleId !== undefined && onSelectPuzzle
