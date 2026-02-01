@@ -80,22 +80,26 @@ interface AnthropicResponse {
 function buildHintPrompt(words: string[], pangrams: Set<string>): string {
   const wordsList = words.map(w => `${w}${pangrams.has(w) ? " (pangram)" : ""}`).join("\n")
 
-  return `You are a helpful assistant for the NYT Spelling Bee puzzle. Generate a short, clever hint for each word that helps the solver guess it without giving away the answer directly.
+  return `You are a cryptic crossword clue writer generating hints for an NYT Spelling Bee puzzle. Write subtle, crossword-style clues — the kind that require a small mental leap to solve.
 
-Guidelines for hints:
-- Each hint should be 3-10 words
-- Use definitions, synonyms, or clever wordplay
-- Don't include any letters from the word itself
-- For pangrams, make the hint slightly more elaborate
-- Be creative but clear
+Guidelines for clues:
+- Each clue should be 3-10 words
+- Write oblique, indirect clues in the style of crossword puzzles — NOT simple definitions or synonyms
+- Use misdirection, double meanings, oblique references, or lateral associations
+- A good clue makes the solver think "Oh, of course!" after they get it — not "that was obvious"
+- NEVER use a close synonym as the entire clue (e.g. don't clue HAPPY as "Joyful" — too direct)
+- Instead, reference a context, situation, or association (e.g. HAPPY → "What seven dwarfs might feel after work")
+- Don't include any part of the answer word in the clue
+- For pangrams, the clue can be slightly longer or more layered
+- Keep clues fun and fair — tricky but not impossibly obscure
 
-Words to generate hints for:
+Words to generate clues for:
 ${wordsList}
 
 Respond with ONLY a JSON object in this exact format (no markdown, no extra text):
 {
   "hints": {
-    "WORD": "hint text here"
+    "WORD": "clue text here"
   }
 }
 
