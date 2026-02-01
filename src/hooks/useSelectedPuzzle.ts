@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from "react"
+import { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import { fetchActivePuzzles, ApiError } from "@/lib/api"
+import { getDateFromUrl, updateUrl } from "@/lib/routing"
 import type { ActivePuzzlesResponse, ActivePuzzle, GameData } from "@/types"
 import { calculateTotalPoints } from "@/lib/utils"
 
@@ -67,16 +68,28 @@ function activePuzzleToGameData(puzzle: ActivePuzzle): GameData {
 }
 
 /**
- * Hook to manage puzzle selection from the active puzzles list
+ * Find a puzzle by its print_date in the puzzles list.
+ */
+function findPuzzleByDate(puzzles: ActivePuzzle[], date: string): ActivePuzzle | undefined {
+  return puzzles.find(p => p.print_date === date)
+}
+
+/**
+ * Hook to manage puzzle selection from the active puzzles list.
  *
- * Fetches the list of available puzzles and allows selecting one.
- * Defaults to today's puzzle.
+ * Syncs the selected puzzle with the URL pathname (`/YYYY-MM-DD`).
+ * On mount, reads the date from the URL. Navigating to `/` or an invalid date
+ * replaces the URL with today's date. Selecting a puzzle pushes a new history entry.
+ * Browser back/forward navigation is supported via the popstate event.
  */
 export function useSelectedPuzzle(): UseSelectedPuzzleReturn {
   const [activePuzzles, setActivePuzzles] = useState<ActivePuzzlesResponse | null>(null)
   const [selectedPuzzleId, setSelectedPuzzleId] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  /** Whether we're handling a popstate event (to avoid pushing to history) */
+  const isPopstateRef = useRef(false)
 
   const fetchData = useCallback(async () => {
     setIsLoading(true)
@@ -85,13 +98,27 @@ export function useSelectedPuzzle(): UseSelectedPuzzleReturn {
     try {
       const data = await fetchActivePuzzles()
       setActivePuzzles(data)
-      // Select today's puzzle by default if not already selected
-      if (selectedPuzzleId === null) {
-        const todayIndex = data.today
-        const todayPuzzle = data.puzzles[todayIndex]
-        if (todayPuzzle) {
-          setSelectedPuzzleId(todayPuzzle.id)
+
+      // If we already have a selected puzzle (e.g. from popstate), keep it
+      if (selectedPuzzleId !== null) return
+
+      // Check the current URL for a date to load
+      const urlDate = getDateFromUrl()
+      if (urlDate) {
+        const puzzle = findPuzzleByDate(data.puzzles, urlDate)
+        if (puzzle) {
+          setSelectedPuzzleId(puzzle.id)
+          // URL already shows the correct date, just replace to normalize
+          updateUrl(urlDate, true)
+          return
         }
+      }
+
+      // Fall back to today's puzzle
+      const todayPuzzle = data.puzzles[data.today]
+      if (todayPuzzle) {
+        setSelectedPuzzleId(todayPuzzle.id)
+        updateUrl(todayPuzzle.print_date, true)
       }
     } catch (err) {
       if (err instanceof ApiError) {
@@ -110,6 +137,32 @@ export function useSelectedPuzzle(): UseSelectedPuzzleReturn {
   useEffect(() => {
     fetchData()
   }, []) // Only fetch on mount, not when selectedPuzzleId changes
+
+  // Listen for browser back/forward navigation
+  useEffect(() => {
+    const handlePopstate = () => {
+      if (!activePuzzles) return
+      const urlDate = getDateFromUrl()
+      if (urlDate) {
+        const puzzle = findPuzzleByDate(activePuzzles.puzzles, urlDate)
+        if (puzzle) {
+          isPopstateRef.current = true
+          setSelectedPuzzleId(puzzle.id)
+          return
+        }
+      }
+      // Invalid date after popstate — go to today
+      const todayPuzzle = activePuzzles.puzzles[activePuzzles.today]
+      if (todayPuzzle) {
+        isPopstateRef.current = true
+        setSelectedPuzzleId(todayPuzzle.id)
+        updateUrl(todayPuzzle.print_date, true)
+      }
+    }
+
+    window.addEventListener("popstate", handlePopstate)
+    return () => window.removeEventListener("popstate", handlePopstate)
+  }, [activePuzzles])
 
   // Find the selected puzzle from the list
   const selectedPuzzle = useMemo(() => {
@@ -136,15 +189,32 @@ export function useSelectedPuzzle(): UseSelectedPuzzleReturn {
     return todayPuzzle?.id === selectedPuzzleId
   }, [activePuzzles, selectedPuzzleId])
 
-  const selectPuzzle = useCallback((puzzleId: number) => {
-    setSelectedPuzzleId(puzzleId)
-  }, [])
+  const selectPuzzle = useCallback(
+    (puzzleId: number) => {
+      setSelectedPuzzleId(puzzleId)
+
+      // Update URL — push a new history entry unless this is from popstate
+      if (isPopstateRef.current) {
+        isPopstateRef.current = false
+        return
+      }
+
+      if (activePuzzles) {
+        const puzzle = activePuzzles.puzzles.find(p => p.id === puzzleId)
+        if (puzzle) {
+          updateUrl(puzzle.print_date)
+        }
+      }
+    },
+    [activePuzzles],
+  )
 
   const selectToday = useCallback(() => {
     if (!activePuzzles) return
     const todayPuzzle = activePuzzles.puzzles[activePuzzles.today]
     if (todayPuzzle) {
       setSelectedPuzzleId(todayPuzzle.id)
+      updateUrl(todayPuzzle.print_date)
     }
   }, [activePuzzles])
 

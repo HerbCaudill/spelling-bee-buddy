@@ -285,7 +285,7 @@ test.describe("Main app render", () => {
     await expect(page.getByRole("link", { name: /Open NYT Spelling Bee puzzle/ })).toBeVisible()
     await expect(page.getByRole("link", { name: /Open NYT Spelling Bee puzzle/ })).toHaveAttribute(
       "href",
-      "https://www.nytimes.com/puzzles/spelling-bee",
+      "https://www.nytimes.com/puzzles/spelling-bee/2025-01-15",
     )
   })
 
@@ -786,5 +786,108 @@ test.describe("Accessibility", () => {
     // These should be findable by role and name (label)
     await expect(page.getByRole("textbox", { name: "NYT Token" })).toBeVisible()
     await expect(page.getByRole("textbox", { name: "Anthropic API Key" })).toBeVisible()
+  })
+})
+
+// Multi-puzzle mock for routing tests
+const mockMultiPuzzles = {
+  success: true,
+  data: {
+    today: 1,
+    yesterday: 0,
+    thisWeek: [0, 1],
+    lastWeek: [],
+    puzzles: [
+      {
+        id: 20034,
+        center_letter: "a",
+        outer_letters: "bcdelp",
+        pangrams: ["placeable"],
+        answers: ["able", "bale", "pale", "place", "placeable"],
+        print_date: "2025-01-14",
+        editor: "Sam Ezersky",
+      },
+      {
+        id: 20035,
+        center_letter: "o",
+        outer_letters: "abcelp",
+        pangrams: ["peaceable"],
+        answers: [
+          "cope",
+          "coal",
+          "boat",
+          "peaceable",
+          "able",
+          "bale",
+          "pale",
+          "lope",
+          "pole",
+          "opal",
+        ],
+        print_date: "2025-01-15",
+        editor: "Sam Ezersky",
+      },
+    ],
+  },
+}
+
+test.describe("URL-based date routing", () => {
+  test.beforeEach(async ({ page }) => {
+    await setupMocks(page, { activeResponse: mockMultiPuzzles })
+  })
+
+  test("navigating to / redirects URL to today's date", async ({ page }) => {
+    await page.goto("/")
+    await waitForAppToLoad(page)
+
+    await expect(page).toHaveURL(/\/2025-01-15$/)
+  })
+
+  test("navigating to a valid date loads that puzzle", async ({ page }) => {
+    await page.goto("/2025-01-14")
+
+    const timeElement = page.getByRole("time")
+    await expect(timeElement).toBeVisible()
+    await expect(timeElement).toHaveAttribute("datetime", "2025-01-14")
+    await expect(page).toHaveURL(/\/2025-01-14$/)
+  })
+
+  test("navigating to an invalid date redirects to today", async ({ page }) => {
+    await page.goto("/not-a-date")
+    await waitForAppToLoad(page)
+
+    await expect(page).toHaveURL(/\/2025-01-15$/)
+  })
+
+  test("selecting a puzzle via date picker updates the URL", async ({ page }) => {
+    await page.goto("/")
+    await waitForAppToLoad(page)
+
+    // Open the date picker popover
+    await page.getByRole("button", { name: /Choose a different puzzle date/ }).click()
+
+    // Click the previous puzzle button inside the popover
+    await page.getByRole("button", { name: /Previous puzzle/ }).click()
+
+    const timeElement = page.getByRole("time")
+    await expect(timeElement).toHaveAttribute("datetime", "2025-01-14")
+    await expect(page).toHaveURL(/\/2025-01-14$/)
+  })
+
+  test("browser back navigates to previous puzzle", async ({ page }) => {
+    await page.goto("/")
+    await waitForAppToLoad(page)
+
+    // Open date picker and navigate to previous puzzle
+    await page.getByRole("button", { name: /Choose a different puzzle date/ }).click()
+    await page.getByRole("button", { name: /Previous puzzle/ }).click()
+    await expect(page).toHaveURL(/\/2025-01-14$/)
+
+    // Go back
+    await page.goBack()
+    await expect(page).toHaveURL(/\/2025-01-15$/)
+
+    const timeElement = page.getByRole("time")
+    await expect(timeElement).toHaveAttribute("datetime", "2025-01-15")
   })
 })
