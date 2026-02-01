@@ -12,7 +12,7 @@ import type {
  */
 const WORKER_URL =
   import.meta.env.DEV ?
-    "http://localhost:8787"
+    `http://${window.location.hostname}:8787`
   : import.meta.env.VITE_WORKER_URL || "https://spelling-bee-buddy.herbcaudill.workers.dev"
 
 /**

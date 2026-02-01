@@ -52,7 +52,7 @@ async function main() {
 
   // Start the app
   console.log("🚀 Starting app...")
-  const app = spawn("pnpm", ["dev:app"], {
+  const app = spawn("pnpm", ["dev:app", "--host"], {
     stdio: "inherit",
   })
 
