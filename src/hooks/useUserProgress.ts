@@ -4,8 +4,8 @@ import { getCredentials } from "@/lib/storage"
 import { calculateTotalPoints } from "@/lib/utils"
 import type { CubbyResponse } from "@/types"
 
-/** Default polling interval: 5 seconds */
-const DEFAULT_POLL_INTERVAL = 5_000
+/** Default polling interval: 30 seconds */
+const DEFAULT_POLL_INTERVAL = 30_000
 
 /**
  * Hook state for user progress data
