@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { cn, formatRelativeDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -74,6 +75,8 @@ export function Header({
     }
   }
 
+  const [pickerOpen, setPickerOpen] = useState(false)
+
   // Group puzzles by week
   const thisWeekPuzzles = (activePuzzles?.thisWeek ?? []).map(i => puzzles[i]).filter(Boolean)
   const lastWeekPuzzles = (activePuzzles?.lastWeek ?? []).map(i => puzzles[i]).filter(Boolean)
@@ -95,7 +98,7 @@ export function Header({
       <div className="flex items-center gap-2">
         {/* Date picker */}
         {hasPuzzlePicker && (
-          <Popover>
+          <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="ghost"
@@ -150,7 +153,10 @@ export function Header({
                         puzzle={puzzle}
                         isSelected={puzzle.id === selectedPuzzleId}
                         isToday={puzzles[todayIndex]?.id === puzzle.id}
-                        onClick={() => onSelectPuzzle(puzzle.id)}
+                        onClick={() => {
+                          onSelectPuzzle(puzzle.id)
+                          setPickerOpen(false)
+                        }}
                       />
                     ))}
                   </div>
@@ -164,7 +170,10 @@ export function Header({
                           puzzle={puzzle}
                           isSelected={puzzle.id === selectedPuzzleId}
                           isToday={false}
-                          onClick={() => onSelectPuzzle(puzzle.id)}
+                          onClick={() => {
+                            onSelectPuzzle(puzzle.id)
+                            setPickerOpen(false)
+                          }}
                         />
                       ))}
                     </div>
