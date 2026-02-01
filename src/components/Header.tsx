@@ -84,7 +84,7 @@ export function Header({
   return (
     <header
       className={cn(
-        "bg-accent text-accent-foreground flex items-center justify-between px-4 py-3",
+        "bg-accent text-accent-foreground flex items-center justify-between px-[calc(1rem+env(safe-area-inset-left))] pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3",
         className,
       )}
     >
