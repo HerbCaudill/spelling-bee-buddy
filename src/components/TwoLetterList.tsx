@@ -14,11 +14,11 @@ export interface TwoLetterListProps {
  * List showing word counts by two-letter prefix, grouped by first letter
  *
  * Displays rows like:
- *   A │ AB ●●○ AC ●●●○ AD ○○
- *   B │ BA ○○○ BE ●○
+ *   AB ●●○ AC ●●●○ AD ○○
+ *   BA ○○○ BE ●○
  *
  * Where ● = found word, ○ = unfound word
- * Uses a table with borders for proper alignment
+ * Rows are grouped by first letter
  */
 export function TwoLetterList({ allWords, foundWords, className }: TwoLetterListProps) {
   const groups = buildTwoLetterGroups(allWords, foundWords)
@@ -49,43 +49,30 @@ export function TwoLetterList({ allWords, foundWords, className }: TwoLetterList
       <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
         Two-letter list
       </h2>
-      <table
-        className="border-border w-full border-collapse border"
-        role="grid"
-        aria-label="Two-letter list"
-      >
-        <tbody>
-          {firstLetters.map((letter, index) => {
-            const prefixGroups = groupsByFirstLetter.get(letter) || []
-            const isLastRow = index === firstLetters.length - 1
-            return (
-              <tr key={letter} role="row" className={cn(!isLastRow && "border-border border-b")}>
-                {/* Letter header */}
-                <th
-                  className="text-muted-foreground border-border w-6 border-r px-3 text-center text-sm font-bold"
-                  role="rowheader"
-                  aria-label={`Letter ${letter}`}
-                >
-                  {letter}
-                </th>
-                {/* Prefix groups with dots */}
-                <td className="py-1 pl-3" role="presentation">
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                    {prefixGroups.map(group => (
-                      <PrefixGroup
-                        key={group.prefix}
-                        prefix={group.prefix}
-                        found={group.found}
-                        total={group.total}
-                      />
-                    ))}
-                  </div>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      <div className="border-border w-full border" role="grid" aria-label="Two-letter list">
+        {firstLetters.map((letter, index) => {
+          const prefixGroups = groupsByFirstLetter.get(letter) || []
+          const isLastRow = index === firstLetters.length - 1
+          return (
+            <div
+              key={letter}
+              role="row"
+              className={cn("px-3 py-1", !isLastRow && "border-border border-b")}
+            >
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                {prefixGroups.map(group => (
+                  <PrefixGroup
+                    key={group.prefix}
+                    prefix={group.prefix}
+                    found={group.found}
+                    total={group.total}
+                  />
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

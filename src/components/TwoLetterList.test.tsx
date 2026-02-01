@@ -13,15 +13,6 @@ describe("TwoLetterList", () => {
       expect(screen.getByText("Two-letter list")).toBeInTheDocument()
     })
 
-    it("renders row headers with first letters", () => {
-      render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
-
-      // Should show letters A, B, C as row headers
-      expect(screen.getByRole("rowheader", { name: "Letter A" })).toBeInTheDocument()
-      expect(screen.getByRole("rowheader", { name: "Letter B" })).toBeInTheDocument()
-      expect(screen.getByRole("rowheader", { name: "Letter C" })).toBeInTheDocument()
-    })
-
     it("renders all two-letter prefixes as groups", () => {
       render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
 
@@ -119,14 +110,6 @@ describe("TwoLetterList", () => {
 
       expect(container.firstChild).toHaveClass("custom-class")
     })
-
-    it("renders row header letters in bold", () => {
-      render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
-
-      // Row headers should be bold
-      const letterA = screen.getByRole("rowheader", { name: "Letter A" })
-      expect(letterA).toHaveClass("font-bold")
-    })
   })
 
   describe("case insensitivity", () => {
@@ -179,35 +162,12 @@ describe("TwoLetterList", () => {
     })
   })
 
-  describe("table structure", () => {
-    it("renders as a table with proper elements", () => {
+  describe("layout structure", () => {
+    it("renders with outer border", () => {
       const { container } = render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
 
-      // Should use table element
-      const table = container.querySelector("table")
-      expect(table).toBeInTheDocument()
-
-      // Should have th elements for row headers
-      const rowHeaders = container.querySelectorAll("th")
-      expect(rowHeaders.length).toBe(3) // A, B, C
-
-      // Should have td elements for content
-      const cells = container.querySelectorAll("td")
-      expect(cells.length).toBe(3) // One per row
-    })
-
-    it("renders row headers with border styling", () => {
-      render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
-
-      const letterA = screen.getByRole("rowheader", { name: "Letter A" })
-      expect(letterA).toHaveClass("border-r", "border-border")
-    })
-
-    it("renders table with outer border", () => {
-      const { container } = render(<TwoLetterList allWords={allWords} foundWords={foundWords} />)
-
-      const table = container.querySelector("table")
-      expect(table).toHaveClass("border", "border-border")
+      const grid = screen.getByRole("grid")
+      expect(grid).toHaveClass("border", "border-border")
     })
 
     it("renders horizontal gridlines between rows", () => {
