@@ -117,7 +117,7 @@ export function Header({
       <h1 className="text-xl font-semibold">Spelling Bee Buddy</h1>
 
       {/* Date chooser — wraps to row 2 on mobile, stays inline on sm+ */}
-      <div className="order-3 basis-full pl-[calc(3rem+0.75rem)] sm:order-none sm:basis-auto sm:pl-0">
+      <div className="order-3 basis-full pl-[calc(3rem+0.75rem-1rem-0.25rem)] sm:order-none sm:basis-auto sm:pl-0">
         {hasPuzzlePicker ?
           <DatePicker {...datePickerProps} />
         : <StaticDate printDate={printDate} />}
@@ -203,7 +203,7 @@ function DatePicker({
           variant="ghost"
           size="sm"
           aria-label="Choose a different puzzle date"
-          className="text-accent-foreground hover:bg-accent-foreground/10 h-auto px-0 py-0"
+          className="text-accent-foreground hover:bg-accent-foreground/10 h-auto gap-1 px-0 py-0"
         >
           <Calendar className="size-4" />
           <time dateTime={printDate} className="text-sm">
