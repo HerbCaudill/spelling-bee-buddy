@@ -52,12 +52,12 @@ describe("Header", () => {
   describe("puzzle date display", () => {
     it("displays 'Today' for today's puzzle", () => {
       render(<Header {...defaultProps} printDate={getTodayString()} />)
-      expect(screen.getByText("Today")).toBeInTheDocument()
+      expect(screen.getAllByText("Today").length).toBeGreaterThan(0)
     })
 
     it("displays 'Yesterday' for yesterday's puzzle", () => {
       render(<Header {...defaultProps} printDate={getDaysAgoString(1)} />)
-      expect(screen.getByText("Yesterday")).toBeInTheDocument()
+      expect(screen.getAllByText("Yesterday").length).toBeGreaterThan(0)
     })
 
     it("displays day of week for puzzle 2-6 days ago", () => {
@@ -65,26 +65,26 @@ describe("Header", () => {
       const threeDaysAgo = getDaysAgoString(3)
       render(<Header {...defaultProps} printDate={threeDaysAgo} />)
       // Just check that a time element exists with the correct datetime
-      const timeElement = screen.getByRole("time")
-      expect(timeElement).toHaveAttribute("datetime", threeDaysAgo)
+      const timeElements = screen.getAllByRole("time")
+      expect(timeElements[0]).toHaveAttribute("datetime", threeDaysAgo)
     })
 
     it("displays full date for older puzzles", () => {
       // 10 days ago should show full date
       const tenDaysAgo = getDaysAgoString(10)
       render(<Header {...defaultProps} printDate={tenDaysAgo} />)
-      const timeElement = screen.getByRole("time")
-      expect(timeElement).toHaveAttribute("datetime", tenDaysAgo)
+      const timeElements = screen.getAllByRole("time")
+      expect(timeElements[0]).toHaveAttribute("datetime", tenDaysAgo)
       // Content should be a full date format (contains year)
-      expect(timeElement.textContent).toMatch(/\d{4}/)
+      expect(timeElements[0].textContent).toMatch(/\d{4}/)
     })
 
     it("renders time element with correct datetime attribute", () => {
       const today = getTodayString()
       render(<Header {...defaultProps} printDate={today} />)
-      const timeElement = screen.getByText("Today")
-      expect(timeElement.tagName).toBe("TIME")
-      expect(timeElement).toHaveAttribute("datetime", today)
+      const timeElements = screen.getAllByText("Today")
+      expect(timeElements[0].tagName).toBe("TIME")
+      expect(timeElements[0]).toHaveAttribute("datetime", today)
     })
 
     it("displays calendar icon", () => {
@@ -98,10 +98,10 @@ describe("Header", () => {
   describe("NYT Spelling Bee link", () => {
     it("renders link to NYT Spelling Bee", () => {
       render(<Header {...defaultProps} />)
-      const link = screen.getByRole("link", {
+      const links = screen.getAllByRole("link", {
         name: /open nyt spelling bee puzzle/i,
       })
-      expect(link).toHaveAttribute(
+      expect(links[0]).toHaveAttribute(
         "href",
         `https://www.nytimes.com/puzzles/spelling-bee/${getTodayString()}`,
       )
@@ -109,27 +109,27 @@ describe("Header", () => {
 
     it("opens link in new tab", () => {
       render(<Header {...defaultProps} />)
-      const link = screen.getByRole("link", {
+      const links = screen.getAllByRole("link", {
         name: /open nyt spelling bee puzzle/i,
       })
-      expect(link).toHaveAttribute("target", "_blank")
-      expect(link).toHaveAttribute("rel", "noopener noreferrer")
+      expect(links[0]).toHaveAttribute("target", "_blank")
+      expect(links[0]).toHaveAttribute("rel", "noopener noreferrer")
     })
   })
 
   describe("settings button", () => {
     it("renders settings button with correct aria-label", () => {
       render(<Header {...defaultProps} />)
-      const button = screen.getByRole("button", { name: /open settings/i })
-      expect(button).toBeInTheDocument()
+      const buttons = screen.getAllByRole("button", { name: /open settings/i })
+      expect(buttons.length).toBeGreaterThan(0)
     })
 
     it("calls onSettingsClick when clicked", () => {
       const onSettingsClick = vi.fn()
       render(<Header {...defaultProps} onSettingsClick={onSettingsClick} />)
 
-      const button = screen.getByRole("button", { name: /open settings/i })
-      fireEvent.click(button)
+      const buttons = screen.getAllByRole("button", { name: /open settings/i })
+      fireEvent.click(buttons[0])
 
       expect(onSettingsClick).toHaveBeenCalledTimes(1)
     })
@@ -137,8 +137,8 @@ describe("Header", () => {
     it("does not throw when onSettingsClick is not provided", () => {
       render(<Header {...defaultProps} />)
 
-      const button = screen.getByRole("button", { name: /open settings/i })
-      expect(() => fireEvent.click(button)).not.toThrow()
+      const buttons = screen.getAllByRole("button", { name: /open settings/i })
+      expect(() => fireEvent.click(buttons[0])).not.toThrow()
     })
   })
 
@@ -174,8 +174,8 @@ describe("Header", () => {
         />,
       )
       expect(
-        screen.getByRole("button", { name: /choose a different puzzle date/i }),
-      ).toBeInTheDocument()
+        screen.getAllByRole("button", { name: /choose a different puzzle date/i }).length,
+      ).toBeGreaterThan(0)
     })
 
     it("opens date picker popover when calendar button is clicked", async () => {
@@ -191,7 +191,9 @@ describe("Header", () => {
         />,
       )
 
-      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      const calendarButton = screen.getAllByRole("button", {
+        name: /choose a different puzzle date/i,
+      })[0]
       await user.click(calendarButton)
 
       // Should show day buttons in the popover
@@ -215,7 +217,9 @@ describe("Header", () => {
         />,
       )
 
-      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      const calendarButton = screen.getAllByRole("button", {
+        name: /choose a different puzzle date/i,
+      })[0]
       await user.click(calendarButton)
 
       // Wait for popover to open, then find a day button (any day button other than today)
@@ -250,7 +254,9 @@ describe("Header", () => {
         />,
       )
 
-      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      const calendarButton = screen.getAllByRole("button", {
+        name: /choose a different puzzle date/i,
+      })[0]
       await user.click(calendarButton)
 
       await waitFor(() => {
@@ -275,7 +281,9 @@ describe("Header", () => {
         />,
       )
 
-      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      const calendarButton = screen.getAllByRole("button", {
+        name: /choose a different puzzle date/i,
+      })[0]
       await user.click(calendarButton)
 
       await waitFor(() => {
@@ -297,7 +305,9 @@ describe("Header", () => {
         />,
       )
 
-      const calendarButton = screen.getByRole("button", { name: /choose a different puzzle date/i })
+      const calendarButton = screen.getAllByRole("button", {
+        name: /choose a different puzzle date/i,
+      })[0]
       await user.click(calendarButton)
 
       await waitFor(() => {

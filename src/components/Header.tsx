@@ -81,149 +81,202 @@ export function Header({
   const thisWeekPuzzles = (activePuzzles?.thisWeek ?? []).map(i => puzzles[i]).filter(Boolean)
   const lastWeekPuzzles = (activePuzzles?.lastWeek ?? []).map(i => puzzles[i]).filter(Boolean)
 
+  const datePickerProps = {
+    printDate,
+    pickerOpen,
+    setPickerOpen,
+    puzzles,
+    currentIndex,
+    todayIndex,
+    selectedPuzzleId: selectedPuzzleId!,
+    onSelectPuzzle: onSelectPuzzle!,
+    hasPrevious,
+    hasNext,
+    handlePrevious,
+    handleNext,
+    thisWeekPuzzles,
+    lastWeekPuzzles,
+  }
+
   return (
     <header
       className={cn(
-        "bg-accent text-accent-foreground flex items-center justify-between px-[calc(1rem+env(safe-area-inset-left))] pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3",
+        "bg-accent text-accent-foreground flex flex-wrap items-center gap-x-3 gap-y-1 px-[calc(1rem+env(safe-area-inset-left))] pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3",
         className,
       )}
     >
-      {/* Logo and title */}
-      <div className="flex items-center gap-3">
-        <img src="/icon.svg" alt="" className="size-8" aria-hidden="true" />
-        <h1 className="text-lg font-semibold">Spelling Bee Buddy</h1>
+      {/* Logo */}
+      <img
+        src="/icon.svg"
+        alt=""
+        className="size-12 self-start sm:self-center"
+        aria-hidden="true"
+      />
+
+      {/* Title — takes remaining space on row 1 */}
+      <h1 className="text-xl font-semibold">Spelling Bee Buddy</h1>
+
+      {/* Date chooser — wraps to row 2 on mobile, stays inline on sm+ */}
+      <div className="order-3 basis-full pl-[calc(3rem+0.75rem)] sm:order-none sm:basis-auto sm:pl-0">
+        {hasPuzzlePicker ?
+          <DatePicker {...datePickerProps} />
+        : <StaticDate printDate={printDate} />}
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-2">
-        {/* Date picker */}
-        {hasPuzzlePicker && (
-          <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                aria-label="Choose a different puzzle date"
-                className="text-accent-foreground hover:bg-accent-foreground/10"
-              >
-                <Calendar className="size-4" />
-                <time dateTime={printDate} className="hidden text-sm sm:inline">
-                  {formatRelativeDate(printDate)}
-                </time>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-auto">
-              <div className="flex flex-col gap-3">
-                {/* Navigation arrows */}
-                <div className="flex items-center justify-between gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={handlePrevious}
-                    disabled={!hasPrevious}
-                    aria-label="Previous puzzle"
-                  >
-                    <ChevronLeft className="size-4" />
-                  </Button>
-
-                  <span className="text-muted-foreground text-sm">
-                    {currentIndex >= 0 ?
-                      formatDate(puzzles[currentIndex].print_date)
-                    : "Select a puzzle"}
-                  </span>
-
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={handleNext}
-                    disabled={!hasNext}
-                    aria-label="Next puzzle"
-                  >
-                    <ChevronRight className="size-4" />
-                  </Button>
-                </div>
-
-                {/* Week view */}
-                <div className="space-y-2">
-                  {/* This week */}
-                  <div className="flex gap-1">
-                    {thisWeekPuzzles.map(puzzle => (
-                      <DayButton
-                        key={puzzle.id}
-                        puzzle={puzzle}
-                        isSelected={puzzle.id === selectedPuzzleId}
-                        isToday={puzzles[todayIndex]?.id === puzzle.id}
-                        onClick={() => {
-                          onSelectPuzzle(puzzle.id)
-                          setPickerOpen(false)
-                        }}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Last week */}
-                  {lastWeekPuzzles.length > 0 && (
-                    <div className="flex gap-1">
-                      {lastWeekPuzzles.map(puzzle => (
-                        <DayButton
-                          key={puzzle.id}
-                          puzzle={puzzle}
-                          isSelected={puzzle.id === selectedPuzzleId}
-                          isToday={false}
-                          onClick={() => {
-                            onSelectPuzzle(puzzle.id)
-                            setPickerOpen(false)
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-        )}
-
-        {/* Static date display when no picker available */}
-        {!hasPuzzlePicker && (
-          <div className="text-accent-foreground flex items-center gap-1 text-sm">
-            <Calendar className="size-4" />
-            <time dateTime={printDate} className="hidden sm:inline">
-              {formatRelativeDate(printDate)}
-            </time>
-          </div>
-        )}
-
-        {/* Link to NYT Spelling Bee */}
-        <Button
-          variant="outline"
-          size="sm"
-          asChild
-          className="border-accent-foreground/30 text-accent-foreground hover:bg-accent-foreground/10 bg-transparent"
-        >
-          <a
-            href={nytPuzzleUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Open NYT Spelling Bee puzzle"
-          >
-            <ExternalLink className="size-4" />
-            <span className="hidden sm:inline">Play</span>
-          </a>
-        </Button>
-
-        {/* Settings button */}
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onClick={onSettingsClick}
-          aria-label="Open settings"
-          className="text-accent-foreground hover:bg-accent-foreground/10"
-        >
-          <Settings className="size-4" />
-        </Button>
+      {/* Play + settings — pushed to the right */}
+      <div className="order-2 ml-auto flex items-center gap-2 sm:order-none">
+        <PlayButton url={nytPuzzleUrl} />
+        <SettingsButton onClick={onSettingsClick} />
       </div>
     </header>
+  )
+}
+
+/** Settings gear button. */
+function SettingsButton({ onClick }: { onClick?: () => void }) {
+  return (
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      onClick={onClick}
+      aria-label="Open settings"
+      className="text-accent-foreground hover:bg-accent-foreground/10"
+    >
+      <Settings className="size-4" />
+    </Button>
+  )
+}
+
+/** Link to NYT Spelling Bee. */
+function PlayButton({ url }: { url: string }) {
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      asChild
+      className="text-accent-foreground hover:bg-accent-foreground/10"
+    >
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open NYT Spelling Bee puzzle"
+      >
+        <ExternalLink className="size-4" />
+        <span className="hidden sm:inline">Play</span>
+      </a>
+    </Button>
+  )
+}
+
+/** Static date display when no picker is available. */
+function StaticDate({ printDate }: { printDate: string }) {
+  return (
+    <div className="text-accent-foreground flex items-center gap-1 text-sm">
+      <Calendar className="size-4" />
+      <time dateTime={printDate}>{formatRelativeDate(printDate)}</time>
+    </div>
+  )
+}
+
+/** Date picker popover with calendar icon and relative date label. */
+function DatePicker({
+  printDate,
+  pickerOpen,
+  setPickerOpen,
+  puzzles,
+  currentIndex,
+  todayIndex,
+  selectedPuzzleId,
+  onSelectPuzzle,
+  hasPrevious,
+  hasNext,
+  handlePrevious,
+  handleNext,
+  thisWeekPuzzles,
+  lastWeekPuzzles,
+}: DatePickerProps) {
+  return (
+    <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-label="Choose a different puzzle date"
+          className="text-accent-foreground hover:bg-accent-foreground/10"
+        >
+          <Calendar className="size-4" />
+          <time dateTime={printDate} className="text-sm">
+            {formatRelativeDate(printDate)}
+          </time>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-auto">
+        <div className="flex flex-col gap-3">
+          {/* Navigation arrows */}
+          <div className="flex items-center justify-between gap-2">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={handlePrevious}
+              disabled={!hasPrevious}
+              aria-label="Previous puzzle"
+            >
+              <ChevronLeft className="size-4" />
+            </Button>
+
+            <span className="text-muted-foreground text-sm">
+              {currentIndex >= 0 ? formatDate(puzzles[currentIndex].print_date) : "Select a puzzle"}
+            </span>
+
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={handleNext}
+              disabled={!hasNext}
+              aria-label="Next puzzle"
+            >
+              <ChevronRight className="size-4" />
+            </Button>
+          </div>
+
+          {/* Week view */}
+          <div className="space-y-2">
+            <div className="flex gap-1">
+              {thisWeekPuzzles.map(puzzle => (
+                <DayButton
+                  key={puzzle.id}
+                  puzzle={puzzle}
+                  isSelected={puzzle.id === selectedPuzzleId}
+                  isToday={puzzles[todayIndex]?.id === puzzle.id}
+                  onClick={() => {
+                    onSelectPuzzle(puzzle.id)
+                    setPickerOpen(false)
+                  }}
+                />
+              ))}
+            </div>
+
+            {lastWeekPuzzles.length > 0 && (
+              <div className="flex gap-1">
+                {lastWeekPuzzles.map(puzzle => (
+                  <DayButton
+                    key={puzzle.id}
+                    puzzle={puzzle}
+                    isSelected={puzzle.id === selectedPuzzleId}
+                    isToday={false}
+                    onClick={() => {
+                      onSelectPuzzle(puzzle.id)
+                      setPickerOpen(false)
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }
 
@@ -248,6 +301,23 @@ function DayButton({ puzzle, isSelected, isToday, onClick }: DayButtonProps) {
       </span>
     </button>
   )
+}
+
+type DatePickerProps = {
+  printDate: string
+  pickerOpen: boolean
+  setPickerOpen: (open: boolean) => void
+  puzzles: ActivePuzzle[]
+  currentIndex: number
+  todayIndex: number
+  selectedPuzzleId: number
+  onSelectPuzzle: (puzzleId: number) => void
+  hasPrevious: boolean
+  hasNext: boolean
+  handlePrevious: () => void
+  handleNext: () => void
+  thisWeekPuzzles: ActivePuzzle[]
+  lastWeekPuzzles: ActivePuzzle[]
 }
 
 type DayButtonProps = {
