@@ -124,6 +124,9 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    font-size: 18px;
+  }
   html,
   body {
     background-color: var(--brand-yellow);
