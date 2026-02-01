@@ -55,11 +55,10 @@ export function App() {
     await Promise.all([refetchPuzzle(), refetchProgress(), refetchHints(), refetchStats()])
   }
 
-  // Auto-refresh progress and stats when page becomes visible
+  // Auto-refresh stats when page becomes visible (progress polls itself)
   const handleVisibilityChange = useCallback(() => {
-    refetchProgress()
     refetchStats()
-  }, [refetchProgress, refetchStats])
+  }, [refetchStats])
 
   usePageVisibility(handleVisibilityChange)
 
