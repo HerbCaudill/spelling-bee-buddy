@@ -97,7 +97,7 @@ function WordBar({ word, percentage, isFound }: WordBarProps) {
       {/* Word display - fixed width for alignment */}
       <span
         className={cn(
-          "w-24 shrink-0 truncate text-xs",
+          "w-24 shrink-0 truncate text-sm",
           isFound ? "text-foreground" : "text-muted-foreground",
         )}
         title={isFound ? word : `${word.length}-letter word starting with ${word[0].toUpperCase()}`}
