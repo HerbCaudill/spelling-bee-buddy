@@ -1,6 +1,14 @@
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { ChevronDown, ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  ChevronDown,
+  ChevronRight,
+  ChevronsDownUp,
+  ChevronsUpDown,
+  Eye,
+  EyeOff,
+} from "lucide-react"
 import type { HintsByPrefix } from "@/types"
 
 export interface HintsListProps {
@@ -22,6 +30,7 @@ export interface HintsListProps {
  */
 export function HintsList({ hints, foundWords = [], className }: HintsListProps) {
   const [expandedPrefixes, setExpandedPrefixes] = useState<Set<string>>(new Set())
+  const [showFoundWords, setShowFoundWords] = useState(false)
 
   // Normalize found words for comparison (uppercase to match hint.word)
   const foundSet = new Set(foundWords.map(w => w.toUpperCase()))
@@ -32,6 +41,19 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
   /** Filter hints to only show ones for words the user hasn't found yet. */
   const getUnfoundHints = (prefixHints: (typeof hints)[string]) => {
     return prefixHints.filter(h => !foundSet.has(h.word))
+  }
+
+  /** Get hints to display based on showFoundWords toggle. */
+  const getDisplayHints = (prefixHints: (typeof hints)[string]) => {
+    if (showFoundWords) {
+      // Show all hints, with found ones marked
+      return prefixHints.map(h => ({
+        ...h,
+        isFound: foundSet.has(h.word),
+      }))
+    }
+    // Only show unfound hints
+    return getUnfoundHints(prefixHints).map(h => ({ ...h, isFound: false }))
   }
 
   // Toggle a prefix's expanded state
@@ -77,22 +99,38 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
         <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
           Hints
         </h2>
-        <div className="flex gap-2">
-          <button
+        <div className="inline-flex -space-x-px" role="group">
+          <Button
+            variant="outline"
+            size="sm"
             onClick={expandAll}
-            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+            className="rounded-r-none focus:z-10"
             aria-label="Expand all sections"
           >
-            Expand all
-          </button>
-          <span className="text-muted-foreground">|</span>
-          <button
+            <ChevronsUpDown className="size-4" />
+            <span className="hidden sm:inline">Expand</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={collapseAll}
-            className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+            className="rounded-none focus:z-10"
             aria-label="Collapse all sections"
           >
-            Collapse all
-          </button>
+            <ChevronsDownUp className="size-4" />
+            <span className="hidden sm:inline">Collapse</span>
+          </Button>
+          <Button
+            variant={showFoundWords ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowFoundWords(!showFoundWords)}
+            className="rounded-l-none focus:z-10"
+            aria-label={showFoundWords ? "Hide found words" : "Show found words"}
+            aria-pressed={showFoundWords}
+          >
+            {showFoundWords ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
+            <span className="hidden sm:inline">Found</span>
+          </Button>
         </div>
       </div>
 
@@ -104,8 +142,8 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
           const totalHints = prefixHints.length
           const isComplete = foundCount >= totalHints && totalHints > 0
 
-          // Don't show completed prefixes
-          if (isComplete) {
+          // Don't show completed prefixes unless showing found words
+          if (isComplete && !showFoundWords) {
             return null
           }
 
@@ -142,25 +180,39 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
                 </span>
               </button>
 
-              {/* Hints list - collapsible, showing only unfound hints */}
+              {/* Hints list - collapsible */}
               {isExpanded && (
                 <ul
                   id={`hints-${prefix}`}
                   className="bg-muted/30 divide-border divide-y border-t"
                   role="list"
                 >
-                  {getUnfoundHints(prefixHints).map((hint, index) => (
+                  {getDisplayHints(prefixHints).map((hint, index) => (
                     <li
                       key={`${prefix}-${index}`}
-                      className="flex items-center gap-2 px-3 py-2 text-sm"
+                      className={cn(
+                        "flex items-center gap-2 px-3 py-2 text-sm",
+                        hint.isFound && "opacity-50",
+                      )}
                     >
                       <span
-                        className="text-muted-foreground font-mono text-xs"
+                        className={cn(
+                          "font-mono text-xs",
+                          hint.isFound ? "text-muted-foreground/50" : "text-muted-foreground",
+                        )}
                         aria-label={`${hint.length} letters`}
                       >
                         {hint.length}
                       </span>
-                      <span className="text-foreground">{hint.hint}</span>
+                      <span
+                        className={cn(
+                          hint.isFound
+                            ? "text-muted-foreground line-through"
+                            : "text-foreground",
+                        )}
+                      >
+                        {hint.hint}
+                      </span>
                     </li>
                   ))}
                 </ul>
