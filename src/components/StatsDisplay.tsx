@@ -1,4 +1,4 @@
-import { Clock, Users } from "lucide-react"
+import { IconClock, IconUsers } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import type { PuzzleStats } from "@/types"
 
@@ -33,7 +33,7 @@ export function StatsNotAvailable({ className }: { className?: string }) {
         You vs other players
       </h2>
       <div className="border-border bg-muted/50 flex items-center gap-3 rounded-lg border p-4 text-sm">
-        <Clock className="text-muted-foreground size-5 shrink-0" />
+        <IconClock className="text-muted-foreground size-5 shrink-0" />
         <div>
           <p className="text-muted-foreground">
             Stats are not available yet for this puzzle. They typically appear within a few minutes
@@ -71,7 +71,7 @@ export function StatsDisplay({ stats, allWords, foundWords, className }: Props) 
           You vs other players
         </h2>
         <span className="text-muted-foreground flex items-center gap-1 text-xs">
-          <Users className="size-3" />
+          <IconUsers className="size-3" />
           {numberOfUsers.toLocaleString()}
         </span>
       </div>

@@ -5,7 +5,7 @@ import { useUserProgress } from "@/hooks/useUserProgress"
 import { useHints } from "@/hooks/useHints"
 import { usePuzzleStats } from "@/hooks/usePuzzleStats"
 import { usePageVisibility } from "@/hooks/usePageVisibility"
-import { Loader2, AlertCircle, RefreshCw } from "lucide-react"
+import { IconLoader2, IconAlertCircle, IconRefresh } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 
 export function App() {
@@ -68,7 +68,7 @@ export function App() {
     return (
       <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="text-muted-foreground size-8 animate-spin" />
+          <IconLoader2 className="text-muted-foreground size-8 animate-spin" />
           <p className="text-muted-foreground">Loading puzzle...</p>
         </div>
       </div>
@@ -80,11 +80,11 @@ export function App() {
     return (
       <div className="bg-background flex min-h-screen items-center justify-center p-4">
         <div className="flex max-w-md flex-col items-center gap-4 text-center">
-          <AlertCircle className="text-destructive size-12" />
+          <IconAlertCircle className="text-destructive size-12" />
           <h1 className="text-xl font-semibold">Failed to load puzzle</h1>
           <p className="text-muted-foreground">{criticalError}</p>
           <Button onClick={refetchPuzzle} variant="outline">
-            <RefreshCw className="mr-2 size-4" />
+            <IconRefresh className="mr-2 size-4" />
             Try again
           </Button>
         </div>

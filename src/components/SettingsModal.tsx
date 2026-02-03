@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { X, Trash2 } from "lucide-react"
+import { IconX, IconTrash } from "@tabler/icons-react"
 import { getCredentials, saveCredentials, clearCredentials } from "@/lib/storage"
 import type { UserCredentials } from "@/types"
 
@@ -147,7 +147,7 @@ export function SettingsModal({ isOpen, onClose, onSave, className }: SettingsMo
           className="focus:ring-ring absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none"
           aria-label="Close settings"
         >
-          <X className="size-4" />
+          <IconX className="size-4" />
         </button>
 
         {/* Title */}
@@ -215,7 +215,7 @@ export function SettingsModal({ isOpen, onClose, onSave, className }: SettingsMo
             disabled={!hasCredentials || isSaving}
             className="text-destructive hover:bg-destructive/10 hover:text-destructive"
           >
-            <Trash2 className="size-4" />
+            <IconTrash className="size-4" />
             Clear All
           </Button>
 

@@ -5,7 +5,7 @@ import { TwoLetterList } from "@/components/TwoLetterList"
 import { HintsList } from "@/components/HintsList"
 import { SettingsModal } from "@/components/SettingsModal"
 import { StatsDisplay, StatsNotAvailable } from "@/components/StatsDisplay"
-import { RefreshCw, Loader2 } from "lucide-react"
+import { IconRefresh, IconLoader2 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import type { GameData, ActivePuzzlesResponse, HintsByPrefix, PuzzleStats } from "@/types"
 
@@ -133,7 +133,7 @@ export function AppContent({
 
             {hintsLoading && (
               <div className="text-muted-foreground flex items-center justify-center gap-2 py-8">
-                <Loader2 className="size-4 animate-spin" />
+                <IconLoader2 className="size-4 animate-spin" />
                 <span>Generating hints...</span>
               </div>
             )}
@@ -145,7 +145,7 @@ export function AppContent({
         {/* Refresh button */}
         <div className="flex justify-center pt-4">
           <Button variant="outline" onClick={onRefresh} disabled={progressLoading}>
-            <RefreshCw className={`mr-2 size-4 ${progressLoading ? "animate-spin" : ""}`} />
+            <IconRefresh className={`mr-2 size-4 ${progressLoading ? "animate-spin" : ""}`} />
             Refresh progress
           </Button>
         </div>

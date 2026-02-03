@@ -89,8 +89,8 @@ describe("Header", () => {
 
     it("displays calendar icon", () => {
       const { container } = render(<Header {...defaultProps} />)
-      // Check for SVG with lucide-calendar class or similar
-      const calendarIcon = container.querySelector("svg.lucide-calendar")
+      // Check for SVG with tabler-icon-calendar class
+      const calendarIcon = container.querySelector("svg.tabler-icon-calendar")
       expect(calendarIcon).toBeInTheDocument()
     })
   })

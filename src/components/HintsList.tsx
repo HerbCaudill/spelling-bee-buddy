@@ -2,13 +2,12 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
-  ChevronDown,
-  ChevronRight,
-  ChevronsDownUp,
-  ChevronsUpDown,
-  Eye,
-  EyeOff,
-} from "lucide-react"
+  IconChevronDown,
+  IconChevronRight,
+  IconSelector,
+  IconEye,
+  IconEyeOff,
+} from "@tabler/icons-react"
 import type { HintsByPrefix } from "@/types"
 
 export interface HintsListProps {
@@ -107,7 +106,7 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
             className="rounded-r-none focus:z-10"
             aria-label="Expand all sections"
           >
-            <ChevronsUpDown className="size-4" />
+            <IconSelector className="size-4" />
             <span className="hidden sm:inline">Expand</span>
           </Button>
           <Button
@@ -117,7 +116,7 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
             className="rounded-none focus:z-10"
             aria-label="Collapse all sections"
           >
-            <ChevronsDownUp className="size-4" />
+            <IconSelector className="size-4 rotate-180" />
             <span className="hidden sm:inline">Collapse</span>
           </Button>
           <Button
@@ -128,7 +127,7 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
             aria-label={showFoundWords ? "Hide found words" : "Show found words"}
             aria-pressed={showFoundWords}
           >
-            {showFoundWords ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
+            {showFoundWords ? <IconEye className="size-4" /> : <IconEyeOff className="size-4" />}
             <span className="hidden sm:inline">Found</span>
           </Button>
         </div>
@@ -162,8 +161,8 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
               >
                 <div className="flex items-center gap-2">
                   {isExpanded ?
-                    <ChevronDown className="size-4" aria-hidden="true" />
-                  : <ChevronRight className="size-4" aria-hidden="true" />}
+                    <IconChevronDown className="size-4" aria-hidden="true" />
+                  : <IconChevronRight className="size-4" aria-hidden="true" />}
                   <span className="font-medium">{prefix}</span>
                 </div>
                 <span

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { cn, formatRelativeDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Settings, ExternalLink, ChevronLeft, ChevronRight, Calendar, Crown, Lightbulb, Circle } from "lucide-react"
+import { IconSettings, IconExternalLink, IconChevronLeft, IconChevronRight, IconCalendar, IconCrown, IconBulb, IconPointFilled } from "@tabler/icons-react"
 import { usePuzzleProgressMap, type PuzzleProgressMap, type PuzzleStatus } from "@/hooks/usePuzzleProgressMap"
 import { getCredentials } from "@/lib/storage"
 import type { ActivePuzzlesResponse, ActivePuzzle } from "@/types"
@@ -149,7 +149,7 @@ function SettingsButton({ onClick }: { onClick?: () => void }) {
       aria-label="Open settings"
       className="text-accent-foreground hover:bg-accent-foreground/10"
     >
-      <Settings className="size-4" />
+      <IconSettings className="size-4" />
     </Button>
   )
 }
@@ -169,7 +169,7 @@ function PlayButton({ url }: { url: string }) {
         rel="noopener noreferrer"
         aria-label="Open NYT Spelling Bee puzzle"
       >
-        <ExternalLink className="size-4" />
+        <IconExternalLink className="size-4" />
         <span className="hidden sm:inline">Play</span>
       </a>
     </Button>
@@ -180,7 +180,7 @@ function PlayButton({ url }: { url: string }) {
 function StaticDate({ printDate }: { printDate: string }) {
   return (
     <div className="text-accent-foreground flex items-center gap-1 text-sm">
-      <Calendar className="size-4" />
+      <IconCalendar className="size-4" />
       <time dateTime={printDate}>{formatRelativeDate(printDate)}</time>
     </div>
   )
@@ -216,7 +216,7 @@ function DatePicker({
           aria-label="Choose a different puzzle date"
           className="text-accent-foreground hover:bg-accent-foreground/10 h-auto gap-1 px-0 py-0 has-[>svg]:px-0"
         >
-          <Calendar className="size-4" />
+          <IconCalendar className="size-4" />
           <time dateTime={printDate} className="text-sm">
             {formatRelativeDate(printDate)}
           </time>
@@ -233,7 +233,7 @@ function DatePicker({
               disabled={!hasPrevious}
               aria-label="Previous puzzle"
             >
-              <ChevronLeft className="size-4" />
+              <IconChevronLeft className="size-4" />
             </Button>
 
             <span className="text-muted-foreground text-sm">
@@ -247,7 +247,7 @@ function DatePicker({
               disabled={!hasNext}
               aria-label="Next puzzle"
             >
-              <ChevronRight className="size-4" />
+              <IconChevronRight className="size-4" />
             </Button>
           </div>
 
@@ -304,11 +304,11 @@ function StatusIcon({ status, isSelected }: { status?: PuzzleStatus; isSelected:
 
   switch (status) {
     case "queen-bee":
-      return <Crown className={iconClass} />
+      return <IconCrown className={iconClass} />
     case "genius":
-      return <Lightbulb className={iconClass} />
+      return <IconBulb className={iconClass} />
     case "in-progress":
-      return <Circle className={cn(iconClass, "size-2")} fill="currentColor" />
+      return <IconPointFilled className={cn(iconClass, "size-2")} />
     default:
       return null
   }
