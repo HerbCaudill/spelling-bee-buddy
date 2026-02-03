@@ -20,8 +20,8 @@ export interface UsePuzzleStatsState {
 }
 
 export interface UsePuzzleStatsReturn extends UsePuzzleStatsState {
-  /** Refetch the stats */
-  refetch: () => Promise<void>
+  /** Refetch the stats (pass silent=true to skip loading state, useful for background refreshes) */
+  refetch: (silent?: boolean) => Promise<void>
 }
 
 export interface UsePuzzleStatsOptions {
@@ -127,6 +127,6 @@ export function usePuzzleStats(
     isLoading,
     error,
     notAvailableYet,
-    refetch: () => fetchData(false),
+    refetch: (silent = false) => fetchData(silent),
   }
 }
