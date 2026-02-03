@@ -2,7 +2,9 @@ import { useState } from "react"
 import { cn, formatRelativeDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Settings, ExternalLink, ChevronLeft, ChevronRight, Calendar } from "lucide-react"
+import { Settings, ExternalLink, ChevronLeft, ChevronRight, Calendar, Crown, Lightbulb, Circle } from "lucide-react"
+import { usePuzzleProgressMap, type PuzzleProgressMap, type PuzzleStatus } from "@/hooks/usePuzzleProgressMap"
+import { getCredentials } from "@/lib/storage"
 import type { ActivePuzzlesResponse, ActivePuzzle } from "@/types"
 
 export interface HeaderProps {
@@ -77,6 +79,10 @@ export function Header({
 
   const [pickerOpen, setPickerOpen] = useState(false)
 
+  // Lazy-load progress for all puzzles
+  const hasCredentials = getCredentials()?.nytToken !== undefined
+  const { progressMap } = usePuzzleProgressMap(puzzles, hasCredentials)
+
   // Group puzzles by week
   const thisWeekPuzzles = (activePuzzles?.thisWeek ?? []).map(i => puzzles[i]).filter(Boolean)
   const lastWeekPuzzles = (activePuzzles?.lastWeek ?? []).map(i => puzzles[i]).filter(Boolean)
@@ -96,6 +102,7 @@ export function Header({
     handleNext,
     thisWeekPuzzles,
     lastWeekPuzzles,
+    progressMap,
   }
 
   return (
@@ -195,7 +202,11 @@ function DatePicker({
   handleNext,
   thisWeekPuzzles,
   lastWeekPuzzles,
+  progressMap,
 }: DatePickerProps) {
+  const getStatus = (puzzleId: number): PuzzleStatus | undefined => {
+    return progressMap.get(puzzleId)?.status
+  }
   return (
     <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
       <PopoverTrigger asChild>
@@ -249,6 +260,7 @@ function DatePicker({
                   puzzle={puzzle}
                   isSelected={puzzle.id === selectedPuzzleId}
                   isToday={puzzles[todayIndex]?.id === puzzle.id}
+                  status={getStatus(puzzle.id)}
                   onClick={() => {
                     onSelectPuzzle(puzzle.id)
                     setPickerOpen(false)
@@ -265,6 +277,7 @@ function DatePicker({
                     puzzle={puzzle}
                     isSelected={puzzle.id === selectedPuzzleId}
                     isToday={false}
+                    status={getStatus(puzzle.id)}
                     onClick={() => {
                       onSelectPuzzle(puzzle.id)
                       setPickerOpen(false)
@@ -280,13 +293,34 @@ function DatePicker({
   )
 }
 
-function DayButton({ puzzle, isSelected, isToday, onClick }: DayButtonProps) {
+/** Get the status icon for a puzzle */
+function StatusIcon({ status, isSelected }: { status?: PuzzleStatus; isSelected: boolean }) {
+  if (!status || status === "not-started") return null
+
+  const iconClass = cn(
+    "size-3",
+    isSelected ? "text-yellow-300" : "text-yellow-500",
+  )
+
+  switch (status) {
+    case "queen-bee":
+      return <Crown className={iconClass} />
+    case "genius":
+      return <Lightbulb className={iconClass} />
+    case "in-progress":
+      return <Circle className={cn(iconClass, "size-2")} fill="currentColor" />
+    default:
+      return null
+  }
+}
+
+function DayButton({ puzzle, isSelected, isToday, status, onClick }: DayButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "flex min-w-10 flex-col items-center justify-center rounded-md px-2 py-1 text-xs transition-colors",
+        "relative flex min-w-10 flex-col items-center justify-center rounded-md px-2 py-1 text-xs transition-colors",
         isSelected ?
           "bg-primary text-primary-foreground"
         : "hover:bg-accent text-muted-foreground hover:text-foreground",
@@ -298,6 +332,10 @@ function DayButton({ puzzle, isSelected, isToday, onClick }: DayButtonProps) {
       <span className="font-medium">{getDayAbbrev(puzzle.print_date)}</span>
       <span className="text-[10px] opacity-70">
         {new Date(puzzle.print_date + "T12:00:00").getDate()}
+      </span>
+      {/* Status icon positioned at bottom right */}
+      <span className="absolute right-0.5 bottom-0.5">
+        <StatusIcon status={status} isSelected={isSelected} />
       </span>
     </button>
   )
@@ -318,11 +356,13 @@ type DatePickerProps = {
   handleNext: () => void
   thisWeekPuzzles: ActivePuzzle[]
   lastWeekPuzzles: ActivePuzzle[]
+  progressMap: PuzzleProgressMap
 }
 
 type DayButtonProps = {
   puzzle: ActivePuzzle
   isSelected: boolean
   isToday: boolean
+  status?: PuzzleStatus
   onClick: () => void
 }
