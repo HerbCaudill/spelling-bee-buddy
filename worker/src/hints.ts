@@ -7,10 +7,16 @@ import type { GameData, CachedHints } from "./types"
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 
 /**
+ * Cache key version - increment when hint format changes to invalidate old cached hints.
+ * v2: Added `word` property to hints for accurate filtering by found words.
+ */
+const CACHE_VERSION = "v2"
+
+/**
  * Build the KV cache key for a puzzle date
  */
 export function buildCacheKey(printDate: string): string {
-  return `hints:${printDate}`
+  return `hints:${CACHE_VERSION}:${printDate}`
 }
 
 /**

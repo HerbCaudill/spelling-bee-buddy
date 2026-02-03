@@ -5,12 +5,12 @@ import type { GameData } from "./types"
 describe("hints", () => {
   describe("buildCacheKey", () => {
     it("creates cache key from print date", () => {
-      expect(buildCacheKey("2026-01-14")).toBe("hints:2026-01-14")
+      expect(buildCacheKey("2026-01-14")).toBe("hints:v2:2026-01-14")
     })
 
     it("handles different date formats", () => {
-      expect(buildCacheKey("2025-12-31")).toBe("hints:2025-12-31")
-      expect(buildCacheKey("2024-01-01")).toBe("hints:2024-01-01")
+      expect(buildCacheKey("2025-12-31")).toBe("hints:v2:2025-12-31")
+      expect(buildCacheKey("2024-01-01")).toBe("hints:v2:2024-01-01")
     })
   })
 
