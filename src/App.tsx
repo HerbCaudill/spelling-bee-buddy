@@ -41,7 +41,6 @@ export function App() {
 
   const {
     stats,
-    isLoading: statsLoading,
     error: statsError,
     notAvailableYet: statsNotAvailableYet,
     refetch: refetchStats,
@@ -50,14 +49,15 @@ export function App() {
   // Combined error - puzzle error is critical, progress error is not
   const criticalError = puzzleError
 
-  // Handler for refresh
+  // Handler for refresh - use silent=true for stats to avoid layout shifts
   const handleRefresh = async () => {
-    await Promise.all([refetchPuzzle(), refetchProgress(), refetchHints(), refetchStats()])
+    await Promise.all([refetchPuzzle(), refetchProgress(), refetchHints(), refetchStats(true)])
   }
 
   // Auto-refresh stats when page becomes visible (progress polls itself)
+  // Use silent=true to avoid showing loading state and causing layout shifts
   const handleVisibilityChange = useCallback(() => {
-    refetchStats()
+    refetchStats(true)
   }, [refetchStats])
 
   usePageVisibility(handleVisibilityChange)
@@ -110,7 +110,7 @@ export function App() {
       foundWords={foundWords}
       currentPoints={currentPoints}
       hints={hints}
-      stats={stats && !statsLoading ? stats : null}
+      stats={stats}
       hasCredentials={hasCredentials}
       hasApiKey={hasApiKey}
       progressLoading={progressLoading}
