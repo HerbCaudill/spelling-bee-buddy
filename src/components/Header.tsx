@@ -2,8 +2,9 @@ import { useState } from "react"
 import { cn, formatRelativeDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Settings, ExternalLink, ChevronLeft, ChevronRight, Calendar } from "lucide-react"
+import { Settings, ExternalLink, ChevronLeft, ChevronRight, Calendar, Crown, Lightbulb, Circle } from "lucide-react"
 import type { ActivePuzzlesResponse, ActivePuzzle } from "@/types"
+import type { PuzzleScoreStatus } from "@/lib/storage"
 
 export interface HeaderProps {
   /** Print date in ISO format (e.g., "2026-01-14") */
@@ -18,6 +19,8 @@ export interface HeaderProps {
   selectedPuzzleId?: number | null
   /** Callback when a puzzle is selected */
   onSelectPuzzle?: (puzzleId: number) => void
+  /** Score statuses for puzzles (keyed by puzzle ID) */
+  puzzleScoreStatuses?: Record<number, PuzzleScoreStatus>
 }
 
 /**
@@ -51,6 +54,7 @@ export function Header({
   activePuzzles,
   selectedPuzzleId,
   onSelectPuzzle,
+  puzzleScoreStatuses = {},
 }: HeaderProps) {
   const nytPuzzleUrl = `https://www.nytimes.com/puzzles/spelling-bee/${printDate}`
 
@@ -96,6 +100,7 @@ export function Header({
     handleNext,
     thisWeekPuzzles,
     lastWeekPuzzles,
+    puzzleScoreStatuses,
   }
 
   return (
@@ -195,6 +200,7 @@ function DatePicker({
   handleNext,
   thisWeekPuzzles,
   lastWeekPuzzles,
+  puzzleScoreStatuses,
 }: DatePickerProps) {
   return (
     <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
@@ -249,6 +255,7 @@ function DatePicker({
                   puzzle={puzzle}
                   isSelected={puzzle.id === selectedPuzzleId}
                   isToday={puzzles[todayIndex]?.id === puzzle.id}
+                  scoreStatus={puzzleScoreStatuses[puzzle.id] ?? null}
                   onClick={() => {
                     onSelectPuzzle(puzzle.id)
                     setPickerOpen(false)
@@ -265,6 +272,7 @@ function DatePicker({
                     puzzle={puzzle}
                     isSelected={puzzle.id === selectedPuzzleId}
                     isToday={false}
+                    scoreStatus={puzzleScoreStatuses[puzzle.id] ?? null}
                     onClick={() => {
                       onSelectPuzzle(puzzle.id)
                       setPickerOpen(false)
@@ -280,7 +288,23 @@ function DatePicker({
   )
 }
 
-function DayButton({ puzzle, isSelected, isToday, onClick }: DayButtonProps) {
+/** Get the icon for a score status */
+function ScoreIcon({ status, isSelected }: { status: PuzzleScoreStatus; isSelected: boolean }) {
+  const iconClass = cn("size-2.5", isSelected ? "text-yellow-300" : "text-yellow-500")
+
+  switch (status) {
+    case "queen-bee":
+      return <Crown className={iconClass} />
+    case "genius":
+      return <Lightbulb className={iconClass} />
+    case "started":
+      return <Circle className={cn(iconClass, "fill-current")} />
+    default:
+      return null
+  }
+}
+
+function DayButton({ puzzle, isSelected, isToday, scoreStatus, onClick }: DayButtonProps) {
   return (
     <button
       type="button"
@@ -296,9 +320,12 @@ function DayButton({ puzzle, isSelected, isToday, onClick }: DayButtonProps) {
       aria-pressed={isSelected}
     >
       <span className="font-medium">{getDayAbbrev(puzzle.print_date)}</span>
-      <span className="text-[10px] opacity-70">
-        {new Date(puzzle.print_date + "T12:00:00").getDate()}
-      </span>
+      <div className="flex items-center gap-0.5">
+        <span className="text-[10px] opacity-70">
+          {new Date(puzzle.print_date + "T12:00:00").getDate()}
+        </span>
+        <ScoreIcon status={scoreStatus} isSelected={isSelected} />
+      </div>
     </button>
   )
 }
@@ -318,11 +345,13 @@ type DatePickerProps = {
   handleNext: () => void
   thisWeekPuzzles: ActivePuzzle[]
   lastWeekPuzzles: ActivePuzzle[]
+  puzzleScoreStatuses: Record<number, PuzzleScoreStatus>
 }
 
 type DayButtonProps = {
   puzzle: ActivePuzzle
   isSelected: boolean
   isToday: boolean
+  scoreStatus: PuzzleScoreStatus
   onClick: () => void
 }

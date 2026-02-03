@@ -1,6 +1,10 @@
-import type { UserCredentials } from "@/types"
+import type { UserCredentials, Rank } from "@/types"
 
 const STORAGE_KEY = "spelling-bee-buddy-credentials"
+const PUZZLE_RANKS_KEY = "spelling-bee-buddy-puzzle-ranks"
+
+/** Score status for a puzzle - simplified for the date picker */
+export type PuzzleScoreStatus = "queen-bee" | "genius" | "started" | null
 
 /**
  * Get credentials from environment variables (development only)
@@ -76,4 +80,45 @@ export function updateCredential(key: keyof UserCredentials, value: string): voi
     [key]: value,
   }
   saveCredentials(updated)
+}
+
+/**
+ * Convert a Rank to a simplified score status for display
+ */
+export function rankToScoreStatus(rank: Rank): PuzzleScoreStatus {
+  if (rank === "Queen Bee") return "queen-bee"
+  if (rank === "Genius") return "genius"
+  return "started"
+}
+
+/**
+ * Get all saved puzzle score statuses
+ */
+export function getPuzzleScoreStatuses(): Record<number, PuzzleScoreStatus> {
+  try {
+    const stored = localStorage.getItem(PUZZLE_RANKS_KEY)
+    if (stored) {
+      return JSON.parse(stored) as Record<number, PuzzleScoreStatus>
+    }
+  } catch {
+    // Fall through
+  }
+  return {}
+}
+
+/**
+ * Save a puzzle's score status
+ */
+export function savePuzzleScoreStatus(puzzleId: number, status: PuzzleScoreStatus): void {
+  const existing = getPuzzleScoreStatuses()
+  existing[puzzleId] = status
+  localStorage.setItem(PUZZLE_RANKS_KEY, JSON.stringify(existing))
+}
+
+/**
+ * Get the score status for a specific puzzle
+ */
+export function getPuzzleScoreStatus(puzzleId: number): PuzzleScoreStatus {
+  const statuses = getPuzzleScoreStatuses()
+  return statuses[puzzleId] ?? null
 }

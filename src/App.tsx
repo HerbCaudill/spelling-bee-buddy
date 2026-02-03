@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { AppContent } from "@/AppContent"
 import { useSelectedPuzzle } from "@/hooks/useSelectedPuzzle"
 import { useUserProgress } from "@/hooks/useUserProgress"
@@ -7,9 +7,19 @@ import { usePuzzleStats } from "@/hooks/usePuzzleStats"
 import { usePageVisibility } from "@/hooks/usePageVisibility"
 import { Loader2, AlertCircle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { getRank } from "@/lib/utils"
+import {
+  getPuzzleScoreStatuses,
+  savePuzzleScoreStatus,
+  rankToScoreStatus,
+  type PuzzleScoreStatus,
+} from "@/lib/storage"
 
 export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [puzzleScoreStatuses, setPuzzleScoreStatuses] = useState<Record<number, PuzzleScoreStatus>>(
+    getPuzzleScoreStatuses,
+  )
 
   const {
     puzzle,
@@ -45,6 +55,22 @@ export function App() {
     notAvailableYet: statsNotAvailableYet,
     refetch: refetchStats,
   } = usePuzzleStats(selectedPuzzle?.id ?? null, { enabled: !!selectedPuzzle })
+
+  // Save the current puzzle's score status when progress changes
+  useEffect(() => {
+    const puzzleId = selectedPuzzle?.id
+    if (!puzzleId || !hasCredentials || foundWords.length === 0) return
+
+    const rank = getRank(currentPoints, maxPoints)
+    const status = rankToScoreStatus(rank)
+
+    // Only update if status changed (avoid unnecessary localStorage writes)
+    const currentStatus = puzzleScoreStatuses?.[puzzleId]
+    if (currentStatus !== status) {
+      savePuzzleScoreStatus(puzzleId, status)
+      setPuzzleScoreStatuses(prev => ({ ...prev, [puzzleId]: status }))
+    }
+  }, [selectedPuzzle?.id, currentPoints, maxPoints, foundWords.length, hasCredentials, puzzleScoreStatuses])
 
   // Combined error - puzzle error is critical, progress error is not
   const criticalError = puzzleError
@@ -120,6 +146,7 @@ export function App() {
       hintsError={hintsError}
       statsError={statsError}
       settingsOpen={settingsOpen}
+      puzzleScoreStatuses={puzzleScoreStatuses}
       onSettingsOpen={() => setSettingsOpen(true)}
       onSettingsClose={() => setSettingsOpen(false)}
       onSelectPuzzle={selectPuzzle}

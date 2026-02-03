@@ -8,6 +8,7 @@ import { StatsDisplay, StatsNotAvailable } from "@/components/StatsDisplay"
 import { RefreshCw, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { GameData, ActivePuzzlesResponse, HintsByPrefix, PuzzleStats } from "@/types"
+import type { PuzzleScoreStatus } from "@/lib/storage"
 
 /**
  * Presentational component for the main app content.
@@ -31,6 +32,7 @@ export function AppContent({
   hintsError,
   statsError,
   settingsOpen,
+  puzzleScoreStatuses,
   onSettingsOpen,
   onSettingsClose,
   onSelectPuzzle,
@@ -51,6 +53,7 @@ export function AppContent({
         activePuzzles={activePuzzles ?? undefined}
         selectedPuzzleId={selectedPuzzleId}
         onSelectPuzzle={onSelectPuzzle}
+        puzzleScoreStatuses={puzzleScoreStatuses}
       />
 
       {/* Main content */}
@@ -175,6 +178,7 @@ type Props = {
   hintsError: string | null
   statsError: string | null
   settingsOpen: boolean
+  puzzleScoreStatuses: Record<number, PuzzleScoreStatus>
   onSettingsOpen: () => void
   onSettingsClose: () => void
   onSelectPuzzle: (puzzleId: number) => void
