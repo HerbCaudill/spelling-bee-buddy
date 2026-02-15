@@ -16,13 +16,26 @@ describe("WordGrid", () => {
       expect(screen.getByRole("rowheader", { name: "Letter C" })).toBeInTheDocument()
     })
 
-    it("renders length groups with dots", () => {
+    it("renders column headers with word lengths", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // A row has 4-letter words (able, axle - 1 found) and 5-letter word (apple - found)
-      expect(screen.getByRole("cell", { name: "4-letter words: 1 of 2 found" })).toBeInTheDocument()
+      // Should show column headers for lengths 4, 5, 7
+      expect(screen.getByRole("columnheader", { name: "4-letter words" })).toBeInTheDocument()
+      expect(screen.getByRole("columnheader", { name: "5-letter words" })).toBeInTheDocument()
+      expect(screen.getByRole("columnheader", { name: "7-letter words" })).toBeInTheDocument()
+    })
+
+    it("renders cells with dots for each letter/length combination", () => {
+      render(<WordGrid allWords={allWords} foundWords={foundWords} />)
+
+      // A row, 4-letter: able (found) + axle (not found) = 1 of 2
       expect(
-        screen.getByRole("cell", { name: "5-letter words: 1 of 1 found, complete" }),
+        screen.getByRole("cell", { name: "4-letter A words: 1 of 2 found" }),
+      ).toBeInTheDocument()
+
+      // A row, 5-letter: apple (found) = 1 of 1
+      expect(
+        screen.getByRole("cell", { name: "5-letter A words: 1 of 1 found, complete" }),
       ).toBeInTheDocument()
     })
   })
@@ -31,7 +44,6 @@ describe("WordGrid", () => {
     it("shows filled dots for found words", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // Filled dots (●) should be present for found words
       const filledDots = screen.getAllByText("●")
       expect(filledDots.length).toBeGreaterThan(0)
     })
@@ -39,7 +51,6 @@ describe("WordGrid", () => {
     it("shows empty dots for unfound words", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // Empty dots (○) should be present for unfound words
       const emptyDots = screen.getAllByText("○")
       expect(emptyDots.length).toBeGreaterThan(0)
     })
@@ -47,46 +58,36 @@ describe("WordGrid", () => {
     it("shows only filled dots when all words in a group are found", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // The 5-letter group for A should be complete (apple found)
+      // The 5-letter A cell should be complete (apple found)
       expect(
-        screen.getByRole("cell", { name: "5-letter words: 1 of 1 found, complete" }),
+        screen.getByRole("cell", { name: "5-letter A words: 1 of 1 found, complete" }),
       ).toBeInTheDocument()
     })
   })
 
-  describe("length groups", () => {
-    it("displays all length groups for each letter", () => {
+  describe("matrix structure", () => {
+    it("renders empty cells where no words exist for a letter/length combination", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // A has 4-letter and 5-letter words
-      expect(screen.getByRole("cell", { name: "4-letter words: 1 of 2 found" })).toBeInTheDocument()
+      // A has no 7-letter words, so that cell should be empty
       expect(
-        screen.getByRole("cell", { name: "5-letter words: 1 of 1 found, complete" }),
+        screen.getByRole("cell", { name: "No 7-letter A words" }),
       ).toBeInTheDocument()
 
-      // B has 4-letter (ball - found) and 7-letter (balloon) words
-      // C has 4-letter (cape) and 7-letter (capable) words
-      // Both B and C have "7-letter words: 0 of 1 found"
-      const sevenLetterCells = screen.getAllByRole("cell", { name: "7-letter words: 0 of 1 found" })
-      expect(sevenLetterCells.length).toBe(2)
-
-      // B has 4-letter complete (ball found)
+      // C has no 5-letter words
       expect(
-        screen.getByRole("cell", { name: "4-letter words: 1 of 1 found, complete" }),
+        screen.getByRole("cell", { name: "No 5-letter C words" }),
       ).toBeInTheDocument()
-
-      // C has 4-letter unfound (cape not found)
-      expect(screen.getByRole("cell", { name: "4-letter words: 0 of 1 found" })).toBeInTheDocument()
     })
 
-    it("only shows length groups that have words", () => {
+    it("has a cell for every letter/length combination", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // A should not have 6-letter or 7-letter groups
-      // Check that A row doesn't have a 7-letter group by verifying the structure
-      const aRowHeader = screen.getByRole("rowheader", { name: "Letter A" })
-      const aRow = aRowHeader.closest('[role="row"]')
-      expect(aRow).not.toHaveTextContent("7")
+      // 3 letters x 3 lengths = 9 data cells + 3 empty cells for combinations without words
+      // Plus the header row. Total cells = 9 data cells
+      const allCells = screen.getAllByRole("cell")
+      // 3 letters × 3 lengths = 9 cells
+      expect(allCells.length).toBe(9)
     })
   })
 
@@ -121,7 +122,6 @@ describe("WordGrid", () => {
     it("renders row header letters in bold", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // Row headers should be bold
       const letterA = screen.getByRole("rowheader", { name: "Letter A" })
       expect(letterA).toHaveClass("font-bold")
     })
@@ -132,7 +132,6 @@ describe("WordGrid", () => {
       render(<WordGrid allWords={["ABLE", "Apple"]} foundWords={["able", "APPLE"]} />)
 
       // Both should be found since comparison is case-insensitive
-      // Should show only filled dots
       const filledDots = screen.getAllByText("●")
       expect(filledDots.length).toBe(2)
       expect(screen.queryAllByText("○").length).toBe(0)
@@ -157,19 +156,20 @@ describe("WordGrid", () => {
       expect(screen.getByRole("grid", { name: "Word grid" })).toBeInTheDocument()
     })
 
-    it("has proper row structure", () => {
+    it("has proper row structure including header row", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // Should have rows for A, B, C
+      // Should have rows for header + A, B, C
       const rows = screen.getAllByRole("row")
-      expect(rows.length).toBe(3) // A, B, C
+      expect(rows.length).toBe(4) // header + A, B, C
     })
 
-    it("provides accessible labels for length groups", () => {
+    it("provides accessible labels for cells", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // Each length group should have an accessible label
-      expect(screen.getByRole("cell", { name: "4-letter words: 1 of 2 found" })).toBeInTheDocument()
+      expect(
+        screen.getByRole("cell", { name: "4-letter A words: 1 of 2 found" }),
+      ).toBeInTheDocument()
     })
   })
 
@@ -177,17 +177,17 @@ describe("WordGrid", () => {
     it("renders as a table with proper elements", () => {
       const { container } = render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
-      // Should use table element
       const table = container.querySelector("table")
       expect(table).toBeInTheDocument()
 
-      // Should have th elements for row headers
+      // Should have th elements for row headers + column headers + corner cell
       const rowHeaders = container.querySelectorAll("th")
-      expect(rowHeaders.length).toBe(3) // A, B, C
+      // 1 corner + 3 column headers + 3 row headers = 7
+      expect(rowHeaders.length).toBe(7)
 
-      // Should have td elements for content
+      // Should have td elements: one per cell in the matrix
       const cells = container.querySelectorAll("td")
-      expect(cells.length).toBe(3) // One per row
+      expect(cells.length).toBe(9) // 3 letters × 3 lengths
     })
 
     it("renders row headers with border styling", () => {
@@ -208,7 +208,7 @@ describe("WordGrid", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
       const rows = screen.getAllByRole("row")
-      // All rows except the last should have bottom border
+      // Header row and all data rows except last should have bottom border
       rows.slice(0, -1).forEach(row => {
         expect(row).toHaveClass("border-b", "border-border")
       })
