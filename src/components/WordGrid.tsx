@@ -11,27 +11,24 @@ export interface WordGridProps {
 }
 
 /**
- * Grid showing word counts by starting letter and word length
+ * Matrix grid showing word counts by starting letter (rows) and word length (columns)
  *
- * Displays rows like:
- *   A │ 4 ●●○ 5 ●●●○ 6 ○○
- *   B │ 4 ○○○ 5 ●○
+ * Displays a table like:
+ *     4   5   7
+ * A │ ●○  ●
+ * B │ ●   ○   ○
+ * C │ ○       ○
  *
  * Where ● = found word, ○ = unfound word
- * Uses a table with borders for proper alignment
  */
 export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
-  // Get unique lengths and letters for headers
   const lengths = getWordLengths(allWords)
   const letters = getStartingLetters(allWords)
 
-  // Build the grid data
   const gridCells = buildWordGrid(allWords, foundWords)
 
-  // Create a lookup map for quick access
   const cellMap = new Map(gridCells.map(cell => [`${cell.letter}-${cell.length}`, cell]))
 
-  // Empty state
   if (allWords.length === 0) {
     return (
       <div className={cn("text-muted-foreground py-8 text-center", className)}>
@@ -46,23 +43,29 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
       role="grid"
       aria-label="Word grid"
     >
+      <thead>
+        <tr role="row" className="border-border border-b">
+          {/* Empty corner cell */}
+          <th className="border-border w-6 border-r px-3" aria-hidden="true" />
+          {/* Column headers for each word length */}
+          {lengths.map(length => (
+            <th
+              key={length}
+              className="text-muted-foreground px-2 py-1 text-center text-xs font-medium"
+              role="columnheader"
+              aria-label={`${length}-letter words`}
+            >
+              {length}
+            </th>
+          ))}
+        </tr>
+      </thead>
       <tbody>
-        {/* Data rows */}
         {letters.map((letter, index) => {
-          // Get all length groups for this letter that have words
-          const lengthGroups = lengths
-            .map(length => {
-              const cell = cellMap.get(`${letter}-${length}`)
-              return cell ? { length, found: cell.found, total: cell.total } : null
-            })
-            .filter(
-              (group): group is { length: number; found: number; total: number } => group !== null,
-            )
-
           const isLastRow = index === letters.length - 1
           return (
             <tr key={letter} role="row" className={cn(!isLastRow && "border-border border-b")}>
-              {/* Letter header */}
+              {/* Row header: starting letter */}
               <th
                 className="text-muted-foreground border-border w-6 border-r px-3 text-center text-sm font-bold"
                 role="rowheader"
@@ -70,14 +73,21 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
               >
                 {letter}
               </th>
-              {/* Length groups with dots */}
-              <td className="py-1 pl-3">
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                  {lengthGroups.map(({ length, found, total }) => (
-                    <LengthGroup key={length} length={length} found={found} total={total} />
-                  ))}
-                </div>
-              </td>
+              {/* One cell per length column */}
+              {lengths.map(length => {
+                const cell = cellMap.get(`${letter}-${length}`)
+                if (!cell) {
+                  return (
+                    <td
+                      key={length}
+                      className="px-2 py-1 text-center"
+                      role="cell"
+                      aria-label={`No ${length}-letter ${letter} words`}
+                    />
+                  )
+                }
+                return <GridCell key={length} cell={cell} />
+              })}
             </tr>
           )
         })}
@@ -86,17 +96,14 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
   )
 }
 
-interface LengthGroupProps {
-  length: number
-  found: number
-  total: number
+interface GridCellProps {
+  cell: { letter: string; length: number; found: number; total: number }
 }
 
-/**
- * A group showing the length number followed by dots for each word
- * e.g., "4 ●●○" means 2 found and 1 unfound 4-letter words
- */
-function LengthGroup({ length, found, total }: LengthGroupProps) {
+function GridCell({ cell }: GridCellProps) {
+  const { letter, length, found, total } = cell
+  const isComplete = found === total
+
   const dots = []
   for (let i = 0; i < total; i++) {
     const isFound = i < found
@@ -111,16 +118,13 @@ function LengthGroup({ length, found, total }: LengthGroupProps) {
     )
   }
 
-  const isComplete = found === total
-
   return (
-    <span
-      className="inline-flex items-center gap-1"
+    <td
+      className="px-2 py-1 text-center"
       role="cell"
-      aria-label={`${length}-letter words: ${found} of ${total} found${isComplete ? ", complete" : ""}`}
+      aria-label={`${length}-letter ${letter} words: ${found} of ${total} found${isComplete ? ", complete" : ""}`}
     >
-      <span className="text-muted-foreground text-xs font-medium">{length}</span>
       <span className="inline-flex gap-px">{dots}</span>
-    </span>
+    </td>
   )
 }
