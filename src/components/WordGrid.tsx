@@ -46,12 +46,15 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
       <thead>
         <tr role="row" className="border-border border-b">
           {/* Empty corner cell */}
-          <th className="border-border w-6 border-r px-3" aria-hidden="true" />
+          <th className="border-border w-6 border-r px-1.5" aria-hidden="true" />
           {/* Column headers for each word length */}
-          {lengths.map(length => (
+          {lengths.map((length, i) => (
             <th
               key={length}
-              className="text-muted-foreground px-2 py-1 text-center text-xs font-medium"
+              className={cn(
+                "text-muted-foreground px-1.5 py-0.5 text-center text-xs font-medium",
+                i < lengths.length - 1 && "border-border border-r",
+              )}
               role="columnheader"
               aria-label={`${length}-letter words`}
             >
@@ -67,26 +70,27 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
             <tr key={letter} role="row" className={cn(!isLastRow && "border-border border-b")}>
               {/* Row header: starting letter */}
               <th
-                className="text-muted-foreground border-border w-6 border-r px-3 text-center text-sm font-bold"
+                className="text-muted-foreground border-border w-6 border-r px-1.5 text-center text-sm font-bold"
                 role="rowheader"
                 aria-label={`Letter ${letter}`}
               >
                 {letter}
               </th>
               {/* One cell per length column */}
-              {lengths.map(length => {
+              {lengths.map((length, i) => {
                 const cell = cellMap.get(`${letter}-${length}`)
+                const borderClass = i < lengths.length - 1 ? "border-border border-r" : ""
                 if (!cell) {
                   return (
                     <td
                       key={length}
-                      className="px-2 py-1 text-center"
+                      className={cn("px-1.5 py-0.5", borderClass)}
                       role="cell"
                       aria-label={`No ${length}-letter ${letter} words`}
                     />
                   )
                 }
-                return <GridCell key={length} cell={cell} />
+                return <GridCell key={length} cell={cell} borderClass={borderClass} />
               })}
             </tr>
           )
@@ -98,9 +102,10 @@ export function WordGrid({ allWords, foundWords, className }: WordGridProps) {
 
 interface GridCellProps {
   cell: { letter: string; length: number; found: number; total: number }
+  borderClass?: string
 }
 
-function GridCell({ cell }: GridCellProps) {
+function GridCell({ cell, borderClass }: GridCellProps) {
   const { letter, length, found, total } = cell
   const isComplete = found === total
 
@@ -120,11 +125,11 @@ function GridCell({ cell }: GridCellProps) {
 
   return (
     <td
-      className="px-2 py-1 text-center"
+      className={cn("px-1.5 py-0.5 text-left", borderClass)}
       role="cell"
       aria-label={`${length}-letter ${letter} words: ${found} of ${total} found${isComplete ? ", complete" : ""}`}
     >
-      <span className="inline-flex gap-px">{dots}</span>
+      <span className="inline-flex flex-wrap gap-px">{dots}</span>
     </td>
   )
 }
