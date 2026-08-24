@@ -1,0 +1,90 @@
+{
+  "id": "007",
+  "prompt": "004",
+  "model": "claude-opus-5",
+  "provider": "claude",
+  "effort": "high",
+  "createdAt": "2026-08-24T21:15:48.460Z",
+  "items": [
+    {
+      "word": "DEFINE",
+      "hint": "Set the limits of"
+    },
+    {
+      "word": "RECOPY",
+      "hint": "Transcribe anew"
+    },
+    {
+      "word": "CELIBATE",
+      "hint": "Like most monks"
+    },
+    {
+      "word": "ADAMITE",
+      "hint": "Descendant of the biblical first man"
+    },
+    {
+      "word": "INVALID",
+      "hint": "Expired, as a coupon"
+    },
+    {
+      "word": "FIAT",
+      "hint": "Ruler's say-so"
+    },
+    {
+      "word": "BHANG",
+      "hint": "Cannabis preparation of India"
+    },
+    {
+      "word": "LIABLE",
+      "hint": "On the hook"
+    },
+    {
+      "word": "VERANDA",
+      "hint": "Shaded spot for a rocking chair"
+    },
+    {
+      "word": "TUMOR",
+      "hint": "Growth an oncologist might shrink"
+    },
+    {
+      "word": "RIPE",
+      "hint": "Pungent, as a locker room"
+    },
+    {
+      "word": "MALIK",
+      "hint": "Village headman, in parts of South Asia"
+    },
+    {
+      "word": "HANGDOG",
+      "hint": "Looking like a scolded puppy"
+    },
+    {
+      "word": "VAPID",
+      "hint": "Like small talk at its worst"
+    },
+    {
+      "word": "BEFALL",
+      "hint": "Visit, as calamity does"
+    },
+    {
+      "word": "OILY",
+      "hint": "Like a used-car salesman's patter"
+    },
+    {
+      "word": "OUTBOX",
+      "hint": "Folder for messages on their way out"
+    },
+    {
+      "word": "PROD",
+      "hint": "Nag, in a way"
+    },
+    {
+      "word": "OBIT",
+      "hint": "Newspaper piece with a birth date and a death date"
+    },
+    {
+      "word": "ARDOR",
+      "hint": "Fire in the belly"
+    }
+  ]
+}

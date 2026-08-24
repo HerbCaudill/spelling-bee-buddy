@@ -21,6 +21,10 @@ node experiments/generate.ts --prompt 003
 # Later, compare the same prompt and words with a cheaper model
 node experiments/generate.ts --prompt 003 --model terra --words WORD1,WORD2,...
 
+# Claude models use the same runner and pin effort to high
+node experiments/generate.ts --prompt 004 --model fable --words WORD1,WORD2,...
+node experiments/generate.ts --prompt 004 --model opus --words WORD1,WORD2,...
+
 # Browse real clues
 node experiments/sample-clues.ts --days fri,sat --n 30
 node experiments/sample-clues.ts --word AMALGAM

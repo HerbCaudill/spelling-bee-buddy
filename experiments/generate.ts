@@ -8,17 +8,16 @@ Usage:
 
 Options:
   --prompt 001         Prompt number (file in experiments/prompts/)
-  --model luna|terra|sol   Codex model tier (default: sol)
+  --model luna|terra|sol|fable|opus   Model alias (default: sol)
   --n 20               Number of words (default: 20)
   --seed abc           Word-sampling seed (default: the run id, so each run gets fresh words)
   --words VENOM,GIZMO  Use these words instead of sampling
 */
 
-import { execFileSync } from "child_process"
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "fs"
-import { tmpdir } from "os"
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs"
 import { join } from "path"
 import { loadEligibleClues } from "./corpus.ts"
+import { generateHints, resolveModel } from "./models.ts"
 import { sampleWithoutReplacement } from "./random.ts"
 
 /** Generate one run: sample words, build the prompt, call codex, save the run file. */
@@ -26,19 +25,22 @@ function main() {
   const args = parseArgs(process.argv.slice(2))
   const runId = nextRunId()
   const template = readFileSync(join(PROMPTS_DIR, `${args.prompt}.txt`), "utf-8")
+  const model = resolveModel(args.model)
 
   const words = args.words ?? sampleWords(args.n, args.seed ?? runId)
   const prompt = template.replace("{{words}}", words.join("\n"))
 
-  console.error(`Run ${runId}: prompt ${args.prompt}, ${args.model}, ${words.length} words`)
+  console.error(`Run ${runId}: prompt ${args.prompt}, ${model.id}, ${words.length} words`)
   console.error(words.join(" "))
 
-  const hints = generateHints(prompt, args.model)
+  const hints = generateHints(prompt, model)
 
   const run: Run = {
     id: runId,
     prompt: args.prompt,
-    model: args.model,
+    model: model.id,
+    provider: model.provider,
+    effort: model.effort,
     createdAt: new Date().toISOString(),
     items: words.map(word => ({
       word,
@@ -55,11 +57,11 @@ function main() {
 
 /** Parse the command line into typed options. */
 function parseArgs(argv: string[]): Args {
-  const args: Args = { prompt: "001", model: MODELS.sol, n: 20, seed: null, words: null }
+  const args: Args = { prompt: "001", model: "sol", n: 20, seed: null, words: null }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === "--prompt") args.prompt = argv[++i].padStart(3, "0")
-    else if (arg === "--model") args.model = MODELS[argv[++i]] ?? argv[i]
+    else if (arg === "--model") args.model = argv[++i]
     else if (arg === "--n") args.n = Number(argv[++i])
     else if (arg === "--seed") args.seed = argv[++i]
     else if (arg === "--words") args.words = argv[++i].toUpperCase().split(",")
@@ -72,46 +74,6 @@ function parseArgs(argv: string[]): Args {
 function sampleWords(n: number, seed: string): string[] {
   const words = [...new Set(loadEligibleClues().map(clue => clue.word))]
   return sampleWithoutReplacement(words, n, seed)
-}
-
-/** Run the prompt through codex and parse the returned hints. */
-function generateHints(prompt: string, model: string): Record<string, string> {
-  const outputFile = join(tmpdir(), `hints-${process.pid}.json`)
-  execFileSync(
-    codexBin(),
-    [
-      "exec",
-      "--skip-git-repo-check",
-      "--ephemeral",
-      "-s",
-      "read-only",
-      "-m",
-      model,
-      "-o",
-      outputFile,
-      "--color",
-      "never",
-      "-",
-    ],
-    { input: prompt, encoding: "utf-8", stdio: ["pipe", "ignore", "ignore"] },
-  )
-  const output = readFileSync(outputFile, "utf-8")
-  rmSync(outputFile)
-
-  // Tolerate markdown fences or chatter around the JSON object
-  const start = output.indexOf("{")
-  const end = output.lastIndexOf("}")
-  if (start === -1 || end === -1) throw new Error(`No JSON in codex output:\n${output}`)
-  const parsed = JSON.parse(output.slice(start, end + 1)) as { hints: Record<string, string> }
-  return Object.fromEntries(
-    Object.entries(parsed.hints).map(([word, hint]) => [word.toUpperCase(), hint]),
-  )
-}
-
-/** Locate a working codex binary (the proto shim on PATH is broken; prefer pnpm's). */
-function codexBin(): string {
-  const pnpmCodex = join(process.env.HOME ?? "", "Library/pnpm/bin/codex")
-  return existsSync(pnpmCodex) ? pnpmCodex : "codex"
 }
 
 /** Find the next sequential run id by scanning the runs directory. */
@@ -130,13 +92,6 @@ function nextRunId(): string {
 const PROMPTS_DIR = join(import.meta.dirname, "prompts")
 const RUNS_DIR = join(import.meta.dirname, "runs")
 
-/** Short names for the codex model tiers. */
-const MODELS: Record<string, string> = {
-  luna: "gpt-5.6-luna",
-  terra: "gpt-5.6-terra",
-  sol: "gpt-5.6-sol",
-}
-
 // TYPES
 
 type Args = {
@@ -152,6 +107,8 @@ export type Run = {
   id: string
   prompt: string
   model: string
+  provider: "codex" | "claude"
+  effort: string
   createdAt: string
   items: RunItem[]
 }
