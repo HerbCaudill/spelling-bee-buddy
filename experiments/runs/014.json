@@ -1,0 +1,90 @@
+{
+  "id": "014",
+  "prompt": "004",
+  "model": "claude-sonnet-5",
+  "provider": "claude",
+  "effort": "medium",
+  "createdAt": "2026-08-24T21:52:24.209Z",
+  "items": [
+    {
+      "word": "DEFINE",
+      "hint": "Pin down, as terms"
+    },
+    {
+      "word": "RECOPY",
+      "hint": "Rewrite after a coffee spill ruins the original"
+    },
+    {
+      "word": "CELIBATE",
+      "hint": "Sworn off romance"
+    },
+    {
+      "word": "ADAMITE",
+      "hint": "Zinc arsenate mineral"
+    },
+    {
+      "word": "INVALID",
+      "hint": "No longer valid, as an expired coupon"
+    },
+    {
+      "word": "FIAT",
+      "hint": "Decree from on high"
+    },
+    {
+      "word": "BHANG",
+      "hint": "Cannabis-laced drink served at Holi"
+    },
+    {
+      "word": "LIABLE",
+      "hint": "On the hook, legally"
+    },
+    {
+      "word": "VERANDA",
+      "hint": "Spot for a porch swing"
+    },
+    {
+      "word": "TUMOR",
+      "hint": "Subject of a biopsy"
+    },
+    {
+      "word": "RIPE",
+      "hint": "Pungent, as certain cheeses"
+    },
+    {
+      "word": "MALIK",
+      "hint": "Arabic word for a ruler"
+    },
+    {
+      "word": "HANGDOG",
+      "hint": "Sheepish, like a scolded pup"
+    },
+    {
+      "word": "VAPID",
+      "hint": "Lacking substance, as small talk"
+    },
+    {
+      "word": "BEFALL",
+      "hint": "Happen to, as misfortune"
+    },
+    {
+      "word": "OILY",
+      "hint": "Unctuously flattering"
+    },
+    {
+      "word": "OUTBOX",
+      "hint": "Folder for sent emails"
+    },
+    {
+      "word": "PROD",
+      "hint": "Nudge into action"
+    },
+    {
+      "word": "OBIT",
+      "hint": "Death notice, for short"
+    },
+    {
+      "word": "ARDOR",
+      "hint": "Fervor of a new romance"
+    }
+  ]
+}
