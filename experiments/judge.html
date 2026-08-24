@@ -32,10 +32,6 @@
         font-size: 1.1rem;
         font-weight: 600;
       }
-      select {
-        font: inherit;
-        padding: 0.3rem;
-      }
       .meta {
         color: var(--muted);
         font-size: 0.85rem;
@@ -168,10 +164,7 @@
   </head>
   <body>
     <h1>Hint judge</h1>
-    <div class="meta">
-      <select id="runPicker"></select>
-      <span id="runMeta"></span>
-    </div>
+    <div class="meta" id="runMeta"></div>
 
     <div id="card" class="hidden">
       <div class="progress" id="progress"></div>
@@ -240,20 +233,15 @@
 
       const loadRuns = async () => {
         const runs = await (await fetch("/api/runs")).json()
-        const picker = $("runPicker")
-        picker.innerHTML = runs
-          .map(
-            r =>
-              `<option value="${r.id}">Run ${r.id} — prompt ${r.prompt}, ${r.model} (${r.rated}/${r.total} rated)</option>`,
-          )
-          .join("")
-        picker.onchange = () => loadRun(picker.value)
-        if (runs.length > 0) loadRun(runs[0].id)
+        if (runs.length > 0) await loadRun(runs[0].id)
+        else $("runMeta").textContent = "No runs yet"
       }
 
       const loadRun = async id => {
         run = await (await fetch("/api/runs/" + id)).json()
-        $("runMeta").textContent = new Date(run.createdAt).toLocaleString()
+        $("runMeta").textContent =
+          `Run ${run.id} — prompt ${run.prompt}, ${run.model} · ` +
+          new Date(run.createdAt).toLocaleString()
         index = run.items.findIndex(item => item.rating === null)
         if (index === -1) showSummary()
         else showCard()
