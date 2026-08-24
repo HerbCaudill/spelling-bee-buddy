@@ -3,13 +3,13 @@ import { existsSync, readFileSync, rmSync } from "fs"
 import { tmpdir } from "os"
 import { join } from "path"
 
-/** Resolve a model alias to a provider, model id, and pinned effort level. */
-export function resolveModel(name: string): ModelSpec {
+/** Resolve a model alias to a provider, model id, and selected effort level. */
+export function resolveModel(name: string, effort: Effort = "high"): ModelSpec {
   const id = MODEL_ALIASES[name] ?? name
   return {
     provider: id.startsWith("claude-") ? "claude" : "codex",
     id,
-    effort: "high",
+    effort,
   }
 }
 
@@ -107,8 +107,10 @@ const MODEL_ALIASES: Record<string, string> = {
 export type ModelSpec = {
   provider: "codex" | "claude"
   id: string
-  effort: "high"
+  effort: Effort
 }
+
+export type Effort = "low" | "medium" | "high" | "xhigh"
 
 type ClaudeResult = {
   is_error: boolean

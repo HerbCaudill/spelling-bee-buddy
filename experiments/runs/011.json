@@ -1,0 +1,90 @@
+{
+  "id": "011",
+  "prompt": "004",
+  "model": "gpt-5.6-luna",
+  "provider": "codex",
+  "effort": "xhigh",
+  "createdAt": "2026-08-24T21:37:21.769Z",
+  "items": [
+    {
+      "word": "DEFINE",
+      "hint": "Set the terms of the debate"
+    },
+    {
+      "word": "RECOPY",
+      "hint": "Make a duplicate of a duplicate, perhaps"
+    },
+    {
+      "word": "CELIBATE",
+      "hint": "Bound by a vow of abstinence"
+    },
+    {
+      "word": "ADAMITE",
+      "hint": "One who took Eden's dress code literally"
+    },
+    {
+      "word": "INVALID",
+      "hint": "Rejected at the gate, perhaps"
+    },
+    {
+      "word": "FIAT",
+      "hint": "A ruler's \"because I said so\""
+    },
+    {
+      "word": "BHANG",
+      "hint": "Cannabis preparation served at Holi, traditionally"
+    },
+    {
+      "word": "LIABLE",
+      "hint": "Potentially on the hook for damages"
+    },
+    {
+      "word": "VERANDA",
+      "hint": "A rocking chair's covered outdoor address"
+    },
+    {
+      "word": "TUMOR",
+      "hint": "Lump that prompts a pathology report"
+    },
+    {
+      "word": "RIPE",
+      "hint": "Perfect for picking, perhaps"
+    },
+    {
+      "word": "MALIK",
+      "hint": "King, in Arabic"
+    },
+    {
+      "word": "HANGDOG",
+      "hint": "Sheepish after being caught"
+    },
+    {
+      "word": "VAPID",
+      "hint": "Unlikely to enliven a dinner party"
+    },
+    {
+      "word": "BEFALL",
+      "hint": "Happen to a hero, in a fairy tale"
+    },
+    {
+      "word": "OILY",
+      "hint": "Like a diner napkin after the fries"
+    },
+    {
+      "word": "OUTBOX",
+      "hint": "Where an unsent email may be waiting"
+    },
+    {
+      "word": "PROD",
+      "hint": "Encourage a reluctant donkey, perhaps"
+    },
+    {
+      "word": "OBIT",
+      "hint": "Notice that may list survivors"
+    },
+    {
+      "word": "ARDOR",
+      "hint": "Fire in the belly of a true believer"
+    }
+  ]
+}

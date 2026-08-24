@@ -9,6 +9,7 @@ Usage:
 Options:
   --prompt 001         Prompt number (file in experiments/prompts/)
   --model luna|terra|sol|fable|opus   Model alias (default: sol)
+  --effort low|medium|high|xhigh      Reasoning effort (default: high)
   --n 20               Number of words (default: 20)
   --seed abc           Word-sampling seed (default: the run id, so each run gets fresh words)
   --words VENOM,GIZMO  Use these words instead of sampling
@@ -17,7 +18,7 @@ Options:
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs"
 import { join } from "path"
 import { loadEligibleClues } from "./corpus.ts"
-import { generateHints, resolveModel } from "./models.ts"
+import { generateHints, resolveModel, type Effort } from "./models.ts"
 import { sampleWithoutReplacement } from "./random.ts"
 
 /** Generate one run: sample words, build the prompt, call codex, save the run file. */
@@ -25,7 +26,7 @@ function main() {
   const args = parseArgs(process.argv.slice(2))
   const runId = nextRunId()
   const template = readFileSync(join(PROMPTS_DIR, `${args.prompt}.txt`), "utf-8")
-  const model = resolveModel(args.model)
+  const model = resolveModel(args.model, args.effort)
 
   const words = args.words ?? sampleWords(args.n, args.seed ?? runId)
   const prompt = template.replace("{{words}}", words.join("\n"))
@@ -57,11 +58,19 @@ function main() {
 
 /** Parse the command line into typed options. */
 function parseArgs(argv: string[]): Args {
-  const args: Args = { prompt: "001", model: "sol", n: 20, seed: null, words: null }
+  const args: Args = {
+    prompt: "001",
+    model: "sol",
+    effort: "high",
+    n: 20,
+    seed: null,
+    words: null,
+  }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === "--prompt") args.prompt = argv[++i].padStart(3, "0")
     else if (arg === "--model") args.model = argv[++i]
+    else if (arg === "--effort") args.effort = argv[++i] as Effort
     else if (arg === "--n") args.n = Number(argv[++i])
     else if (arg === "--seed") args.seed = argv[++i]
     else if (arg === "--words") args.words = argv[++i].toUpperCase().split(",")
@@ -97,6 +106,7 @@ const RUNS_DIR = join(import.meta.dirname, "runs")
 type Args = {
   prompt: string
   model: string
+  effort: Effort
   n: number
   seed: string | null
   words: string[] | null
