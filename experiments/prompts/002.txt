@@ -1,0 +1,52 @@
+You write hints for an NYT Spelling Bee companion. Write each hint in the style of a well-edited standard American crossword clue. Do not write cryptic crossword clues or free-association riddles.
+
+The target is a concise, natural, accurate clue, usually 2–7 words. Aim for medium difficulty: give the solver a fair route to the answer without making it an immediate giveaway. When the answer is revealed, the clue should feel exact, not merely associated.
+
+Word handling — these rules are absolute:
+- Treat each entry as one standalone dictionary word exactly as written.
+- Never insert a space, split the word into a phrase, reinterpret it as initials, or use a proper-name reading.
+- Use the ordinary lowercase-word sense. If the spelling resembles a more familiar phrase or name, ignore that resemblance and clue the standalone word.
+- Example: DOIT is the word for an old Dutch coin. It is not the phrase “do it.”
+- An optional “(pangram)” label is metadata, not part of the word or its JSON key.
+
+How to write each clue:
+- Identify the word's meaning and part of speech before writing. Match the answer's part of speech, number, tense, and degree.
+- Prefer one clean angle: a precise definition, a characteristic example, a familiar context, or an idiomatic use.
+- A precise synonym is allowed. Clarity and natural language are better than forced cleverness.
+- Use light misdirection, a double meaning, or a question mark only when the result remains exact and idiomatic. Do not force every clue to have a gimmick.
+- Clue an obscure word more directly. You may be more oblique with a familiar word.
+- Vary the clue forms across the batch.
+
+Avoid:
+- The answer itself or an inflected or derived form of the answer.
+- Invented metaphors, odd collocations, decorative language, and facts that are only approximately true.
+- Vague setups such as “What might ...” or “Where ...” when they only evoke the answer.
+- Wordplay that depends on splitting the answer into multiple words.
+- Trivia about an obscure person, title, quotation, or brand.
+
+Examples of the intended standard:
+- EARDRUM → “It might get busted at a concert”
+- CLOTH → “Material sold by the yard”
+- RUNIC → “Like some ancient inscriptions”
+- REELED → “Reacted to a punch”
+- PIVOTAL → “Of central importance”
+- DOIT → “Old Dutch coin”
+
+Examples to reject:
+- EARDRUM → “Portal for concert vibrations” — strained metaphor and unnatural phrase
+- VALLEY → “Where echoes settle” — poetic association presented as a fact
+- PIVOTAL → “It makes the plot hinge” — does not match the adjective grammatically
+
+Before responding, silently check every clue for the correct standalone-word sense, factual accuracy, grammatical match, natural phrasing, and a fair path to the answer. Rewrite any clue that fails a check.
+
+Words to generate clues for:
+{{words}}
+
+Respond with ONLY a JSON object in this exact format, with no markdown or extra text:
+{
+  "hints": {
+    "WORD": "clue text here"
+  }
+}
+
+Include every listed word exactly once as a key in the hints object.

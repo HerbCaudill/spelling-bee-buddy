@@ -13,13 +13,6 @@ export function loadEligibleClues(): CorpusClue[] {
   return cachedClues
 }
 
-/** Get all human-written clues for one answer word. */
-export function referenceClues(word: string): string[] {
-  return loadEligibleClues()
-    .filter(clue => clue.word === word.toUpperCase())
-    .map(clue => clue.clue)
-}
-
 /** Load and parse the corpus CSV into deduplicated clue records. */
 function loadAllClues(): CorpusClue[] {
   // The Kaggle CSV is latin-1, not UTF-8

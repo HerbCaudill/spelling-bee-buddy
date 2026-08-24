@@ -1,16 +1,15 @@
 /*
-Generates a batch of Spelling Bee hints using a numbered prompt and a codex model, for rating
-in the judge UI. Samples words from the crossword corpus (so we have human-written reference
-clues for comparison), fills the prompt template, runs it through `codex exec`, and saves a
-numbered run file to experiments/runs/.
+Generates a batch of Spelling Bee hints using a numbered prompt and a codex model for direct
+review. Samples words from the crossword corpus, fills the prompt template, runs it through
+`codex exec`, and saves a numbered run file to experiments/runs/.
 
 Usage:
-  node experiments/generate.ts --prompt 001 --model terra [options]
+  node experiments/generate.ts --prompt 003 [options]
 
 Options:
   --prompt 001         Prompt number (file in experiments/prompts/)
-  --model luna|terra|sol   Codex model tier (or a full model name)
-  --n 10               Number of words (default: 10)
+  --model luna|terra|sol   Codex model tier (default: sol)
+  --n 20               Number of words (default: 20)
   --seed abc           Word-sampling seed (default: the run id, so each run gets fresh words)
   --words VENOM,GIZMO  Use these words instead of sampling
 */
@@ -19,7 +18,7 @@ import { execFileSync } from "child_process"
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "fs"
 import { tmpdir } from "os"
 import { join } from "path"
-import { loadEligibleClues, referenceClues } from "./corpus.ts"
+import { loadEligibleClues } from "./corpus.ts"
 import { sampleWithoutReplacement } from "./random.ts"
 
 /** Generate one run: sample words, build the prompt, call codex, save the run file. */
@@ -44,22 +43,19 @@ function main() {
     items: words.map(word => ({
       word,
       hint: hints[word] ?? "(no hint returned)",
-      rating: null,
-      notes: "",
     })),
-    references: Object.fromEntries(words.map(word => [word, referenceClues(word)])),
   }
 
   mkdirSync(RUNS_DIR, { recursive: true })
   writeFileSync(join(RUNS_DIR, `${runId}.json`), JSON.stringify(run, null, 2) + "\n")
 
   for (const item of run.items) console.log(`${item.word.padEnd(12)} ${item.hint}`)
-  console.error(`\nSaved runs/${runId}.json — rate it with: node experiments/serve.ts`)
+  console.error(`\nSaved runs/${runId}.json`)
 }
 
 /** Parse the command line into typed options. */
 function parseArgs(argv: string[]): Args {
-  const args: Args = { prompt: "001", model: MODELS.terra, n: 10, seed: null, words: null }
+  const args: Args = { prompt: "001", model: MODELS.sol, n: 20, seed: null, words: null }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === "--prompt") args.prompt = argv[++i].padStart(3, "0")
@@ -151,22 +147,19 @@ type Args = {
   words: string[] | null
 }
 
-/** One generated batch of hints, including ratings once judged. */
+/** One generated batch of hints. */
 export type Run = {
   id: string
   prompt: string
   model: string
   createdAt: string
   items: RunItem[]
-  references: Record<string, string[]>
 }
 
-/** One word/hint pair with its rating state. */
+/** One word/hint pair. */
 export type RunItem = {
   word: string
   hint: string
-  rating: number | null
-  notes: string
 }
 
 main()
