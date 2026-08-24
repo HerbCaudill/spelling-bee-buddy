@@ -15,7 +15,6 @@
         --muted: #767676;
         --line: #e2e2e2;
         --accent: #f7da21;
-        --accent-soft: #fdf6d8;
       }
       * {
         box-sizing: border-box;
@@ -121,28 +120,6 @@
         margin-bottom: 1rem;
       }
 
-      .references {
-        background: var(--accent-soft);
-        border-radius: 0.5rem;
-        padding: 1rem 1.25rem;
-        margin: 1.5rem 0;
-      }
-      .references h2 {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin: 0 0 0.5rem;
-      }
-      .references ul {
-        margin: 0;
-        padding-left: 1.2rem;
-      }
-      .references li {
-        margin: 0.2rem 0;
-      }
-
       .summary table {
         border-collapse: collapse;
         width: 100%;
@@ -181,11 +158,6 @@
         <div class="rating" id="rating"></div>
         <textarea id="notes" placeholder="Notes (optional)"></textarea>
         <button class="action" id="save">Save and continue</button>
-      </div>
-
-      <div id="afterSave" class="hidden">
-        <div class="references" id="references"></div>
-        <button class="action" id="next">Next word</button>
       </div>
     </div>
 
@@ -255,7 +227,6 @@
         $("card").classList.remove("hidden")
         $("done").classList.add("hidden")
         $("verdict").classList.add("hidden")
-        $("afterSave").classList.add("hidden")
         $("showAnswer").classList.remove("hidden")
         $("notes").value = ""
         $("progress").textContent = `${index + 1} of ${run.items.length}`
@@ -329,29 +300,24 @@
         $("verdict").classList.remove("hidden")
       }
 
-      $("save").onclick = async () => {
+      const saveRating = async () => {
         if (selectedRating === null) return alert("Pick a rating first")
-        const item = run.items[index]
         run = await (
           await fetch(`/api/runs/${run.id}/rate`, {
             method: "POST",
             body: JSON.stringify({ index, rating: selectedRating, notes: $("notes").value }),
           })
         ).json()
-        const references = run.references[item.word] ?? []
-        $("references").innerHTML =
-          `<h2>Real NYT clues for ${item.word}</h2>` +
-          (references.length ?
-            `<ul>${references.map(clue => `<li>${clue}</li>`).join("")}</ul>`
-          : "<p>None in the corpus.</p>")
-        $("verdict").classList.add("hidden")
-        $("afterSave").classList.remove("hidden")
-      }
-
-      $("next").onclick = () => {
         index = run.items.findIndex(item => item.rating === null)
         if (index === -1) showSummary()
         else showCard()
+      }
+      $("save").onclick = saveRating
+
+      $("notes").onkeydown = event => {
+        if (event.key !== "Enter") return
+        event.preventDefault()
+        saveRating()
       }
 
       loadRuns()
