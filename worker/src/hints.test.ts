@@ -164,7 +164,7 @@ describe("hints", () => {
       )
     })
 
-    it("handles malformed JSON response gracefully", async () => {
+    it("throws on malformed JSON response instead of producing fallback hints", async () => {
       const mockResponse = {
         content: [
           {
@@ -179,11 +179,10 @@ describe("hints", () => {
         json: () => Promise.resolve(mockResponse),
       })
 
-      const result = await generateHints(mockGameData, "test-api-key")
-
-      // Should create fallback hints
-      expect(result.hints["AB"]).toBeDefined()
-      expect(result.hints["AB"][0].hint).toBe("4-letter word")
+      // Placeholder hints must never be generated (and cached) — fail loudly instead
+      await expect(generateHints(mockGameData, "test-api-key")).rejects.toThrow(
+        "unparseable response",
+      )
     })
 
     it("handles JSON wrapped in markdown code blocks", async () => {

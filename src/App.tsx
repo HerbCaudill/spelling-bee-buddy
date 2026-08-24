@@ -37,6 +37,7 @@ export function App() {
     error: hintsError,
     hasApiKey,
     refetch: refetchHints,
+    regenerate: regenerateHints,
   } = useHints(!!puzzle, selectedPuzzle?.id)
 
   const {
@@ -124,6 +125,7 @@ export function App() {
       onSettingsClose={() => setSettingsOpen(false)}
       onSelectPuzzle={selectPuzzle}
       onRefresh={handleRefresh}
+      onRegenerateHints={regenerateHints}
       onSaveSettings={handleRefresh}
     />
   )

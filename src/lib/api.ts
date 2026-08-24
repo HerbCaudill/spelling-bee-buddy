@@ -126,9 +126,18 @@ export async function fetchProgress(nytToken: string, puzzleId?: number): Promis
  * Fetch hints for a puzzle from the Worker (requires Anthropic API key)
  * @param anthropicKey - User's Anthropic API key
  * @param puzzleId - Optional puzzle ID to get hints for a specific puzzle
+ * @param regenerate - If true, bypass the server cache and generate fresh hints
  */
-export async function fetchHints(anthropicKey: string, puzzleId?: number): Promise<CachedHints> {
-  const endpoint = puzzleId ? `/hints?puzzleId=${puzzleId}` : "/hints"
+export async function fetchHints(
+  anthropicKey: string,
+  puzzleId?: number,
+  regenerate?: boolean,
+): Promise<CachedHints> {
+  const params = new URLSearchParams()
+  if (puzzleId) params.set("puzzleId", String(puzzleId))
+  if (regenerate) params.set("regenerate", "true")
+  const query = params.toString()
+  const endpoint = query ? `/hints?${query}` : "/hints"
   return fetchApi<CachedHints>(endpoint, {
     headers: {
       "X-Anthropic-Key": anthropicKey,

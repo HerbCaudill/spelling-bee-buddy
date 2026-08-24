@@ -114,6 +114,9 @@ Include every word from the list above as a key in the hints object.`
 
 /**
  * Parse Claude's response and organize hints by two-letter prefix
+ *
+ * Throws if the response isn't valid JSON — we must not cache placeholder
+ * hints, since cached entries live for 7 days.
  */
 function parseHintsResponse(responseText: string, words: string[]): CachedHints["hints"] {
   // Try to parse the JSON response
@@ -128,11 +131,8 @@ function parseHintsResponse(responseText: string, words: string[]): CachedHints[
     const parsed = JSON.parse(jsonText) as { hints: Record<string, string> }
     parsedHints = parsed.hints || {}
   } catch {
-    // If parsing fails, create fallback hints
     console.error("Failed to parse hints response:", responseText.slice(0, 200))
-    for (const word of words) {
-      parsedHints[word] = `${word.length}-letter word`
-    }
+    throw new Error("Received an unparseable response from the hint generator. Please try again.")
   }
 
   // Organize hints by two-letter prefix

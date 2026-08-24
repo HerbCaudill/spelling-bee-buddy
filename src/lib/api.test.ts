@@ -179,6 +179,35 @@ describe("api", () => {
       )
     })
 
+    it("should request fresh hints when regenerate is true", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true, data: mockHints }),
+      })
+
+      const result = await fetchHints("my-anthropic-key", undefined, true)
+
+      expect(result).toEqual(mockHints)
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/hints\?regenerate=true$/),
+        expect.anything(),
+      )
+    })
+
+    it("should combine puzzleId and regenerate query params", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ success: true, data: mockHints }),
+      })
+
+      await fetchHints("my-anthropic-key", 20034, true)
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/hints\?puzzleId=20034&regenerate=true$/),
+        expect.anything(),
+      )
+    })
+
     it("should throw ApiError when unauthorized", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,

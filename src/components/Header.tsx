@@ -2,8 +2,21 @@ import { useState } from "react"
 import { cn, formatRelativeDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Settings, ExternalLink, ChevronLeft, ChevronRight, Calendar, Crown, Lightbulb, Circle } from "lucide-react"
-import { usePuzzleProgressMap, type PuzzleProgressMap, type PuzzleStatus } from "@/hooks/usePuzzleProgressMap"
+import {
+  Settings,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  Crown,
+  Lightbulb,
+  Circle,
+} from "lucide-react"
+import {
+  usePuzzleProgressMap,
+  type PuzzleProgressMap,
+  type PuzzleStatus,
+} from "@/hooks/usePuzzleProgressMap"
 import { getCredentials } from "@/lib/storage"
 import type { ActivePuzzlesResponse, ActivePuzzle } from "@/types"
 
@@ -297,10 +310,7 @@ function DatePicker({
 function StatusIcon({ status, isSelected }: { status?: PuzzleStatus; isSelected: boolean }) {
   if (!status || status === "not-started") return null
 
-  const iconClass = cn(
-    "size-3",
-    isSelected ? "text-yellow-300" : "text-yellow-500",
-  )
+  const iconClass = cn("size-3", isSelected ? "text-yellow-300" : "text-yellow-500")
 
   switch (status) {
     case "queen-bee":
