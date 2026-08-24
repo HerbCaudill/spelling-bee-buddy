@@ -38,3 +38,11 @@ playwright-report
 
 *storybook.log
 storybook-static
+
+# Crossword clue corpus for hint-prompt experiments (xd.saul.pw)
+data/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key

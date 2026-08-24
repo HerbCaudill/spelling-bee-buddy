@@ -1,4 +1,7 @@
 {
-  "database": "beads.db",
-  "jsonl_export": "issues.jsonl"
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "spelling_bee_buddy",
+  "project_id": "f874d457-a237-4ec5-999c-99b05cb4e801"
 }

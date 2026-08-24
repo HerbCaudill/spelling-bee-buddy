@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hint judge</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap"
+    />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --fg: #1a1a1a;
+        --muted: #767676;
+        --line: #e2e2e2;
+        --accent: #f7da21;
+        --accent-soft: #fdf6d8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "IBM Plex Sans", system-ui, sans-serif;
+        color: var(--fg);
+        background: var(--bg);
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 6rem;
+      }
+      h1 {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+      select {
+        font: inherit;
+        padding: 0.3rem;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+      }
+      .progress {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .letters {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 2rem 0;
+      }
+      .word {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 1.6rem;
+        font-weight: 500;
+        letter-spacing: 0.35em;
+      }
+      .letters button {
+        font: inherit;
+        width: 2rem;
+        height: 2rem;
+        border: 1px solid var(--line);
+        background: none;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      .letters button:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
+
+      .hint {
+        font-size: 1.25rem;
+        margin: 2rem 0;
+      }
+
+      button.action {
+        font: inherit;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--line);
+        background: var(--accent);
+        border-radius: 0.5rem;
+        cursor: pointer;
+      }
+      button.action.secondary {
+        background: none;
+      }
+
+      .answer {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 1.6rem;
+        letter-spacing: 0.35em;
+        margin: 1.5rem 0;
+      }
+
+      .rating {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1.5rem 0;
+      }
+      .rating button {
+        font: inherit;
+        width: 2.6rem;
+        height: 2.6rem;
+        border: 1px solid var(--line);
+        background: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-size: 1.05rem;
+      }
+      .rating button.selected {
+        background: var(--accent);
+        border-color: var(--fg);
+      }
+      textarea {
+        font: inherit;
+        width: 100%;
+        min-height: 4rem;
+        padding: 0.6rem;
+        border: 1px solid var(--line);
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .references {
+        background: var(--accent-soft);
+        border-radius: 0.5rem;
+        padding: 1rem 1.25rem;
+        margin: 1.5rem 0;
+      }
+      .references h2 {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0 0 0.5rem;
+      }
+      .references ul {
+        margin: 0;
+        padding-left: 1.2rem;
+      }
+      .references li {
+        margin: 0.2rem 0;
+      }
+
+      .summary table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      .summary td,
+      .summary th {
+        text-align: left;
+        padding: 0.4rem 0.75rem 0.4rem 0;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      .summary .word-cell {
+        font-family: "IBM Plex Mono", monospace;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Hint judge</h1>
+    <div class="meta">
+      <select id="runPicker"></select>
+      <span id="runMeta"></span>
+    </div>
+
+    <div id="card" class="hidden">
+      <div class="progress" id="progress"></div>
+      <div class="letters">
+        <button id="less">−</button>
+        <div class="word" id="maskedWord"></div>
+        <button id="more">+</button>
+      </div>
+      <div class="hint" id="hint"></div>
+      <button class="action" id="showAnswer">Show answer</button>
+
+      <div id="verdict" class="hidden">
+        <div class="answer" id="answer"></div>
+        <div class="rating" id="rating"></div>
+        <textarea id="notes" placeholder="Notes (optional)"></textarea>
+        <button class="action" id="save">Save and continue</button>
+      </div>
+
+      <div id="afterSave" class="hidden">
+        <div class="references" id="references"></div>
+        <button class="action" id="next">Next word</button>
+      </div>
+    </div>
+
+    <div id="done" class="summary hidden"></div>
+
+    <script>
+      let run = null
+      let index = 0
+      let revealed = 0
+      let revealOrder = []
+      let selectedRating = null
+
+      /** Deterministic PRNG so the reveal order for a word is stable. */
+      const mulberry32 = seed => {
+        let a = seed
+        return () => {
+          a |= 0
+          a = (a + 0x6d2b79f5) | 0
+          let t = Math.imul(a ^ (a >>> 15), 1 | a)
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+        }
+      }
+      const hashString = s => {
+        let h = 2166136261
+        for (const c of s) {
+          h ^= c.charCodeAt(0)
+          h = Math.imul(h, 16777619)
+        }
+        return h >>> 0
+      }
+
+      /** Positions in the order they get revealed as you press +. */
+      const makeRevealOrder = word => {
+        const random = mulberry32(hashString(word))
+        const positions = [...word].map((_, i) => i)
+        for (let i = positions.length - 1; i > 0; i--) {
+          const j = Math.floor(random() * (i + 1))
+          ;[positions[i], positions[j]] = [positions[j], positions[i]]
+        }
+        return positions
+      }
+
+      const $ = id => document.getElementById(id)
+
+      const loadRuns = async () => {
+        const runs = await (await fetch("/api/runs")).json()
+        const picker = $("runPicker")
+        picker.innerHTML = runs
+          .map(
+            r =>
+              `<option value="${r.id}">Run ${r.id} — prompt ${r.prompt}, ${r.model} (${r.rated}/${r.total} rated)</option>`,
+          )
+          .join("")
+        picker.onchange = () => loadRun(picker.value)
+        if (runs.length > 0) loadRun(runs[0].id)
+      }
+
+      const loadRun = async id => {
+        run = await (await fetch("/api/runs/" + id)).json()
+        $("runMeta").textContent = new Date(run.createdAt).toLocaleString()
+        index = run.items.findIndex(item => item.rating === null)
+        if (index === -1) showSummary()
+        else showCard()
+      }
+
+      const showCard = () => {
+        const item = run.items[index]
+        revealed = 0
+        revealOrder = makeRevealOrder(item.word)
+        selectedRating = null
+        $("card").classList.remove("hidden")
+        $("done").classList.add("hidden")
+        $("verdict").classList.add("hidden")
+        $("afterSave").classList.add("hidden")
+        $("showAnswer").classList.remove("hidden")
+        $("notes").value = ""
+        $("progress").textContent = `${index + 1} of ${run.items.length}`
+        $("hint").textContent = item.hint
+        renderWord()
+        renderRating()
+      }
+
+      const renderWord = () => {
+        const item = run.items[index]
+        const shown = new Set(revealOrder.slice(0, revealed))
+        $("maskedWord").textContent = [...item.word]
+          .map((c, i) => (shown.has(i) ? c : "_"))
+          .join("")
+        $("less").disabled = revealed === 0
+        $("more").disabled = revealed === item.word.length
+      }
+
+      const renderRating = () => {
+        $("rating").innerHTML = [1, 2, 3, 4, 5]
+          .map(
+            n =>
+              `<button data-n="${n}" class="${n === selectedRating ? "selected" : ""}">${n}</button>`,
+          )
+          .join("")
+        for (const button of $("rating").querySelectorAll("button"))
+          button.onclick = () => {
+            selectedRating = Number(button.dataset.n)
+            renderRating()
+          }
+      }
+
+      const showSummary = () => {
+        $("card").classList.add("hidden")
+        const rated = run.items.filter(item => item.rating !== null)
+        const avg =
+          rated.length ?
+            (rated.reduce((sum, item) => sum + item.rating, 0) / rated.length).toFixed(1)
+          : "—"
+        $("done").innerHTML = `
+    <p>All rated. Average: <strong>${avg}</strong></p>
+    <table>
+      <tr><th>Word</th><th>Hint</th><th>Rating</th><th>Notes</th></tr>
+      ${run.items
+        .map(
+          item => `
+        <tr>
+          <td class="word-cell">${item.word}</td>
+          <td>${item.hint}</td>
+          <td>${item.rating ?? ""}</td>
+          <td>${item.notes ?? ""}</td>
+        </tr>`,
+        )
+        .join("")}
+    </table>`
+        $("done").classList.remove("hidden")
+      }
+
+      $("less").onclick = () => {
+        revealed = Math.max(0, revealed - 1)
+        renderWord()
+      }
+      $("more").onclick = () => {
+        revealed = Math.min(run.items[index].word.length, revealed + 1)
+        renderWord()
+      }
+
+      $("showAnswer").onclick = () => {
+        $("answer").textContent = run.items[index].word
+        $("showAnswer").classList.add("hidden")
+        $("verdict").classList.remove("hidden")
+      }
+
+      $("save").onclick = async () => {
+        if (selectedRating === null) return alert("Pick a rating first")
+        const item = run.items[index]
+        run = await (
+          await fetch(`/api/runs/${run.id}/rate`, {
+            method: "POST",
+            body: JSON.stringify({ index, rating: selectedRating, notes: $("notes").value }),
+          })
+        ).json()
+        const references = run.references[item.word] ?? []
+        $("references").innerHTML =
+          `<h2>Real NYT clues for ${item.word}</h2>` +
+          (references.length ?
+            `<ul>${references.map(clue => `<li>${clue}</li>`).join("")}</ul>`
+          : "<p>None in the corpus.</p>")
+        $("verdict").classList.add("hidden")
+        $("afterSave").classList.remove("hidden")
+      }
+
+      $("next").onclick = () => {
+        index = run.items.findIndex(item => item.rating === null)
+        if (index === -1) showSummary()
+        else showCard()
+      }
+
+      loadRuns()
+    </script>
+  </body>
+</html>
