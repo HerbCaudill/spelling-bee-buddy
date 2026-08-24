@@ -7,8 +7,8 @@
     {
       "word": "EARDRUM",
       "hint": "Portal for concert vibrations",
-      "rating": null,
-      "notes": ""
+      "rating": 1,
+      "notes": "a \"concert vibration\" isn't a thing\n"
     },
     {
       "word": "DOIT",
@@ -134,7 +134,10 @@
       "Salesman's line",
       "Little feet do it"
     ],
-    "VALLEY": ["___ girl", "Hollow"],
+    "VALLEY": [
+      "___ girl",
+      "Hollow"
+    ],
     "REELED": [
       "Pulled (in)",
       "Brought (in), as a fish",
@@ -150,8 +153,15 @@
       "Rocked",
       "Swayed"
     ],
-    "PIVOTAL": ["Of vital importance", "Kind of point"],
-    "HARDEN": ["Set", "Get tough", "Gel"],
+    "PIVOTAL": [
+      "Of vital importance",
+      "Kind of point"
+    ],
+    "HARDEN": [
+      "Set",
+      "Get tough",
+      "Gel"
+    ],
     "TAKIN": [
       "\"___ Care of Business\" (1974 Bachman-Turner Overdrive hit)",
       "\"___ Care of Business\" (1974 hit)"
