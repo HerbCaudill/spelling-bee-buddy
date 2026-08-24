@@ -25,6 +25,8 @@ export interface UseHintsState {
 export interface UseHintsReturn extends UseHintsState {
   /** Refetch the hints */
   refetch: () => Promise<void>
+  /** Regenerate the hints from scratch, bypassing the server cache */
+  regenerate: () => Promise<void>
 }
 
 /**
@@ -72,45 +74,51 @@ export function useHints(enabled: boolean = true, puzzleId?: number): UseHintsRe
   const [error, setError] = useState<string | null>(null)
   const [hasApiKey, setHasApiKey] = useState(false)
 
-  const fetchData = useCallback(async () => {
-    const credentials = getCredentials()
-    setHasApiKey(credentials !== null && credentials.anthropicKey !== "")
+  const fetchData = useCallback(
+    async (regenerate: boolean = false) => {
+      const credentials = getCredentials()
+      setHasApiKey(credentials !== null && credentials.anthropicKey !== "")
 
-    if (!credentials || !credentials.anthropicKey) {
-      setHints(null)
-      setGeneratedAt(null)
-      setIsLoading(false)
-      return
-    }
-
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const data: CachedHints = await fetchHints(credentials.anthropicKey, puzzleId)
-      setHints(data.hints)
-      setGeneratedAt(data.generatedAt)
-    } catch (err) {
-      if (err instanceof ApiError) {
-        // Handle 401 specifically - likely invalid API key
-        if (err.status === 401) {
-          setError("Invalid Anthropic API key. Please update your credentials.")
-        } else if (err.status === 404) {
-          setError("Hints are only available for puzzles from the last two weeks.")
-        } else {
-          setError(err.message)
-        }
-      } else if (err instanceof Error) {
-        setError(err.message)
-      } else {
-        setError("Failed to load hints")
+      if (!credentials || !credentials.anthropicKey) {
+        setHints(null)
+        setGeneratedAt(null)
+        setIsLoading(false)
+        return
       }
-      setHints(null)
-      setGeneratedAt(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [puzzleId])
+
+      setIsLoading(true)
+      setError(null)
+
+      try {
+        const data: CachedHints = await fetchHints(credentials.anthropicKey, puzzleId, regenerate)
+        setHints(data.hints)
+        setGeneratedAt(data.generatedAt)
+      } catch (err) {
+        if (err instanceof ApiError) {
+          // Handle 401 specifically - likely invalid API key
+          if (err.status === 401) {
+            setError("Invalid Anthropic API key. Please update your credentials.")
+          } else if (err.status === 404) {
+            setError("Hints are only available for puzzles from the last two weeks.")
+          } else {
+            setError(err.message)
+          }
+        } else if (err instanceof Error) {
+          setError(err.message)
+        } else {
+          setError("Failed to load hints")
+        }
+        setHints(null)
+        setGeneratedAt(null)
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [puzzleId],
+  )
+
+  const refetch = useCallback(() => fetchData(), [fetchData])
+  const regenerate = useCallback(() => fetchData(true), [fetchData])
 
   useEffect(() => {
     if (enabled) {
@@ -124,6 +132,7 @@ export function useHints(enabled: boolean = true, puzzleId?: number): UseHintsRe
     isLoading,
     error,
     hasApiKey,
-    refetch: fetchData,
+    refetch,
+    regenerate,
   }
 }

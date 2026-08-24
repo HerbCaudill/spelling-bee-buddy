@@ -124,7 +124,7 @@ describe("useHints", () => {
       expect(result.current.error).toBeNull()
       expect(result.current.hasApiKey).toBe(true)
       expect(api.fetchHints).toHaveBeenCalledTimes(1)
-      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", undefined)
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", undefined, false)
     })
 
     it("should fetch hints for specific puzzle when puzzleId is provided", async () => {
@@ -138,7 +138,7 @@ describe("useHints", () => {
 
       expect(result.current.hints).toEqual(mockCachedHints.hints)
       expect(api.fetchHints).toHaveBeenCalledTimes(1)
-      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20034)
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20034, false)
     })
 
     it("should handle 404 error for unavailable puzzle hints", async () => {
@@ -235,6 +235,34 @@ describe("useHints", () => {
 
       expect(api.fetchHints).toHaveBeenCalledTimes(2)
       expect(result.current.hints).toEqual(mockCachedHints.hints)
+    })
+
+    it("should bypass the cache when regenerate is called", async () => {
+      vi.mocked(api.fetchHints).mockResolvedValue(mockCachedHints)
+
+      const { result } = renderHook(() => useHints(true, 20034))
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20034, false)
+
+      const freshHints: CachedHints = {
+        generatedAt: "2026-01-14T13:00:00.000Z",
+        hints: {
+          ab: [{ hint: "A brand new clue", length: 4 }],
+        },
+      }
+      vi.mocked(api.fetchHints).mockResolvedValue(freshHints)
+
+      await act(async () => {
+        await result.current.regenerate()
+      })
+
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20034, true)
+      expect(result.current.hints).toEqual(freshHints.hints)
+      expect(result.current.generatedAt).toBe("2026-01-14T13:00:00.000Z")
     })
 
     it("should clear error on successful refetch", async () => {
@@ -339,7 +367,7 @@ describe("useHints", () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20035)
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20035, false)
 
       // Change puzzleId
       rerender({ enabled: true, puzzleId: 20034 })
@@ -348,7 +376,7 @@ describe("useHints", () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20034)
+      expect(api.fetchHints).toHaveBeenCalledWith("test-anthropic-key", 20034, false)
       expect(api.fetchHints).toHaveBeenCalledTimes(2)
     })
   })

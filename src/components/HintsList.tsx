@@ -8,6 +8,7 @@ import {
   ChevronsUpDown,
   Eye,
   EyeOff,
+  RefreshCw,
 } from "lucide-react"
 import type { HintsByPrefix } from "@/types"
 
@@ -16,6 +17,8 @@ export interface HintsListProps {
   hints: HintsByPrefix
   /** Words the user has found (to show remaining hints) */
   foundWords?: string[]
+  /** Called when the user asks for fresh clues (bypasses the server cache) */
+  onRegenerate?: () => void
   /** Optional className for the container */
   className?: string
 }
@@ -28,7 +31,7 @@ export interface HintsListProps {
  * - Hints with word length indicator
  * - Found/total count for each prefix
  */
-export function HintsList({ hints, foundWords = [], className }: HintsListProps) {
+export function HintsList({ hints, foundWords = [], onRegenerate, className }: HintsListProps) {
   const [expandedPrefixes, setExpandedPrefixes] = useState<Set<string>>(new Set())
   const [showFoundWords, setShowFoundWords] = useState(false)
 
@@ -124,13 +127,27 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
             variant={showFoundWords ? "default" : "outline"}
             size="sm"
             onClick={() => setShowFoundWords(!showFoundWords)}
-            className="rounded-l-none focus:z-10"
+            className={cn("focus:z-10", onRegenerate ? "rounded-none" : "rounded-l-none")}
             aria-label={showFoundWords ? "Hide found words" : "Show found words"}
             aria-pressed={showFoundWords}
           >
-            {showFoundWords ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
+            {showFoundWords ?
+              <Eye className="size-4" />
+            : <EyeOff className="size-4" />}
             <span className="hidden sm:inline">Found</span>
           </Button>
+          {onRegenerate && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onRegenerate}
+              className="rounded-l-none focus:z-10"
+              aria-label="Regenerate clues"
+            >
+              <RefreshCw className="size-4" />
+              <span className="hidden sm:inline">Regenerate</span>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -206,9 +223,7 @@ export function HintsList({ hints, foundWords = [], className }: HintsListProps)
                       </span>
                       <span
                         className={cn(
-                          hint.isFound
-                            ? "text-muted-foreground line-through"
-                            : "text-foreground",
+                          hint.isFound ? "text-muted-foreground line-through" : "text-foreground",
                         )}
                       >
                         {hint.hint}

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest"
+import { describe, it, expect, vi } from "vitest"
 import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { HintsList } from "./HintsList"
@@ -58,6 +58,24 @@ describe("HintsList", () => {
 
       expect(screen.getByLabelText("Expand all sections")).toBeInTheDocument()
       expect(screen.getByLabelText("Collapse all sections")).toBeInTheDocument()
+    })
+
+    it("does not render regenerate button when onRegenerate is not provided", () => {
+      render(<HintsList hints={sampleHints} />)
+
+      expect(screen.queryByLabelText("Regenerate clues")).not.toBeInTheDocument()
+    })
+  })
+
+  describe("regenerate button", () => {
+    it("calls onRegenerate when clicked", async () => {
+      const user = userEvent.setup()
+      const onRegenerate = vi.fn()
+      render(<HintsList hints={sampleHints} onRegenerate={onRegenerate} />)
+
+      await user.click(screen.getByLabelText("Regenerate clues"))
+
+      expect(onRegenerate).toHaveBeenCalledTimes(1)
     })
   })
 

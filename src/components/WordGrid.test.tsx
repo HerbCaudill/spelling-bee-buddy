@@ -70,14 +70,10 @@ describe("WordGrid", () => {
       render(<WordGrid allWords={allWords} foundWords={foundWords} />)
 
       // A has no 7-letter words, so that cell should be empty
-      expect(
-        screen.getByRole("cell", { name: "No 7-letter A words" }),
-      ).toBeInTheDocument()
+      expect(screen.getByRole("cell", { name: "No 7-letter A words" })).toBeInTheDocument()
 
       // C has no 5-letter words
-      expect(
-        screen.getByRole("cell", { name: "No 5-letter C words" }),
-      ).toBeInTheDocument()
+      expect(screen.getByRole("cell", { name: "No 5-letter C words" })).toBeInTheDocument()
     })
 
     it("has a cell for every letter/length combination", () => {

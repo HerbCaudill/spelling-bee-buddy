@@ -182,6 +182,8 @@ async function handleProgress(request: Request): Promise<Response> {
  * Checks KV cache first, generates with Anthropic API if not cached
  * Requires X-Anthropic-Key header with user's API key
  * Accepts optional puzzleId query parameter to get hints for a specific puzzle
+ * Accepts optional regenerate=true query parameter to bypass the cache and
+ * generate fresh hints (overwriting the cached entry)
  */
 async function handleHints(request: Request, env: Env): Promise<Response> {
   const anthropicKey = request.headers.get("X-Anthropic-Key")
@@ -194,9 +196,10 @@ async function handleHints(request: Request, env: Env): Promise<Response> {
     return errorResponse("KV namespace not configured", 500)
   }
 
-  // Check for optional puzzleId query parameter
+  // Check for optional query parameters
   const url = new URL(request.url)
   const puzzleIdParam = url.searchParams.get("puzzleId")
+  const regenerate = url.searchParams.get("regenerate") === "true"
 
   let gameData: GameData
 
@@ -262,13 +265,15 @@ async function handleHints(request: Request, env: Env): Promise<Response> {
 
   const cacheKey = buildCacheKey(gameData.today.printDate)
 
-  // Check KV cache first
-  const cached = await env.HINTS_CACHE.get<CachedHints>(cacheKey, "json")
-  if (cached) {
-    return jsonResponse({
-      success: true,
-      data: cached,
-    })
+  // Check KV cache first (unless the client asked for fresh hints)
+  if (!regenerate) {
+    const cached = await env.HINTS_CACHE.get<CachedHints>(cacheKey, "json")
+    if (cached) {
+      return jsonResponse({
+        success: true,
+        data: cached,
+      })
+    }
   }
 
   // Generate hints using Anthropic API

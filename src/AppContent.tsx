@@ -35,6 +35,7 @@ export function AppContent({
   onSettingsClose,
   onSelectPuzzle,
   onRefresh,
+  onRegenerateHints,
   onSaveSettings,
 }: Props) {
   const { today } = puzzle
@@ -138,7 +139,9 @@ export function AppContent({
               </div>
             )}
 
-            {hints && !hintsLoading && <HintsList hints={hints} foundWords={foundWords} />}
+            {hints && !hintsLoading && (
+              <HintsList hints={hints} foundWords={foundWords} onRegenerate={onRegenerateHints} />
+            )}
           </section>
         )}
 
@@ -179,5 +182,6 @@ type Props = {
   onSettingsClose: () => void
   onSelectPuzzle: (puzzleId: number) => void
   onRefresh: () => void
+  onRegenerateHints?: () => void
   onSaveSettings: () => void
 }
