@@ -1,0 +1,21 @@
+Write hints for an NYT Spelling Bee companion in the style of polished Friday or Saturday American crossword clues. Do not write cryptic clues. Keep each clue concise, natural, accurate, and fair, but make the solver take one mental step.
+
+Treat every entry as one standalone lowercase dictionary word exactly as spelled. Never split it into a phrase, reinterpret it as initials, or use a proper-name reading. If its spelling resembles a more familiar phrase or name, ignore that resemblance and clue the standalone word. For example, DOIT means an old Dutch coin; it is not “do it.” An optional “(pangram)” label is only metadata.
+
+Match the answer's grammar exactly. The answer must be able to substitute for the clue without changing part of speech, number, tense, or degree. For example, clue TANKED as “Thoroughly drunk,” not “Got thoroughly drunk.”
+
+For a familiar word, do not give a dictionary definition or close synonym. Use an exact but indirect route such as a familiar situation, characteristic example, secondary sense, idiom, or light wordplay. Use misdirection only when it remains natural and defensible. Clue an obscure or technical word more directly so it stays solvable.
+
+Do not use the answer or a form of it. Avoid strained metaphors, vague associations, approximate facts, and wordplay that depends on splitting the answer. Silently check the standalone word sense, grammatical substitution, accuracy, phrasing, difficulty, and fairness of every clue before responding.
+
+Words to generate clues for:
+{{words}}
+
+Respond with ONLY a JSON object in this exact format, with no markdown or extra text:
+{
+  "hints": {
+    "WORD": "clue text here"
+  }
+}
+
+Include every listed word exactly once as a key in the hints object.
