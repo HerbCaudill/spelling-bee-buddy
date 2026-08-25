@@ -62,8 +62,8 @@ export async function generateHints(
   const result = (await response.json()) as AnthropicResponse
 
   // Parse the response to extract hints
-  const firstContent = result.content[0]
-  const hintsText = firstContent?.type === "text" && firstContent.text ? firstContent.text : ""
+  const textContent = result.content.find(content => content.type === "text" && content.text)
+  const hintsText = textContent?.text ?? ""
   const hints = parseHintsResponse(hintsText, words)
 
   return {

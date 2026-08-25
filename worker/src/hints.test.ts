@@ -77,6 +77,34 @@ describe("hints", () => {
       expect(result.hints).toBeDefined()
     })
 
+    it("reads hints from a text block after a thinking block", async () => {
+      const mockResponse = {
+        content: [
+          { type: "thinking", thinking: "Checking each clue" },
+          {
+            type: "text",
+            text: JSON.stringify({
+              hints: {
+                able: "Up to the task",
+                ball: "What Cinderella left early",
+                call: "Decision by an umpire",
+                placebo: "Treatment without an active ingredient",
+              },
+            }),
+          },
+        ],
+      }
+
+      ;(fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockResponse),
+      })
+
+      const result = await generateHints(mockGameData, "test-api-key")
+
+      expect(result.hints["AB"][0].hint).toBe("Up to the task")
+    })
+
     it("organizes hints by two-letter prefix", async () => {
       const mockResponse = {
         content: [
