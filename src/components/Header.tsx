@@ -119,9 +119,10 @@ export function Header({
   }
 
   return (
+    // WebKit recognizes sticky top bars and can extend their solid background beneath the status bar.
     <header
       className={cn(
-        "bg-accent text-accent-foreground flex flex-wrap items-center gap-x-3 gap-y-0 px-[calc(1rem+env(safe-area-inset-left))] pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3",
+        "bg-accent text-accent-foreground sticky top-0 z-30 flex w-full flex-wrap items-center gap-x-3 gap-y-0 px-[calc(1rem+env(safe-area-inset-left))] pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3",
         className,
       )}
     >

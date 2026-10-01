@@ -181,6 +181,29 @@ async function setupMocks(
   })
 }
 
+test("keeps the mobile header and its controls usable while scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 600 })
+  await setupMocks(page)
+  await page.goto("/")
+  await waitForAppToLoad(page)
+
+  await page.evaluate(() => window.scrollTo(0, 400))
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+
+  const header = page.getByRole("banner")
+  await expect.poll(async () => (await header.boundingBox())?.y).toBe(0)
+  expect((await header.boundingBox())?.width).toBe(390)
+
+  await page.getByRole("button", { name: "Choose a different puzzle date" }).click()
+  await expect(page.getByRole("button", { name: "Previous puzzle" })).toBeVisible()
+  await page.keyboard.press("Escape")
+
+  await page.getByRole("button", { name: "Open settings" }).click()
+  await expect(page.getByRole("dialog", { name: "Settings" })).toBeVisible()
+  await page.getByRole("button", { name: "Cancel" }).click()
+  await expect(page.getByRole("dialog", { name: "Settings" })).not.toBeVisible()
+})
+
 test.describe("Loading state", () => {
   test("displays loading state initially", async ({ page }) => {
     await setupMocks(page, { activeDelay: 1000 })
