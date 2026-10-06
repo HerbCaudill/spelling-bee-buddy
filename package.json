@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev:app": "vite --open",
-    "dev": "node scripts/dev-all.mjs",
+    "dev:app": "vite",
+    "dev": "localhost-dev pnpm dev:all",
     "build": "tsc -b && vite build",
     "generate-icons": "node scripts/generate-icons.mjs",
     "preview": "vite preview",
@@ -17,11 +17,14 @@
     "test:worker": "pnpm --filter spelling-bee-buddy-worker test",
     "typecheck": "tsc --noEmit",
     "typecheck:worker": "pnpm --filter spelling-bee-buddy-worker typecheck",
-    "dev:worker": "pnpm --filter spelling-bee-buddy-worker dev",
+    "dev:worker": "localhost-dev --service api pnpm dev:worker:app",
     "deploy:worker": "pnpm --filter spelling-bee-buddy-worker run deploy",
     "format": "prettier --write .",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "dev:all": "node scripts/dev-all.mjs",
+    "dev:url": "localhost-dev url",
+    "dev:worker:app": "pnpm --filter spelling-bee-buddy-worker dev"
   },
   "dependencies": {
     "@radix-ui/react-popover": "^1.1.15",

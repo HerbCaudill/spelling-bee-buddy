@@ -1,77 +1,82 @@
-#!/usr/bin/env node
+import { spawn, execFileSync } from "node:child_process"
+import { readFileSync } from "node:fs"
+import { get } from "node:https"
+import { homedir } from "node:os"
+import { join } from "node:path"
+import { setTimeout as delay } from "node:timers/promises"
 
-import { spawn } from "child_process"
+/** Public worker origin for this checkout; direct development stays available for tests. */
+const workerUrl =
+  process.env.PORTLESS_URL ?
+    execFileSync("localhost-dev", ["url", "--service", "api"], { encoding: "utf8" }).trim()
+  : "http://127.0.0.1:8787"
+/** Processes started by this launcher, each with its own signal group. */
+const children = []
+let stopping = false
 
-const WORKER_URL = "http://localhost:8787"
-const POLL_INTERVAL = 500
-const MAX_WAIT = 30000
-
-async function isWorkerReady() {
-  try {
-    const response = await fetch(WORKER_URL)
-    return response.ok || response.status === 404 // Any response means it's running
-  } catch {
-    return false
-  }
-}
-
-async function waitForWorker() {
-  const start = Date.now()
-  console.log("⏳ Waiting for worker to be ready...")
-
-  while (Date.now() - start < MAX_WAIT) {
-    if (await isWorkerReady()) {
-      console.log("✅ Worker is ready!")
-      return true
+/** Check the worker's health through its exact routed hostname with TLS verification. */
+async function ready() {
+  if (!process.env.PORTLESS_URL) {
+    try {
+      return (await fetch(`${workerUrl}/health`)).ok
+    } catch {
+      return false
     }
-    await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL))
   }
-
-  console.error("❌ Worker failed to start within timeout")
-  return false
+  const url = new URL(workerUrl)
+  return new Promise(resolve => {
+    const request = get(
+      {
+        hostname: "127.0.0.1",
+        port: 443,
+        servername: url.hostname,
+        path: "/health",
+        headers: { host: url.host },
+        ca: readFileSync(join(homedir(), ".portless", "ca.pem")),
+        timeout: 1000,
+      },
+      response => {
+        response.resume()
+        resolve(response.statusCode === 200)
+      },
+    )
+    request.on("error", () => resolve(false))
+    request.on("timeout", () => request.destroy())
+  })
 }
 
-async function main() {
-  // Start worker in background
-  console.log("🚀 Starting worker...")
-  const worker = spawn("pnpm", ["dev:worker"], {
-    stdio: "inherit",
-  })
-
-  worker.on("error", err => {
-    console.error("Failed to start worker:", err)
-    process.exit(1)
-  })
-
-  // Wait for worker to be ready
-  const ready = await waitForWorker()
-  if (!ready) {
-    worker.kill()
-    process.exit(1)
+/** Stop only the process groups this launcher started and let their route owners exit. */
+function stop(code = 0) {
+  if (stopping) return
+  stopping = true
+  process.exitCode = code
+  for (const child of children) {
+    if (child.exitCode !== null || child.signalCode !== null) continue
+    try {
+      process.kill(-child.pid, "SIGTERM")
+    } catch {}
   }
-
-  // Start the app
-  console.log("🚀 Starting app...")
-  const app = spawn("pnpm", ["dev:app", "--host"], {
-    stdio: "inherit",
-  })
-
-  app.on("error", err => {
-    console.error("Failed to start app:", err)
-    worker.kill()
-    process.exit(1)
-  })
-
-  // Handle cleanup
-  const cleanup = () => {
-    console.log("\n🛑 Shutting down...")
-    app.kill()
-    worker.kill()
-    process.exit(0)
-  }
-
-  process.on("SIGINT", cleanup)
-  process.on("SIGTERM", cleanup)
 }
 
-main()
+/** Start one package script and stop the other service if it exits. */
+function start(script, env = process.env) {
+  const child = spawn("pnpm", [script], { env, stdio: "inherit", detached: true })
+  children.push(child)
+  child.on("error", () => stop(1))
+  child.on("exit", code => stop(code ?? 1))
+  return child
+}
+
+process.on("SIGINT", () => stop())
+process.on("SIGTERM", () => stop())
+start(process.env.PORTLESS_URL ? "dev:worker" : "dev:worker:app")
+const deadline = Date.now() + 30000
+while (!stopping && !(await ready())) {
+  if (Date.now() >= deadline) {
+    console.error("Worker did not become ready within 30 seconds.")
+    stop(1)
+    break
+  }
+  await delay(250)
+}
+if (!stopping) start("dev:app", { ...process.env, VITE_WORKER_URL: workerUrl })
