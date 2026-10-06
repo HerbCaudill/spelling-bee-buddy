@@ -276,3 +276,15 @@ describe("api", () => {
     })
   })
 })
+
+it("uses the assigned HTTPS worker address in development", async () => {
+  vi.stubEnv("VITE_WORKER_URL", "https://tofu.api.spelling-bee-buddy.localhost")
+  vi.resetModules()
+  try {
+    const api = await import("./api")
+    expect(api.getWorkerUrl()).toBe("https://tofu.api.spelling-bee-buddy.localhost")
+  } finally {
+    vi.unstubAllEnvs()
+    vi.resetModules()
+  }
+})

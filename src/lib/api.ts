@@ -11,9 +11,10 @@ import type {
  * Uses localhost in development, production URL otherwise
  */
 const WORKER_URL =
-  import.meta.env.DEV ?
+  import.meta.env.VITE_WORKER_URL ||
+  (import.meta.env.DEV ?
     `http://${window.location.hostname}:8787`
-  : import.meta.env.VITE_WORKER_URL || "https://spelling-bee-buddy.herbcaudill.workers.dev"
+  : "https://spelling-bee-buddy.herbcaudill.workers.dev")
 
 /**
  * API response wrapper type
