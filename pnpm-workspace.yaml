@@ -6,3 +6,9 @@ allowBuilds:
   esbuild: true
   sharp: true
   workerd: true
+overrides:
+  '@vitest/browser@>=4.0.0 <4.1.10': ^4.1.10
+  serialize-javascript@<=7.0.2: ^7.0.3
+  sharp@<0.35.5: ^0.35.5
+  undici@>=7.0.0 <7.29.1: ^7.29.1
+  ws@>=8.0.0 <8.21.0: ^8.21.0
