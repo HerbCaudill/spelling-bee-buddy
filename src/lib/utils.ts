@@ -1,10 +1,6 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
 import type { Rank, WordGridCell, TwoLetterGroup } from "@/types"
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+export { cn } from "cn"
 
 /**
  * Format a date relative to today for display
